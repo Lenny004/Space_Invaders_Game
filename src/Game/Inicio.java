@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package space.chemistry;
+package Game;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -18,6 +18,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicButtonUI;
+import Tipografia.Fuente;
+import java.awt.Color;
 
 /**
  *
@@ -27,16 +29,35 @@ public class Inicio extends javax.swing.JFrame {
 
     //Creando objeto de la clase
     FondoGame1 fondo = new FondoGame1();
-    
+    Fuente TipoFuente = new Fuente();
+    Color GrisGame = new Color(153,153,153);
+    Color CelesteGame = new Color(173,188,205);
+    Color LetrasGris = new Color(51,51,51);
+    Color LetrasAzul = new Color(31,75,142);
     
     public Inicio() {
         this.setContentPane(fondo);
         initComponents();
         
+        btnIniciar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        btnConfiguracion.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        btnSalir.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        
+        
         ShapedButtonUI squareUI = new ShapedButtonUI();
-        squareUI.setShape(ButtonShape.SQUARE, BtnVotar3);
-        BtnVotar3.setUI(squareUI);
-        BtnVotar3.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnIniciar);
+        btnIniciar.setUI(squareUI);
+        btnIniciar.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnConfiguracion);
+        btnConfiguracion.setUI(squareUI);
+        btnConfiguracion.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnAyuda);
+        btnAyuda.setUI(squareUI);
+        btnAyuda.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnSalir);
+        btnSalir.setUI(squareUI);
+        btnSalir.setPreferredSize(new Dimension(100, 100));
         
         /*Utilizamos new ImageIcon(URL location).getImage() donde el argumento
         *location lo obtenemos a través del método getClass().getResource(String name)
@@ -103,85 +124,120 @@ public class Inicio extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         btnAyuda = new javax.swing.JButton();
         btnConfiguracion = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        BtnVotar3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1080, 600));
         setMinimumSize(new java.awt.Dimension(1080, 600));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(1080, 600));
+        getContentPane().setLayout(null);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setFocusable(false);
         jPanel1.setLayout(new java.awt.BorderLayout());
         jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(985, 0, 129, 0);
+
         btnIniciar.setBackground(new java.awt.Color(153, 153, 153));
-        btnIniciar.setForeground(new java.awt.Color(153, 153, 153));
+        btnIniciar.setForeground(new java.awt.Color(51, 51, 51));
         btnIniciar.setText("Iniciar");
         btnIniciar.setBorder(null);
         btnIniciar.setBorderPainted(false);
+        btnIniciar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnIniciar.setDefaultCapable(false);
         btnIniciar.setFocusPainted(false);
         btnIniciar.setFocusable(false);
         btnIniciar.setRequestFocusEnabled(false);
         btnIniciar.setVerifyInputWhenFocusTarget(false);
+        btnIniciar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnIniciarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnIniciarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnIniciarMouseExited(evt);
+            }
+        });
+        getContentPane().add(btnIniciar);
+        btnIniciar.setBounds(430, 160, 250, 43);
 
         btnSalir.setBackground(new java.awt.Color(153, 153, 153));
+        btnSalir.setForeground(new java.awt.Color(51, 51, 51));
         btnSalir.setText("Salir");
         btnSalir.setBorder(null);
         btnSalir.setBorderPainted(false);
+        btnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSalir.setDefaultCapable(false);
         btnSalir.setFocusPainted(false);
         btnSalir.setFocusable(false);
         btnSalir.setRequestFocusEnabled(false);
         btnSalir.setVerifyInputWhenFocusTarget(false);
+        btnSalir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSalirMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSalirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSalirMouseExited(evt);
+            }
+        });
+        getContentPane().add(btnSalir);
+        btnSalir.setBounds(430, 370, 250, 42);
 
         btnAyuda.setBackground(new java.awt.Color(153, 153, 153));
+        btnAyuda.setForeground(new java.awt.Color(51, 51, 51));
         btnAyuda.setText("Ayuda");
         btnAyuda.setBorder(null);
         btnAyuda.setBorderPainted(false);
+        btnAyuda.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAyuda.setDefaultCapable(false);
         btnAyuda.setFocusPainted(false);
         btnAyuda.setFocusable(false);
         btnAyuda.setRequestFocusEnabled(false);
         btnAyuda.setVerifyInputWhenFocusTarget(false);
+        btnAyuda.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAyudaMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAyudaMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAyudaMouseExited(evt);
+            }
+        });
+        getContentPane().add(btnAyuda);
+        btnAyuda.setBounds(430, 300, 250, 45);
 
         btnConfiguracion.setBackground(new java.awt.Color(153, 153, 153));
-        btnConfiguracion.setText("Configuración");
+        btnConfiguracion.setForeground(new java.awt.Color(51, 51, 51));
+        btnConfiguracion.setText("Configuracion");
         btnConfiguracion.setBorder(null);
         btnConfiguracion.setBorderPainted(false);
+        btnConfiguracion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnConfiguracion.setDefaultCapable(false);
         btnConfiguracion.setFocusPainted(false);
         btnConfiguracion.setFocusable(false);
         btnConfiguracion.setRequestFocusEnabled(false);
         btnConfiguracion.setVerifyInputWhenFocusTarget(false);
-
-        jPanel2.setLayout(new java.awt.BorderLayout());
-
-        jButton1.setText("C");
-        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
-        jButton1.setFocusable(false);
-        jButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jButton1.setName(""); // NOI18N
-        jButton1.setRolloverEnabled(true);
-        jButton1.setVerifyInputWhenFocusTarget(false);
-        jPanel2.add(jButton1, java.awt.BorderLayout.CENTER);
-
-        BtnVotar3.setBackground(new java.awt.Color(224, 96, 26));
-        BtnVotar3.setForeground(new java.awt.Color(255, 255, 255));
-        BtnVotar3.setText("Votar");
-        BtnVotar3.setBorder(null);
-        BtnVotar3.setSelected(true);
-        BtnVotar3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnVotar3ActionPerformed(evt);
+        btnConfiguracion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnConfiguracionMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnConfiguracionMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnConfiguracionMouseExited(evt);
             }
         });
-        jPanel2.add(BtnVotar3, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(btnConfiguracion);
+        btnConfiguracion.setBounds(430, 230, 250, 47);
 
         jButton2.setText("jButton1");
         jButton2.setBorder(null);
@@ -192,60 +248,69 @@ public class Inicio extends javax.swing.JFrame {
         jButton2.setName(""); // NOI18N
         jButton2.setRolloverEnabled(true);
         jButton2.setVerifyInputWhenFocusTarget(false);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(420, 420, 420)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btnIniciar, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                    .addComponent(btnConfiguracion, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                    .addComponent(btnAyuda, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(1035, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(8, 8, 8)))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(156, 156, 156)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(132, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(509, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(2, 2, 2)))
-        );
+        getContentPane().add(jButton2);
+        jButton2.setBounds(1069, 509, 37, 29);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BtnVotar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVotar3ActionPerformed
-        
-    }//GEN-LAST:event_BtnVotar3ActionPerformed
+    private void btnIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarMouseClicked
+        this.setVisible(false);
+        new GameFrame().setVisible(true);
+    }//GEN-LAST:event_btnIniciarMouseClicked
+
+    private void btnIniciarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarMouseEntered
+        btnIniciar.setBackground(CelesteGame);
+        btnIniciar.setForeground(LetrasAzul);
+    }//GEN-LAST:event_btnIniciarMouseEntered
+
+    private void btnIniciarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarMouseExited
+        btnIniciar.setBackground(GrisGame);
+        btnIniciar.setForeground(LetrasGris);
+    }//GEN-LAST:event_btnIniciarMouseExited
+
+    private void btnConfiguracionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfiguracionMouseClicked
+
+    }//GEN-LAST:event_btnConfiguracionMouseClicked
+
+    private void btnConfiguracionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfiguracionMouseEntered
+        btnConfiguracion.setBackground(CelesteGame);
+        btnConfiguracion.setForeground(LetrasAzul);
+    }//GEN-LAST:event_btnConfiguracionMouseEntered
+
+    private void btnAyudaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAyudaMouseClicked
+
+    }//GEN-LAST:event_btnAyudaMouseClicked
+
+    private void btnAyudaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAyudaMouseEntered
+        btnAyuda.setBackground(CelesteGame);
+        btnAyuda.setForeground(LetrasAzul);
+    }//GEN-LAST:event_btnAyudaMouseEntered
+
+    private void btnAyudaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAyudaMouseExited
+        btnAyuda.setBackground(GrisGame);
+        btnAyuda.setForeground(LetrasGris);
+    }//GEN-LAST:event_btnAyudaMouseExited
+
+    private void btnSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSalirMouseClicked
+
+    private void btnSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseEntered
+        btnSalir.setBackground(CelesteGame);
+        btnSalir.setForeground(LetrasAzul);
+    }//GEN-LAST:event_btnSalirMouseEntered
+
+    private void btnSalirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseExited
+        btnSalir.setBackground(GrisGame);
+        btnSalir.setForeground(LetrasGris);
+    }//GEN-LAST:event_btnSalirMouseExited
+
+    private void btnConfiguracionMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfiguracionMouseExited
+        btnConfiguracion.setBackground(GrisGame);
+        btnConfiguracion.setForeground(LetrasGris);
+    }//GEN-LAST:event_btnConfiguracionMouseExited
 
     /**
      * @param args the command line arguments
@@ -293,15 +358,12 @@ public class Inicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnVotar3;
     private javax.swing.JButton btnAyuda;
     private javax.swing.JButton btnConfiguracion;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }
