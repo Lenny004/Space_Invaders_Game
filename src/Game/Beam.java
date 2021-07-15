@@ -12,20 +12,20 @@ import javax.swing.ImageIcon;
  */
 public class Beam extends MovingGameObject {
 
-    //Enemies shoot beams
-    // constructor for beam
+    // Los enemigos disparan rayos
+    // constructor para viga
     public Beam(int xPosition, int yPosition, int diameter, Color color) {
         super(xPosition, yPosition, 0, 0, color);
     }
     
-// Used to draw a beam
+    // Usada para dibujar una viga
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(this.getXPosition(), this.getYPosition(), 5, 20);
     }
     
-    // Used to get the hit box of a beam
+    // Se usa para obtener el cuadro de impacto de una viga
     @Override
     public Rectangle getBounds() {
         Rectangle beamHitbox = new Rectangle(xPos, yPos, 5, 20);

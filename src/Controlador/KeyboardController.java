@@ -31,6 +31,7 @@ public class KeyboardController implements KeyListener
     
     public void resetController()
     {
+        //No existe codigo ASCII 256 así que dará false
         keyStatus = new boolean[256]; 
     }
     

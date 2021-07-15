@@ -1,6 +1,10 @@
 package Game;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -8,27 +12,28 @@ import javax.swing.JFrame;
  */
 public class GameFrame extends JFrame{
     private GamePanel game;
+    //Creando objeto de la clase
     
     public GameFrame()
     {
-        // Add text to title bar 
+        // Agregar texto a la barra de título
         super("Space Chemistry");
         
-        // Make sure the program exits when the close button is clicked
+        // Asegúrese de que el programa salga cuando se hace clic en el botón de cierre
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         
-        // Create an instance of the Game class and turn on double buffering
-        //  to ensure smooth animation
+        // Cree una instancia de la clase Game y active el almacenamiento en búfer doble
+        // para asegurar una animación fluida
         game = new GamePanel();
         game.setDoubleBuffered(true);
         
-        // Add the Breakout instance to this frame's content pane to display it
+        // Agregue la instancia de Breakout al panel de contenido de este marco para mostrarlo
         this.getContentPane().add(game); 
         this.pack();
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         
-        // Start the game
+        // Empezar el juego
         game.start();  
     }
     

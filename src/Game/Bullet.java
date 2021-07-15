@@ -16,18 +16,19 @@ public class Bullet extends MovingGameObject {
     int diameter;
     int yVelocity;
 
-    // Constructor for bullet
+    
+    // Constructor para las balas
     public Bullet(int xPosition, int yPosition, int diameter, Color color) {
         super(xPosition, yPosition, 0, 0, color);
         this.diameter = diameter;
     }
 
-    // Gets the diameter of the bullet
+    // Obtiene el diámetro de la bala
     public int getDiameter() {
         return diameter;
     }
 
-    // Used to draw the bullet
+    // Usada para dibujar la bala
     @Override
     public void draw(Graphics g) {
         g.setColor(color);

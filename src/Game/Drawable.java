@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @author Spartan Tech
+ * @authors Lenny, César, Arístides, Miguel
  */
 public interface Drawable {
     

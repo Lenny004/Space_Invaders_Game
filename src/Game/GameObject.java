@@ -5,18 +5,18 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Spartan Tech
+ * @author Lenny, César, Miguel, Arístides
  */
 public abstract class GameObject implements Drawable {
 
     int xPos;
     int yPos;
     Color color;
-    boolean isColliding;
+    boolean estaColisionando ;
     
     public GameObject(){};
     
-    // Constuctor for any Game Object
+    // Constructor para cualquier Gameobject
     public GameObject(int xPosition, int yPosition, Color color) {
         this.xPos = xPosition;
         this.yPos = yPosition;
@@ -25,39 +25,41 @@ public abstract class GameObject implements Drawable {
 
     public abstract Rectangle getBounds();
 
-    // Gets the X position of any object
+    // Obtiene la posición X de cualquier objeto
     public int getXPosition() {
         return xPos;
     }
 
-    // Gets the Y position of any object
+    // Obtiene la posición Y de cualquier objeto
     public int getYPosition() {
         return yPos;
     }
 
-    // Gets the color of any object
+    // Obtiene el color de cualquier objeto
     public Color getColor() {
         return color;
     }
 
-    // Sets the X position of any object
+    // Establece la posición X de cualquier objeto
     public void setXPosition(int xPosition) {
         this.xPos = xPosition;
     }
 
-    // Sets the Y position of any object
+    // Establece la posición Y de cualquier objeto
     public void setYPosition(int yPosition) {
         this.yPos = yPosition;
     }
 
-    // Sets the color of any object
+    // Establece el color de cualquier objeto
     public void setColor(Color color) {
         this.color = color;
     }
 
-    // Checks if the hitboxes of any two objects are intersecting
-    public boolean isColliding(GameObject other) {
-        isColliding = other.getBounds().intersects(this.getBounds());
-        return isColliding;
+    // Comprueba si los hitboxes de dos objetos cualesquiera se cruzan 
+    public boolean Colisionando(GameObject Otro) {
+        //".intersects" Es un método que sirve para detectar si la imagen recibe una colisión usando los puntos de localización
+        //Retorna true si detecta que dos imagenes colisionan
+        estaColisionando = Otro.getBounds().intersects(this.getBounds());
+        return estaColisionando;
     }
 }

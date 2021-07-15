@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 
 /**
  *
- * @author Spartan Tech
+ * @author Lenny, César, Arístides, Miguel
  */
 public class Ship extends ControlledGameObject {
      
@@ -24,7 +24,8 @@ public class Ship extends ControlledGameObject {
     ImageIcon bonusEnemy = new ImageIcon(getClass().getResource("/Imagenes/bonusEnemySkin.gif"));
     ImageIcon lifeCounterShip = new ImageIcon(getClass().getResource("/Imagenes/shipSkinSmall.gif"));
 
-    // Constructor for all ship objects
+    
+    // Constructor para todos los objetos de la nave
     public Ship(int xPosition, int yPosition, Color color, KeyboardController control) {
         super(xPosition, yPosition, color, control);
     }
@@ -55,23 +56,27 @@ public class Ship extends ControlledGameObject {
         return shipHitbox;
     }
 
-    // Used to move all ship objects
+    // Se usa para mover todos los objetos de la nave
     @Override
     public void move() {
-        // Left arrow key press
+        // Pulsar la tecla de flecha izquierda
         if (control.getKeyStatus(37)) {
             xPos -= 5;
         }
-        // Right arrow key press
+        // Pulsar la tecla de flecha derecha
         if (control.getKeyStatus(39)) {
             xPos += 5;
         }
         
-        // Move from edge to edge without stopping
+        // Moverse de borde a borde sin detenerse
         if (xPos > 800) {
+            //Si se pasa del lado derecho se resetea la posición mandandolo al lado izquierdo,
+            //Dando este efecto de que atraviesa la pantalla
             xPos = -50;
         }
         if (xPos < -50) {
+            //Si se pasa del lado izquierdo se resetea la posición mandandolo al lado derecho,
+            //Dando este efecto de que atraviesa la pantalla
             xPos = 800;
         }
     }
