@@ -20,6 +20,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import sun.audio.*;
+import java.io.*;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -71,16 +73,16 @@ public class GamePanel extends JPanel {
     private ArrayList<Beam> beamList = new ArrayList();
     private ImageIcon background = new ImageIcon(getClass().getResource("/imagenes/Espacio.gif"));
 
-    // Added Audio files and streams
-    private File beamSound = new File("/Sonidos/alienBeam.wav");
-    private File bulletSound = new File("/Sonidos/bulletSound.wav");
-    private File levelUpSound = new File("/Sonidos/levelUpSound.wav");
-    private File deathSound = new File("/Sonidos/deathSound.wav");
-    private File hitmarkerSound = new File("/Sonidos/hitmarkerSound.wav");
-    private File shieldSound = new File("/Sonidos/shieldSound.wav");
-    private File bossSound = new File("/Sonidos/bossSound.wav");
-    private File bonusSound = new File("/Sonidos/bonusSound.wav");
-    private File damageSound = new File("/Sonidos/damageSound.wav");
+    // Se agregaron archivos de audio y transmisiones
+    private File beamSound = new File("src/Sonidos/alienBeam.wav");
+    private File bulletSound = new File("src/Sonidos/bulletSound.wav");
+    private File levelUpSound = new File("src/Sonidos/levelUpSound.wav");
+    private File deathSound = new File("src/Sonidos/deathSound.wav");
+    private File hitmarkerSound = new File("src/Sonidos/hitmarkerSound.wav");
+    private File shieldSound = new File("src/Sonidos/shieldSound.wav");
+    private File bossSound = new File("src/Sonidos/bossSound.wav");
+    private File bonusSound = new File("src/Sonidos/bonusSound.wav");
+    private File damageSound = new File("src/Sonidos/damageSound.wav");
     private AudioStream beamSoundAudio;
     private InputStream beamSoundInput;
     private AudioStream bulletSoundAudio;
@@ -101,7 +103,7 @@ public class GamePanel extends JPanel {
     private InputStream damageSoundInput;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// EXTRA METHODS
+// Metodos extra
     
     // Usado en la clase Enemy para ayudar con el método de dibujo para el jefe
     public static int getBossHealth() {
@@ -605,6 +607,7 @@ public class GamePanel extends JPanel {
             damageSoundInput = new FileInputStream(damageSound);
             damageSoundAudio = new AudioStream(damageSoundInput);
         } catch (IOException e) {
+            
         }
     }
 
