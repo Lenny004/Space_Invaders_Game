@@ -2,9 +2,15 @@ package Game;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 /**
  *
@@ -13,6 +19,11 @@ import javax.swing.JPanel;
 public class GameFrame extends JFrame{
     private GamePanel game;
     //Creando objeto de la clase
+    private static File Nivel1 = new File("src/Sonidos/Nivel1.wav");    //Musica de niveles
+    private static AudioStream Nivel1Audio;
+    private static InputStream Nivel1SoundInput;
+    
+    
     
     public GameFrame()
     {
@@ -45,5 +56,22 @@ public class GameFrame extends JFrame{
                 new GameFrame().setVisible(true);
             }
         });
+         
+        int Nivel = 1;
+        
+        if(Nivel < 3){
+            AudioPlayer.player.start(Nivel1Audio);
+        }
+        if(Nivel == 3){
+            AudioPlayer.player.stop(Nivel1Audio);
+        }
+        try{
+            //LA MUSICA DE NIVELES Y JEFES
+            Nivel1SoundInput = new FileInputStream(Nivel1);
+            Nivel1Audio = new AudioStream(Nivel1SoundInput);
+        }
+        catch(IOException e){
+        
+        }
     }
 }

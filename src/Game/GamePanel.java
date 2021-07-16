@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import sun.audio.*;
 import java.io.*;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -43,8 +45,8 @@ public class GamePanel extends JPanel {
     // Iniciar contadores
     Random randomDisparosE = new Random();
     private int score = 0;
-    private int level = 15;
-     private int numberOfLives = 3;
+    private int level = 14;
+    private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
     private static int bossHealth = 30;
@@ -83,6 +85,7 @@ public class GamePanel extends JPanel {
     private File bossSound = new File("src/Sonidos/bossSound.wav");
     private File bonusSound = new File("src/Sonidos/bonusSound.wav");
     private File damageSound = new File("src/Sonidos/damageSound.wav");
+    private File Nivel1 = new File("src/Sonidos/Nivel1.wav");
     private AudioStream beamSoundAudio;
     private InputStream beamSoundInput;
     private AudioStream bulletSoundAudio;
@@ -101,6 +104,10 @@ public class GamePanel extends JPanel {
     private InputStream bonusSoundInput;
     private AudioStream damageSoundAudio;
     private InputStream damageSoundInput;
+    
+    //Musica de niveles
+    private AudioStream Nivel1Audio;
+    private InputStream Nivel1SoundInput;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Metodos extra
@@ -114,7 +121,6 @@ public class GamePanel extends JPanel {
     // CONFIGURAR JUEGO
 
     public final void ConfigurarJuego() {
-
         // Establece enemigos para niveles normales
         if (level%3 != 0) {
             // 6 Filas
@@ -157,6 +163,16 @@ public class GamePanel extends JPanel {
             }
         }
     }
+    
+//    public void MusicaLevel(){
+//        if(level == 14){
+//            AudioPlayer.player.start(Nivel1Audio);
+//        }
+//        if(level == 3){
+//            AudioPlayer.player.stop(Nivel1Audio);
+//        }
+//        else{}
+//    }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PAINT
@@ -288,10 +304,9 @@ public class GamePanel extends JPanel {
 // ACTUALIZAR ESTADO DEL JUEGO
     
     public void ActualizarEstadoJuego(int frameNumber) {
-
+        //MusicaLevel();
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
         NaveJugador.move();
-
         // Actualiza highscore
         try {
             Scanner fileScan = new Scanner(archivoPuntaje);
@@ -475,12 +490,12 @@ public class GamePanel extends JPanel {
                 for (int index = 0; index < beamList.size(); index++) {
                     // Se manda a llamar la Clase GameObject 
                     if (beamList.get(index).Colisionando(shieldList.get(j))) {
-                        // STRONG
+                        // FUERTE
                         if (shieldList.get(j).getColor() == Color.RED) {
                             shieldList.get(j).setColor(Color.ORANGE);
                             AudioPlayer.player.start(shieldSoundAudio); // Plays sound if shield takes damage
                             beamList.remove(index);
-                        // GOOD
+                        // BIEN
                         } else if (shieldList.get(j).getColor() == Color.ORANGE) {
                             shieldList.get(j).setColor(Color.YELLOW);
                             AudioPlayer.player.start(shieldSoundAudio);
@@ -490,7 +505,7 @@ public class GamePanel extends JPanel {
                             shieldList.get(j).setColor(Color.WHITE);
                             AudioPlayer.player.start(shieldSoundAudio);
                             beamList.remove(index);
-                        // WEAK, BREAKS ON HIT
+                        // DEBIL, BREAKS ON HIT
                         } else if (shieldList.get(j).getColor() == Color.WHITE) {
                             shieldList.remove(j);
                             AudioPlayer.player.start(shieldSoundAudio);
@@ -581,9 +596,8 @@ public class GamePanel extends JPanel {
             level += 1;
             bossHealth = 30;
             ConfigurarJuego();
-            AudioPlayer.player.start(levelUpSoundAudio); // Plays level up sound
+            AudioPlayer.player.start(levelUpSoundAudio); // Plays level up sound 
         }
-        
         // Todas las transmisiones necesarias para cada sonido del juego
         try {
             beamSoundInput = new FileInputStream(beamSound);
@@ -604,13 +618,18 @@ public class GamePanel extends JPanel {
             bonusSoundAudio = new AudioStream(bonusSoundInput);
             damageSoundInput = new FileInputStream(damageSound);
             damageSoundAudio = new AudioStream(damageSoundInput);
+            
+            //LA MUSICA DE NIVELES Y JEFES
+            Nivel1SoundInput = new FileInputStream(Nivel1);
+            Nivel1Audio = new AudioStream(Nivel1SoundInput);
+            
         } catch (IOException e) {
             
         }
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GAME PANEL    
+// PANEL DE JUEGO    
     
     public GamePanel() {
         // Set the size of the Panel

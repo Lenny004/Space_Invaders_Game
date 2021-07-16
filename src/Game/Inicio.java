@@ -31,7 +31,7 @@ public class Inicio extends javax.swing.JFrame {
     FondoGame1 fondo = new FondoGame1();
     Fuente TipoFuente = new Fuente();
     Color GrisGame = new Color(153,153,153);
-    Color CelesteGame = new Color(173,188,205);
+    Color CelesteGame = new Color(40, 255, 240);
     Color LetrasGris = new Color(51,51,51);
     Color LetrasAzul = new Color(31,75,142);
     
@@ -39,6 +39,8 @@ public class Inicio extends javax.swing.JFrame {
         this.setContentPane(fondo);
         initComponents();
         
+        lblCreditos.setVisible(false);
+        lblCreditos.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         btnIniciar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnConfiguracion.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
@@ -118,26 +120,22 @@ public class Inicio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         btnIniciar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnAyuda = new javax.swing.JButton();
         btnConfiguracion = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BtnCreditos = new javax.swing.JButton();
+        lblCerrar = new javax.swing.JLabel();
+        lblCreditos = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1080, 600));
+        setMaximumSize(new java.awt.Dimension(950, 525));
+        setMinimumSize(new java.awt.Dimension(950, 525));
         setUndecorated(true);
-        getContentPane().setLayout(null);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setFocusable(false);
-        jPanel1.setLayout(new java.awt.BorderLayout());
-        jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
-
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(985, 0, 129, 0);
+        setPreferredSize(new java.awt.Dimension(950, 525));
+        setSize(new java.awt.Dimension(950, 525));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnIniciar.setBackground(new java.awt.Color(153, 153, 153));
         btnIniciar.setForeground(new java.awt.Color(51, 51, 51));
@@ -161,8 +159,7 @@ public class Inicio extends javax.swing.JFrame {
                 btnIniciarMouseExited(evt);
             }
         });
-        getContentPane().add(btnIniciar);
-        btnIniciar.setBounds(430, 160, 250, 43);
+        getContentPane().add(btnIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 166, 250, 43));
 
         btnSalir.setBackground(new java.awt.Color(153, 153, 153));
         btnSalir.setForeground(new java.awt.Color(51, 51, 51));
@@ -186,8 +183,7 @@ public class Inicio extends javax.swing.JFrame {
                 btnSalirMouseExited(evt);
             }
         });
-        getContentPane().add(btnSalir);
-        btnSalir.setBounds(430, 370, 250, 42);
+        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 395, 250, 42));
 
         btnAyuda.setBackground(new java.awt.Color(153, 153, 153));
         btnAyuda.setForeground(new java.awt.Color(51, 51, 51));
@@ -211,8 +207,7 @@ public class Inicio extends javax.swing.JFrame {
                 btnAyudaMouseExited(evt);
             }
         });
-        getContentPane().add(btnAyuda);
-        btnAyuda.setBounds(430, 300, 250, 45);
+        getContentPane().add(btnAyuda, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 322, 250, 45));
 
         btnConfiguracion.setBackground(new java.awt.Color(153, 153, 153));
         btnConfiguracion.setForeground(new java.awt.Color(51, 51, 51));
@@ -236,20 +231,45 @@ public class Inicio extends javax.swing.JFrame {
                 btnConfiguracionMouseExited(evt);
             }
         });
-        getContentPane().add(btnConfiguracion);
-        btnConfiguracion.setBounds(430, 230, 250, 47);
+        getContentPane().add(btnConfiguracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 243, 250, 47));
 
-        jButton2.setText("jButton1");
-        jButton2.setBorder(null);
-        jButton2.setBorderPainted(false);
-        jButton2.setDefaultCapable(false);
-        jButton2.setFocusable(false);
-        jButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jButton2.setName(""); // NOI18N
-        jButton2.setRolloverEnabled(true);
-        jButton2.setVerifyInputWhenFocusTarget(false);
-        getContentPane().add(jButton2);
-        jButton2.setBounds(1069, 509, 37, 29);
+        BtnCreditos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Creditos.png"))); // NOI18N
+        BtnCreditos.setBorder(null);
+        BtnCreditos.setBorderPainted(false);
+        BtnCreditos.setContentAreaFilled(false);
+        BtnCreditos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnCreditos.setDefaultCapable(false);
+        BtnCreditos.setFocusPainted(false);
+        BtnCreditos.setFocusable(false);
+        BtnCreditos.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnCreditos.setName(""); // NOI18N
+        BtnCreditos.setRolloverEnabled(true);
+        BtnCreditos.setVerifyInputWhenFocusTarget(false);
+        BtnCreditos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                BtnCreditosMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                BtnCreditosMouseExited(evt);
+            }
+        });
+        getContentPane().add(BtnCreditos, new org.netbeans.lib.awtextra.AbsoluteConstraints(891, 486, -1, -1));
+
+        lblCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Close.png"))); // NOI18N
+        lblCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCerrarMouseClicked(evt);
+            }
+        });
+        getContentPane().add(lblCerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(915, 6, -1, -1));
+
+        lblCreditos.setForeground(new java.awt.Color(255, 255, 255));
+        lblCreditos.setText("Creditos");
+        getContentPane().add(lblCreditos, new org.netbeans.lib.awtextra.AbsoluteConstraints(861, 464, 70, -1));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/SpaceChemistry.png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 6, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
@@ -312,6 +332,18 @@ public class Inicio extends javax.swing.JFrame {
         btnConfiguracion.setForeground(LetrasGris);
     }//GEN-LAST:event_btnConfiguracionMouseExited
 
+    private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_lblCerrarMouseClicked
+
+    private void BtnCreditosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseEntered
+        lblCreditos.setVisible(true);
+    }//GEN-LAST:event_BtnCreditosMouseEntered
+
+    private void BtnCreditosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseExited
+        lblCreditos.setVisible(false);
+    }//GEN-LAST:event_BtnCreditosMouseExited
+
     /**
      * @param args the command line arguments
      */
@@ -358,12 +390,13 @@ public class Inicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnCreditos;
     private javax.swing.JButton btnAyuda;
     private javax.swing.JButton btnConfiguracion;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblCerrar;
+    private javax.swing.JLabel lblCreditos;
     // End of variables declaration//GEN-END:variables
 }

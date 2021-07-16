@@ -21,7 +21,7 @@ public class Ship extends ControlledGameObject {
     Image me2 = me.getScaledInstance(50, 55, Image.SCALE_SMOOTH);
     ImageIcon ship = new ImageIcon(me2);
     
-    ImageIcon bonusEnemy = new ImageIcon(getClass().getResource("/Imagenes/bonusEnemySkin.gif"));
+    ImageIcon bonusEnemy = new ImageIcon(getClass().getResource("/Imagenes/Meteorito.gif"));
     ImageIcon lifeCounterShip = new ImageIcon(getClass().getResource("/Imagenes/shipSkinSmall.gif"));
 
     
