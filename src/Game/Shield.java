@@ -44,13 +44,13 @@ public class Shield extends GameObject {
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(this.getXPosition(), this.getYPosition(), 90, 10);
+        g.fillRect(this.getXPosition(), this.getYPosition(), this.width, this.height);
     }
 
     // Used to get the hit box of a shield object
     @Override
     public Rectangle getBounds() {
-        Rectangle shieldHitbox = new Rectangle(this.getXPosition(), this.getYPosition(), 90, 10);
+        Rectangle shieldHitbox = new Rectangle(this.getXPosition(), this.getYPosition(), this.width, 10);
         return shieldHitbox;
     }
 }

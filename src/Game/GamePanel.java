@@ -122,13 +122,10 @@ public class GamePanel extends JPanel {
                 // 5 Columnas
                 for (int column = 0; column < 5; column++) {
                     //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                    enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (1 * level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                    enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), 5, 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
                     enemyList.add(enemy);
                 }
             }
-        }
-        else if(level > 15){
-            
         }
         else{
             // Establece enemigo para los niveles de jefe
@@ -148,13 +145,13 @@ public class GamePanel extends JPanel {
         for (int column = 0; column < numberOfLives; column++) {
             singleLife = new Ship(48 + (column * 20), 10, Color.WHITE, null);
             lifeList.add(singleLife);
-        }
+         }
 
         //Establece los valores para 3 filas y 3 columnas de escudos.
         for (int row = 0;
                 row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                shield = new Shield(100 + (column * 250), 550 - (row * 10), 70, 10, Color.RED);
+                shield = new Shield(100 + (column * 333), 500 - (row * 10), 150, 10, Color.RED);
                 shieldList.add(shield);
             }
         }
@@ -176,7 +173,7 @@ public class GamePanel extends JPanel {
         if (bullet != null) {
             if (hitMarker) {
                 g.setColor(Color.WHITE);
-                if (level != 3 && level != 6 && level != 9 && level != 12 && level != 15) {
+                if (level%3 != 0) {
                     g.drawString("+ 100", markerX + 20, markerY -= 1);
                 } else {
                     g.drawString("- 1", markerX + 75, markerY += 1);
@@ -215,7 +212,7 @@ public class GamePanel extends JPanel {
         }
 
         // Genera rayos aleatorios disparados por enemigos.
-        if (level != 3 && level != 6 && level != 9 && level != 12 && level != 15) {
+        if (level%3 != 0) {
             if (newBeamCanFire) {
                 for (int index = 0; index < enemyList.size(); index++) {
                     if (randomDisparosE.nextInt(30) == index) {
@@ -228,7 +225,7 @@ public class GamePanel extends JPanel {
             }
         }
         // Genera vigas a un ritmo más rápido para el jefe.
-        if (level == 3 || level == 6 || level == 9 || level == 12 || level == 15) {
+        if (level%3 == 0) {
             if (newBeamCanFire) {
                 for (int index = 0; index < enemyList.size(); index++) {
                     if (randomDisparosE.nextInt(5) == index) {
@@ -280,7 +277,7 @@ public class GamePanel extends JPanel {
         g.drawString("Highscore: " + highScore, 440, 20);
 
         // Dibuja una pantalla de salud para el nivel de jefe
-        if (level == 3 || level == 6 || level == 9 || level == 12 || level == 15) {
+        if (level%3 == 0) {
             g.setColor(Color.WHITE);
             g.drawString("Boss Health: " + bossHealth, 500, 600);
         }
@@ -368,7 +365,7 @@ public class GamePanel extends JPanel {
                     bullet = new Bullet(0, 0, 0, null);
                     newBulletCanFire = true;
                     // Puntaje de actualizaciones para niveles normales
-                    if (level != 3 && level != 6 && level != 9 && level != 12 && level != 15) {
+                    if (level%3 != 0) {
                         score += 100;
                         hitMarker = true;
                         markerX = enemyList.get(index).getXPosition(); // Gets positions that the "+ 100" spawns off of
@@ -377,7 +374,7 @@ public class GamePanel extends JPanel {
 
                     }
                     // Actualiza la puntuación para los niveles de jefe.
-                    if (level == 3 || level == 6 || level == 9 || level == 12 || level == 15) {
+                    if (level%3 == 0) {
                         hitMarker = true;
                         markerX = enemyList.get(index).getXPosition(); // Gets positions that the "- 1" spawns off of
                         markerY = enemyList.get(index).getYPosition() + 165;
@@ -449,7 +446,7 @@ public class GamePanel extends JPanel {
         }
 
         // Mueve rayos en niveles normales
-        if (level != 3 && level != 6 && level != 9 && level != 12 && level != 15) {
+        if (level%3 != 0) {
             if (beam != null) {
                 for (int index = 0; index < beamList.size(); index++) {
                     beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (4));
@@ -460,10 +457,10 @@ public class GamePanel extends JPanel {
             }
         }
         // Mueve rayos a una velocidad más rápida para el jefe
-        if (level == 3 || level == 6 || level == 9 || level == 12 || level == 15) {
+        if (level%3 == 0) {
             if (beam != null) {
                 for (int index = 0; index < beamList.size(); index++) {
-                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (3 * level)); // La velocidad del rayo del jefe aumentará en cada nivel
+                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (5)); // La velocidad del rayo del jefe aumentará en cada nivel
                     if (beamList.get(index).getYPosition() > 800) {
                         beamList.remove(index);
                     }
