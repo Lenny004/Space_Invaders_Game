@@ -246,6 +246,9 @@ public class Inicio extends javax.swing.JFrame {
         BtnCreditos.setRolloverEnabled(true);
         BtnCreditos.setVerifyInputWhenFocusTarget(false);
         BtnCreditos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BtnCreditosMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 BtnCreditosMouseEntered(evt);
             }
@@ -314,7 +317,7 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAyudaMouseExited
 
     private void btnSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseClicked
-        // TODO add your handling code here:
+        System.exit(0);
     }//GEN-LAST:event_btnSalirMouseClicked
 
     private void btnSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalirMouseEntered
@@ -343,6 +346,12 @@ public class Inicio extends javax.swing.JFrame {
     private void BtnCreditosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseExited
         lblCreditos.setVisible(false);
     }//GEN-LAST:event_BtnCreditosMouseExited
+
+    private void BtnCreditosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseClicked
+        this.dispose();
+        Créditos credi = new Créditos();
+        credi.setVisible(true);
+    }//GEN-LAST:event_BtnCreditosMouseClicked
 
     /**
      * @param args the command line arguments
