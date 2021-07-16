@@ -43,8 +43,8 @@ public class GamePanel extends JPanel {
     // Iniciar contadores
     Random randomDisparosE = new Random();
     private int score = 0;
-    private int level = 14;
-    private int numberOfLives = 3;
+    private int level = 15;
+     private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
     private static int bossHealth = 30;
@@ -122,7 +122,7 @@ public class GamePanel extends JPanel {
                 // 5 Columnas
                 for (int column = 0; column < 5; column++) {
                     //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                    enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), 5, 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                    enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (1*level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
                     enemyList.add(enemy);
                 }
             }
@@ -130,7 +130,8 @@ public class GamePanel extends JPanel {
         else{
             // Establece enemigo para los niveles de jefe
             AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
-            enemy = new Enemy(20, 20, 3, 0, 100, null, 150, 150, level);
+            //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+            enemy = new Enemy(20, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
             enemyList.add(enemy);
         }
         
