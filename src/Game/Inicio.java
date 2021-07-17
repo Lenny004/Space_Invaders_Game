@@ -243,7 +243,6 @@ public class Inicio extends javax.swing.JFrame {
         BtnCreditos.setFocusable(false);
         BtnCreditos.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnCreditos.setName(""); // NOI18N
-        BtnCreditos.setRolloverEnabled(true);
         BtnCreditos.setVerifyInputWhenFocusTarget(false);
         BtnCreditos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

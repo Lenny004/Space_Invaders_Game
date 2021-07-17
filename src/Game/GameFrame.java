@@ -56,22 +56,6 @@ public class GameFrame extends JFrame{
                 new GameFrame().setVisible(true);
             }
         });
-         
-        int Nivel = 1;
         
-        if(Nivel < 3){
-            AudioPlayer.player.start(Nivel1Audio);
-        }
-        if(Nivel == 3){
-            AudioPlayer.player.stop(Nivel1Audio);
-        }
-        try{
-            //LA MUSICA DE NIVELES Y JEFES
-            Nivel1SoundInput = new FileInputStream(Nivel1);
-            Nivel1Audio = new AudioStream(Nivel1SoundInput);
-        }
-        catch(IOException e){
-        
-        }
     }
 }

@@ -45,7 +45,7 @@ public class GamePanel extends JPanel {
     // Iniciar contadores
     Random randomDisparosE = new Random();
     private int score = 0;
-    private int level = 14;
+    private int level = 1;
     private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
@@ -122,6 +122,16 @@ public class GamePanel extends JPanel {
 
     public final void ConfigurarJuego() {
         // Establece enemigos para niveles normales
+        
+        try{
+            Nivel1SoundInput = new FileInputStream(Nivel1);
+            Nivel1Audio = new AudioStream(Nivel1SoundInput);
+            AudioPlayer.player.start(Nivel1Audio);
+        }
+        catch(Exception e){
+            System.out.println("Error");
+        }
+        
         if (level%3 != 0) {
             // 6 Filas
             for (int row = 0; row < 6; row++) {
