@@ -15,6 +15,7 @@ public class Beam extends MovingGameObject {
     // Los enemigos disparan rayos
     // constructor para viga
     public Beam(int xPosition, int yPosition, int diameter, Color color) {
+        //Llamando a la Clase Padre MovingGameObject
         super(xPosition, yPosition, 0, 0, color);
     }
     

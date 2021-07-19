@@ -5,14 +5,15 @@ import java.awt.Color;
 
 /**
  *
- * @author Spartan Tech
+ * @author Lenny, Cesar, Arístides, Miguel
  */
 public abstract class MovingGameObject extends GameObject implements Moveable{
     
     int xVel;
     int yVel;
     
-    // Constructor for any non controllable object
+    // Constructor para cualquier objeto no controlable
+    // Super hace referencia al Constructor padre GameObject
     public MovingGameObject(int xPosition, int yPosition, int xVelocity, int yVelocity, Color color)
     {
         super(xPosition, yPosition, color);
@@ -21,7 +22,7 @@ public abstract class MovingGameObject extends GameObject implements Moveable{
     
     }
     
-    // Accessors and mutators for every part of the MovingGameObject constructor
+    // Accesores y mutadores para cada parte del constructor MovingGameObject
     public int getXVelocity()
     {
         return xVel;
@@ -39,12 +40,10 @@ public abstract class MovingGameObject extends GameObject implements Moveable{
         this.yVel = yVelocity;
     }
     @Override
-    
-    // Used to move non controllable objects
+    // Se usa para mover objetos no controlables
     public void move()
     {
         this.xPos += xVel;
         this.yPos += yVel;
     }
-    
 }

@@ -14,6 +14,8 @@ public abstract class ControlledGameObject extends GameObject implements Moveabl
     // Constructor para cualquier objeto controlable
     public ControlledGameObject(int xPosition, int yPosition, Color color, KeyboardController control)
     {
+        //Constructor padre GameObject
+        //Esta clase es una hija de GameObject
         super(xPosition, yPosition, color);
         this.control = control;
     }

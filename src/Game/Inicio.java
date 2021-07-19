@@ -46,7 +46,7 @@ public class Inicio extends javax.swing.JFrame {
         btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnSalir.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         
-        
+        //Forma rectangular de los botones
         ShapedButtonUI squareUI = new ShapedButtonUI();
         squareUI.setShape(ButtonShape.SQUARE, btnIniciar);
         btnIniciar.setUI(squareUI);
@@ -60,6 +60,9 @@ public class Inicio extends javax.swing.JFrame {
         squareUI.setShape(ButtonShape.SQUARE, btnSalir);
         btnSalir.setUI(squareUI);
         btnSalir.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, BtnCreditos);
+        BtnCreditos.setUI(squareUI);
+        BtnCreditos.setPreferredSize(new Dimension(100, 100));
         
         /*Utilizamos new ImageIcon(URL location).getImage() donde el argumento
         *location lo obtenemos a través del método getClass().getResource(String name)
@@ -70,7 +73,7 @@ public class Inicio extends javax.swing.JFrame {
     }
     
     /**
-    * Definimos tres posibles formas para los botones
+    * Definimos la forma cuadrada
     */
     public enum ButtonShape {
         SQUARE
@@ -130,12 +133,9 @@ public class Inicio extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(950, 525));
         setMinimumSize(new java.awt.Dimension(950, 525));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(950, 525));
         setSize(new java.awt.Dimension(950, 525));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnIniciar.setBackground(new java.awt.Color(153, 153, 153));
         btnIniciar.setForeground(new java.awt.Color(51, 51, 51));
@@ -159,7 +159,6 @@ public class Inicio extends javax.swing.JFrame {
                 btnIniciarMouseExited(evt);
             }
         });
-        getContentPane().add(btnIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 166, 250, 43));
 
         btnSalir.setBackground(new java.awt.Color(153, 153, 153));
         btnSalir.setForeground(new java.awt.Color(51, 51, 51));
@@ -183,7 +182,6 @@ public class Inicio extends javax.swing.JFrame {
                 btnSalirMouseExited(evt);
             }
         });
-        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 395, 250, 42));
 
         btnAyuda.setBackground(new java.awt.Color(153, 153, 153));
         btnAyuda.setForeground(new java.awt.Color(51, 51, 51));
@@ -207,7 +205,6 @@ public class Inicio extends javax.swing.JFrame {
                 btnAyudaMouseExited(evt);
             }
         });
-        getContentPane().add(btnAyuda, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 322, 250, 45));
 
         btnConfiguracion.setBackground(new java.awt.Color(153, 153, 153));
         btnConfiguracion.setForeground(new java.awt.Color(51, 51, 51));
@@ -231,12 +228,11 @@ public class Inicio extends javax.swing.JFrame {
                 btnConfiguracionMouseExited(evt);
             }
         });
-        getContentPane().add(btnConfiguracion, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 243, 250, 47));
 
+        BtnCreditos.setBackground(new java.awt.Color(0, 102, 255));
         BtnCreditos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Creditos.png"))); // NOI18N
         BtnCreditos.setBorder(null);
         BtnCreditos.setBorderPainted(false);
-        BtnCreditos.setContentAreaFilled(false);
         BtnCreditos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         BtnCreditos.setDefaultCapable(false);
         BtnCreditos.setFocusPainted(false);
@@ -255,7 +251,6 @@ public class Inicio extends javax.swing.JFrame {
                 BtnCreditosMouseExited(evt);
             }
         });
-        getContentPane().add(BtnCreditos, new org.netbeans.lib.awtextra.AbsoluteConstraints(891, 486, -1, -1));
 
         lblCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Close.png"))); // NOI18N
         lblCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -264,14 +259,60 @@ public class Inicio extends javax.swing.JFrame {
                 lblCerrarMouseClicked(evt);
             }
         });
-        getContentPane().add(lblCerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(915, 6, -1, -1));
 
-        lblCreditos.setForeground(new java.awt.Color(255, 255, 255));
+        lblCreditos.setForeground(new java.awt.Color(0, 255, 255));
         lblCreditos.setText("Creditos");
-        getContentPane().add(lblCreditos, new org.netbeans.lib.awtextra.AbsoluteConstraints(861, 464, 70, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/SpaceChemistry.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(373, 6, -1, -1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
+                .addComponent(jLabel1)
+                .addGap(292, 292, 292)
+                .addComponent(lblCerrar))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
+                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
+                .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
+                .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(870, 870, 870)
+                .addComponent(lblCreditos, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(900, 900, 900)
+                .addComponent(BtnCreditos))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(lblCerrar))
+                .addGap(30, 30, 30)
+                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(lblCreditos)
+                .addGap(14, 14, 14)
+                .addComponent(BtnCreditos))
+        );
 
         pack();
         setLocationRelativeTo(null);
@@ -293,7 +334,9 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarMouseExited
 
     private void btnConfiguracionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfiguracionMouseClicked
-
+        this.dispose();
+        Configuracion confi = new Configuracion();
+        confi.setVisible(true);
     }//GEN-LAST:event_btnConfiguracionMouseClicked
 
     private void btnConfiguracionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfiguracionMouseEntered
@@ -348,7 +391,7 @@ public class Inicio extends javax.swing.JFrame {
 
     private void BtnCreditosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseClicked
         this.dispose();
-        Créditos credi = new Créditos();
+        Creditos credi = new Creditos();
         credi.setVisible(true);
     }//GEN-LAST:event_BtnCreditosMouseClicked
 
@@ -377,6 +420,7 @@ public class Inicio extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Inicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

@@ -27,6 +27,14 @@ public class Ship extends ControlledGameObject {
     
     // Constructor para todos los objetos de la nave
     public Ship(int xPosition, int yPosition, Color color, KeyboardController control) {
+        // La palabra reservada super en java se usa para acceder a los atributos 
+        // y métodos de una clase padre, esta palabra va ligada a la herencia en java.
+        // todos los constructores llaman por defecto al constructor de la clase superior
+        // a través de una llamada a super() (en este caso al constructor por defecto). 
+        // Esto es debido a que los constructores no se heredan entre jerarquías de clases.
+        
+        //Constructor padre ControlledGameObject
+        //Esta clase es una hija de ControlledGameObject
         super(xPosition, yPosition, color, control);
     }
 

@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  */
 public class Bullet extends MovingGameObject {
 
-    // My player ship shoots bullets!
+    // ¡Mi nave de jugador dispara balas!
     int diameter;
     int yVelocity;
 
@@ -33,7 +33,6 @@ public class Bullet extends MovingGameObject {
     public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(this.getXPosition(), this.getYPosition(), 5, 20);
-
     }
 
     @Override

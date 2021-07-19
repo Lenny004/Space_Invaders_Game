@@ -17,6 +17,7 @@ public abstract class GameObject implements Drawable {
     public GameObject(){};
     
     // Constructor para cualquier Gameobject
+    //Constructor padre GameObject
     public GameObject(int xPosition, int yPosition, Color color) {
         this.xPos = xPosition;
         this.yPos = yPosition;
@@ -58,7 +59,7 @@ public abstract class GameObject implements Drawable {
     // Comprueba si los hitboxes de dos objetos cualesquiera se cruzan 
     public boolean Colisionando(GameObject Otro) {
         //".intersects" Es un método que sirve para detectar si la imagen recibe una colisión usando los puntos de localización
-        //Retorna true si detecta que dos imagenes colisionan
+        // Retorna true si detecta que dos imagenes colisionan
         estaColisionando = Otro.getBounds().intersects(this.getBounds());
         return estaColisionando;
     }
