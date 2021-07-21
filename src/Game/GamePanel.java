@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,8 +29,8 @@ import sun.audio.AudioStream;
  *
  * @author Lenny, Cesar, Arítides. Miguel
  */
+
 public class GamePanel extends JPanel {
-    
     // Componentes necesarios. ¡No quitar! 
     private Timer gameTimer;
     //
@@ -85,24 +87,6 @@ public class GamePanel extends JPanel {
     private File bonusSound = new File("src/Sonidos/bonusSound.wav");
     private File damageSound = new File("src/Sonidos/damageSound.wav");
     
-    // Se agregaron archivos de audio para niveles normales y Jefes
-    //Nivel 1 y 2 con jefe 1
-    private File Nivel = new File("src/Sonidos/Nivel1.wav");
-    private File Nivel1Boss = new File("src/Sonidos/Nivel1Boss.wav");
-    //Nivel 4 y 5 con jefe 2
-    private File Nivel2 = new File("src/Sonidos/Nivel2.wav");
-    private File Nivel2Boss = new File("src/Sonidos/Nivel2Boss.wav");
-    //Nivel 7 y 8 con jefe 3
-    private File Nivel3 = new File("src/Sonidos/Nivel3.wav");
-    private File Nivel3Boss = new File("src/Sonidos/Nivel3Boss.wav");
-    //Nivel 10 y 11 con jefe 4
-    private File Nivel4 = new File("src/Sonidos/Nivel4.wav");
-    private File Nivel4Boss = new File("src/Sonidos/Nivel4Boss.wav");
-    //Nivel 12 y 13 con jefe 5
-    private File Nivel5 = new File("src/Sonidos/Nivel5.wav");
-    private File Nivel5Boss = new File("src/Sonidos/Nivel5Boss.wav");
-    
-    
     private AudioStream beamSoundAudio;
     private InputStream beamSoundInput;
     private AudioStream bulletSoundAudio;
@@ -123,16 +107,13 @@ public class GamePanel extends JPanel {
     private InputStream damageSoundInput;
     
     //Musica de niveles 
-    //Nivel 1 y 2 con Jefe 1
-    private AudioStream NivelAudio;
-    private InputStream NivelSoundInput;
-    private AudioStream Nivel1BossAudio;
-    private InputStream Nivel1BossSoundInput;
-    //Nivel 4 y 5 con Jefe 1
-    private AudioStream Nivel2Audio;
-    private InputStream Nivel2SoundInput;
-    private AudioStream Nivel2BossAudio;
-    private InputStream Nivel2BossSoundInput;
+    private File Musica;
+    private InputStream MusicaInput;
+    private AudioStream MusicaAudio;
+    
+    
+    //Parametro de dificultad
+    Configuracion Dificultad = new Configuracion(); //Creamos objeto de la Clase Configuración (La dificultad del juego)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Metodos extra
@@ -149,15 +130,13 @@ public class GamePanel extends JPanel {
         // Establece enemigos para niveles normales
         
         //Llamamos al método que reproduce la música po nivel
-        try{
-            //Si novel es < a 1 es Igual a 0, Todos los multiplos de 3 donde se encontraran los Jefes
-            //
-            if(level%3 <= 1){
-                MusicaLevel();
-            }
+        if(level%3 <= 1){
+            MusicaLevel();
         }
-        catch(Exception e){
-            System.out.println("Error");
+        
+        // El juego se pausa y muestra un menú
+        if (controladores.getKeyStatus(VK_ESCAPE)) { //VK_ESCAPE(ESC) es la tecla escape del teclado
+            
         }
         
         //Validamos si el nivel es diferente de divisor de 3, que serían los normales
@@ -166,22 +145,63 @@ public class GamePanel extends JPanel {
             for (int row = 0; row < 6; row++) {
                 // 5 Columnas
                 for (int column = 0; column < 5; column++) {
-                    //Parametro de dificultad
-                    Configuracion Dificultad = new Configuracion(); //Creamos objeto de la Clase Configuración (La dificultad del juego)
-                    System.out.println(Dificultad.TipoDificultad);
-                    //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                    enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (1*(level / Dificultad.TipoDificultad)), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
-                    enemyList.add(enemy);
+                    switch(Dificultad.getTipoDificultad()){
+                        case 1://Dificil
+                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                                enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (1*level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                                enemyList.add(enemy);
+                            break;
+                        case 2://Medio
+                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                                enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (4), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                                enemyList.add(enemy);
+                            break;
+                        case 3://Fácil
+                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                                enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (2  ), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                                enemyList.add(enemy);
+                            break;
+                        default:
+                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                                enemy = new Enemy((20 + (row * 100)), (20 + (column * 60)), (1*level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
+                                enemyList.add(enemy);
+                            break;
+                    }
                 }
             }
         }
         // Sino si son divisores de 3, es el nivel del jefe
         else{
-            // Establece enemigo para los niveles de jefe
-            AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
-            //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-            enemy = new Enemy(20, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
-            enemyList.add(enemy);
+            switch(Dificultad.getTipoDificultad()){
+                case 1://Dificil
+                        // Establece enemigo para los niveles de jefe
+                        AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
+                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                        enemy = new Enemy(20, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
+                        enemyList.add(enemy);
+                    break;
+                case 2://Medio
+                        // Establece enemigo para los niveles de jefe
+                        AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
+                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                        enemy = new Enemy(20, 20, (2 * (level / 3)), 0, 100, null, 150, 150, level);
+                        enemyList.add(enemy);
+                    break;
+                case 3://Facil
+                        // Establece enemigo para los niveles de jefe
+                        AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
+                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                        enemy = new Enemy(20, 20, (1 * (level / 3)), 0, 100, null, 150, 150, level);
+                        enemyList.add(enemy);
+                    break;
+                default://Dificil
+                        // Establece enemigo para los niveles de jefe
+                        AudioPlayer.player.start(bossSoundAudio); // Reproduce el rugido del jefe
+                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
+                        enemy = new Enemy(20, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
+                        enemyList.add(enemy);
+                    break;
+            }
         }
         
         // Restablece todos los movimientos del controlador con "resetController"
@@ -209,48 +229,26 @@ public class GamePanel extends JPanel {
     
     //Método para música en cada nivel
     public void MusicaLevel(){
-        if (level == 1){
-            try{
-                NivelSoundInput = new FileInputStream(Nivel);
-                NivelAudio = new AudioStream(NivelSoundInput);
-                AudioPlayer.player.start(NivelAudio);
-            }
-            catch(Exception e){
-                
-            }
-        }
-        if (level == 3){
-            try{ 
-                AudioPlayer.player.stop(NivelAudio);
-                Nivel1BossSoundInput = new FileInputStream(Nivel1Boss);
-                Nivel1BossAudio = new AudioStream(Nivel1BossSoundInput);
-                AudioPlayer.player.start(Nivel1BossAudio);
-            }
-            catch(Exception e){
-                
-            }
-        }
-        if (level == 4){
-            try{
-                AudioPlayer.player.stop(Nivel1BossAudio);
-                Nivel2SoundInput = new FileInputStream(Nivel2);
-                Nivel2Audio = new AudioStream(Nivel2SoundInput);
-                AudioPlayer.player.start(Nivel2Audio);
-            }
-            catch(Exception e){
+        try{
+            //detiene la musica anterior
+            if(level != 1) AudioPlayer.player.stop(MusicaAudio);
 
-            }
+            //Saca la música a poner
+            String NombreArchivo = "Nivel";
+            NombreArchivo+= Integer.toString( (level-1)/3 + 1 );
+            if(level%3 == 0) NombreArchivo+= "Boss";
+    
+            
+            Musica = new File("src/Sonidos/" + NombreArchivo + ".wav");
+            MusicaInput = new FileInputStream(Musica);
+            MusicaAudio = new AudioStream(MusicaInput);
+            
+            //pone la musica
+            AudioPlayer.player.start(MusicaAudio);
+
         }
-        if(level == 6){
-            try{ 
-                AudioPlayer.player.stop(Nivel2Audio);
-                Nivel2BossSoundInput = new FileInputStream(Nivel2Boss);
-                Nivel2BossAudio = new AudioStream(Nivel2BossSoundInput);
-                AudioPlayer.player.start(Nivel2BossAudio);
-            }
-            catch(Exception e){
-                
-            }
+        catch(Exception e){
+            System.out.println("Error: no se pudo encontrar el archivo de música ");
         }
     }
     
@@ -303,6 +301,7 @@ public class GamePanel extends JPanel {
                 newBulletCanFire = false;
             }
         }
+        
         // Si intenta sacar la bala después de presionar una tecla
         if (bullet != null) {
             bullet.draw(g);
@@ -325,19 +324,19 @@ public class GamePanel extends JPanel {
             }
         }
         
-        // Mueve rayos en niveles normales
+        // Mueve elementos en niveles normales
         if (level%3 != 0) {
             if (beam != null) {
                 for (int index = 0; index < ElementoList.size(); index++) {
                     ElementoList.get(index).setYPosition(ElementoList.get(index).getYPosition() + (4));
-                    if (ElementoList.get(index).getYPosition() > 800) {
+                    if (ElementoList.get(index).getYPosition() > 700) {
                         ElementoList.remove(index);
                     }
                 }
             }
         }
         
-        // Dibuja los rayos generados
+        // Dibuja los elementos generados
         for (int index = 0; index < ElementoList.size(); index++) {
             ElementoList.get(index).draw(g);
         }
@@ -513,7 +512,7 @@ public class GamePanel extends JPanel {
                         bossHealth -= 1;
                         if (bossHealth == 0) {
                             enemyList.remove(index);
-                            score += 9000;// Bonus score for defeating boss
+                            score += 9000;// Puntaje de bonificación por derrotar al jefe
                         }
                     }
                 }
@@ -570,7 +569,7 @@ public class GamePanel extends JPanel {
                         bullet = new Bullet(0, 0, 0, null);
                         newBulletCanFire = true;
                         newBonusEnemy = true;
-                        AudioPlayer.player.start(bonusSoundAudio); // Plays sound if player hits a bonus enemy
+                        AudioPlayer.player.start(bonusSoundAudio); // Reproduce sonido si el jugador golpea a un enemigo adicional
                         score += 5000; // agrega bonificación para anotar al golpear
                     }
                 }
@@ -638,8 +637,8 @@ public class GamePanel extends JPanel {
             //Se manda a llamar la Clase GameObject
             if (beamList.get(index).Colisionando(NaveJugador)) {
                 beamList.remove(index);
-                AudioPlayer.player.start(damageSoundAudio); // Plays damage sound
-                lifeList.remove(lifeList.size() - 1); // Removes life if hit by bullet
+                AudioPlayer.player.start(damageSoundAudio); // Reproduce sonido de daño
+                lifeList.remove(lifeList.size() - 1); // Elimina la vida si es alcanzado por una bala
             }
         }
 
@@ -657,14 +656,14 @@ public class GamePanel extends JPanel {
                 }
             }
             // Si los extraterrestres superan esta posición X, restableces el nivel y pierdes una vida.
-            if (enemyList.get(input).getYPosition() + 50 >= 675) {
+            if (enemyList.get(input).getYPosition() + 50 >= 600) {
                 enemyList.clear();
                 shieldList.clear();
                 lifeList.clear();
                 beamList.clear();
                 bossHealth = 30;
                 numberOfLives -= 1;
-                AudioPlayer.player.start(deathSoundAudio); // Plays death sound when enemies reach bottom
+                AudioPlayer.player.start(deathSoundAudio); // Reproduce un sonido de muerte cuando los enemigos llegan al fondo
                 ConfigurarJuego();
             }
         }
@@ -698,10 +697,7 @@ public class GamePanel extends JPanel {
             }
             // Si eligen no volver a jugar, se cierra el juego.
             if (respuesta == 1) {
-//                GameFrame game = new GameFrame();
-//                game.dispose();
-//                GameOver Fin = new GameOver();
-//                Fin.setVisible(true);
+                gameTimer.stop();
             }
         }
         

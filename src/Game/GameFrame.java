@@ -17,7 +17,9 @@ import sun.audio.AudioStream;
  * @author Lenny, César, Miguel, Arístides
  */
 public class GameFrame extends JFrame{
+    
     private GamePanel game;
+    
     //Creando objeto de la clase
     private static File Nivel1 = new File("src/Sonidos/Nivel1.wav");    //Musica de niveles
     private static AudioStream Nivel1Audio;

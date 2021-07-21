@@ -25,6 +25,8 @@ import javax.swing.plaf.basic.BasicButtonUI;
  */
 public class GameOver extends javax.swing.JFrame {
 
+    
+    
     GamePanel game = new GamePanel();
     FondoGame1 fondo = new FondoGame1();
     Fuente TipoFuente = new Fuente();

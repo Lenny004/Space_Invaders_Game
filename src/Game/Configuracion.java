@@ -26,7 +26,14 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class Configuracion extends javax.swing.JFrame {
 
     //Parametro que se pasara a GAMEPANEL para cambiar dificultad
-    public int  TipoDificultad = 1;
+    public static int TipoDificultad;
+    
+    /**
+    * @return the TipoDificultad
+    */
+    public int getTipoDificultad() {
+        return TipoDificultad;
+    }
     
     FondoGame1 fondo = new FondoGame1();
     Fuente TipoFuente = new Fuente();
@@ -281,6 +288,7 @@ public class Configuracion extends javax.swing.JFrame {
                 .addGap(14, 14, 14))
         );
 
+        lblDificultad.setForeground(new java.awt.Color(255, 255, 255));
         lblDificultad.setText("La dificultad a cambiado a: ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -339,7 +347,7 @@ public class Configuracion extends javax.swing.JFrame {
 
     private void BtnFacilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnFacilMouseClicked
         this.TipoDificultad = 3;
-        System.out.println(TipoDificultad);
+        System.out.println(getTipoDificultad());
         lblDificultad.setText("La dificultad a cambiado a: Facil");
         lblDificultad.setVisible(true);
     }//GEN-LAST:event_BtnFacilMouseClicked
@@ -356,7 +364,7 @@ public class Configuracion extends javax.swing.JFrame {
 
     private void BtnMedioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMedioMouseClicked
         this.TipoDificultad = 2;
-        System.out.println(TipoDificultad);
+        System.out.println(getTipoDificultad());
         lblDificultad.setText("La dificultad a cambiado a: Medio");
         lblDificultad.setVisible(true);
     }//GEN-LAST:event_BtnMedioMouseClicked
@@ -373,7 +381,7 @@ public class Configuracion extends javax.swing.JFrame {
 
     private void BtnDificilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDificilMouseClicked
         this.TipoDificultad = 1;
-        System.out.println(TipoDificultad);
+        System.out.println(getTipoDificultad());
         lblDificultad.setText("La dificultad a cambiado a: Dificil");
         lblDificultad.setVisible(true);
     }//GEN-LAST:event_BtnDificilMouseClicked
