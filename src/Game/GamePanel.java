@@ -43,6 +43,7 @@ public class GamePanel extends JPanel {
     // Iniciar contadores
     Random randomDisparosE = new Random();
     Random randomElemento = new Random();
+    private int Contador=0;
     private int score = 0;
     private int level = 1;
     private int numberOfLives = 3;
@@ -290,6 +291,18 @@ public class GamePanel extends JPanel {
             
         }
         
+        if (controladores.getKeyStatus(32)){//(32) es la tecla espacio del teclado
+            try{
+                gameTimer.start();
+                if (Contador == 0){
+                    AudioPlayer.player.start(MusicaAudio);
+                    Contador = 1;
+                }
+            }
+            catch(Exception e){
+                
+            }
+        }
 
         // Dibuja una viñeta en la barra espaciadora presiona
         if (controladores.getKeyStatus(32)) { //KEYSTATUS(32) es la barra de espacio según el código ASCII
@@ -431,24 +444,13 @@ public class GamePanel extends JPanel {
         } catch (FileNotFoundException e) {
             
         }
-        if (controladores.getKeyStatus(32)){//VK_ESCAPE(ESC) es la tecla escape del teclado
-            try{
-                gameTimer.start();
-                AudioPlayer.player.start(MusicaAudio);
-            }
-            catch(Exception e){
-                
-            }
-        }
         
         if(controladores.getKeyStatus2(KeyEvent.VK_ESCAPE)){//VK_ESCAPE(ESC) es la tecla escape del teclado
             try{
                 MenuEmergente menu = new MenuEmergente();
                 menu.setVisible(true);
-                System.out.println("h");
                 gameTimer.stop();
-                
-                // Configura la visualización del contador de vida
+                AudioPlayer.player.stop(MusicaAudio);
             }
             catch(Exception e){
             }
