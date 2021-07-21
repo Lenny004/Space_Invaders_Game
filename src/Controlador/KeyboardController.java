@@ -6,11 +6,12 @@ import java.awt.event.KeyListener;
 
 /**
  *
- * @author Spartan Tech
+ * @author Lenny
  */
 public class KeyboardController implements KeyListener
 {
     private boolean[] keyStatus; 
+    private boolean valor;
     
     public KeyboardController()
     {
@@ -29,6 +30,18 @@ public class KeyboardController implements KeyListener
         }
     }
     
+        public boolean getKeyStatus2(int VK_ESCAPE)
+    {
+        if(VK_ESCAPE < 0 || VK_ESCAPE > 255)
+        {
+            return false; 
+        }
+        else
+        {
+            return keyStatus[VK_ESCAPE]; 
+        }
+    }
+        
     public void resetController()
     {
         //No existe codigo ASCII 256 así que dará false
@@ -49,5 +62,4 @@ public class KeyboardController implements KeyListener
     public void keyReleased(KeyEvent ke) {
         keyStatus[ke.getKeyCode()] = false; 
     }
-    
 }

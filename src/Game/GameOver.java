@@ -84,6 +84,12 @@ public class GameOver extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnTerminarMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnTerminarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnTerminarMouseExited(evt);
+            }
         });
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/GameOver.gif"))); // NOI18N
@@ -154,6 +160,14 @@ public class GameOver extends javax.swing.JFrame {
         Inicio menu = new Inicio();
         menu.setVisible(true);
     }//GEN-LAST:event_btnTerminarMouseClicked
+
+    private void btnTerminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTerminarMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTerminarMouseEntered
+
+    private void btnTerminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTerminarMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTerminarMouseExited
 
     /**
      * @param args the command line arguments

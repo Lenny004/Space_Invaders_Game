@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +32,7 @@ import sun.audio.AudioStream;
 public class GamePanel extends JPanel {
     // Componentes necesarios. ¡No quitar! 
     private Timer gameTimer;
+    private boolean ValorW= false;
     //
     private KeyboardController controladores;
     // Controla el tamaño de la ventana del juego y la velocidad de fotogramas. 
@@ -44,7 +44,7 @@ public class GamePanel extends JPanel {
     Random randomDisparosE = new Random();
     Random randomElemento = new Random();
     private int score = 0;
-    private int level = 14;
+    private int level = 1;
     private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
@@ -123,6 +123,7 @@ public class GamePanel extends JPanel {
         return bossHealth;
     }
     
+    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // CONFIGURAR JUEGO
 
@@ -132,11 +133,6 @@ public class GamePanel extends JPanel {
         //Llamamos al método que reproduce la música po nivel
         if(level%3 <= 1){
             MusicaLevel();
-        }
-        
-        // El juego se pausa y muestra un menú
-        if (controladores.getKeyStatus(VK_ESCAPE)) { //VK_ESCAPE(ESC) es la tecla escape del teclado
-            
         }
         
         //Validamos si el nivel es diferente de divisor de 3, que serían los normales
@@ -227,6 +223,7 @@ public class GamePanel extends JPanel {
         }
     }
     
+    
     //Método para música en cada nivel
     public void MusicaLevel(){
         try{
@@ -292,6 +289,7 @@ public class GamePanel extends JPanel {
         catch (IndexOutOfBoundsException e) {
             
         }
+        
 
         // Dibuja una viñeta en la barra espaciadora presiona
         if (controladores.getKeyStatus(32)) { //KEYSTATUS(32) es la barra de espacio según el código ASCII
@@ -431,11 +429,36 @@ public class GamePanel extends JPanel {
                 highScore = lineScan.nextInt();
             }
         } catch (FileNotFoundException e) {
+            
         }
+        if (controladores.getKeyStatus(32)){//VK_ESCAPE(ESC) es la tecla escape del teclado
+            try{
+                gameTimer.start();
+                AudioPlayer.player.start(MusicaAudio);
+            }
+            catch(Exception e){
+                
+            }
+        }
+        
+        if(controladores.getKeyStatus2(KeyEvent.VK_ESCAPE)){//VK_ESCAPE(ESC) es la tecla escape del teclado
+            try{
+                MenuEmergente menu = new MenuEmergente();
+                menu.setVisible(true);
+                System.out.println("h");
+                gameTimer.stop();
+                
+                // Configura la visualización del contador de vida
+            }
+            catch(Exception e){
+            }
+        }
+        
         // Agrega la opción para restablecer el puntaje alto
         if (controladores.getKeyStatus(82)) { // KEYSTATUS(82) es la tecla R según el código ASCII
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Te gustaría reiniciar el Highscore?", ":)", 0);
             //Llama a la Clase KeyboardController
+            
             controladores.resetController();
             if (respuesta == 0) {
                 try {
@@ -697,6 +720,10 @@ public class GamePanel extends JPanel {
             }
             // Si eligen no volver a jugar, se cierra el juego.
             if (respuesta == 1) {
+                GameOver fin = new GameOver();
+                fin.setVisible(true);
+                GameFrame juego = new GameFrame();
+                juego.dispose();
                 gameTimer.stop();
             }
         }
@@ -765,6 +792,7 @@ public class GamePanel extends JPanel {
       * agregar alguna funcionalidad.
     **/
     public void start() {
+        
         // Configure un nuevo temporizador para que se repita cada 20 milisegundos (50 FPS)
         gameTimer = new Timer(100 / Fotogramaporsegundo, new ActionListener() {
 

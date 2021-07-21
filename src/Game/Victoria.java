@@ -5,16 +5,21 @@
  */
 package Game;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
 /**
  *
  * @author lenny
  */
 public class Victoria extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Victoria
-     */
+    FondoGame fondo = new FondoGame();
+        
     public Victoria() {
+        this.setContentPane(fondo);
         initComponents();
     }
 
@@ -27,21 +32,47 @@ public class Victoria extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblCerrar = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1000, 675));
+        setMinimumSize(new java.awt.Dimension(1000, 675));
+        setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(1000, 675));
+        setSize(new java.awt.Dimension(1000, 675));
+
+        lblCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Close.png"))); // NOI18N
+        lblCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCerrarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(965, Short.MAX_VALUE)
+                .addComponent(lblCerrar)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblCerrar)
+                .addContainerGap(640, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_lblCerrarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -77,7 +108,18 @@ public class Victoria extends javax.swing.JFrame {
             }
         });
     }
+    
+    private class FondoGame extends JPanel {
+        public Image imagen;
+        public void paint(Graphics g) {
+            imagen = new ImageIcon(getClass().getResource("/Imagenes/Victory.gif")).getImage();
+            g.drawImage(imagen, 0, 0, getWidth(), getHeight(), this);
+            setOpaque(false);
+            super.paint(g);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lblCerrar;
     // End of variables declaration//GEN-END:variables
 }

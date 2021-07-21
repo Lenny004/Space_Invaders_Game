@@ -2,12 +2,14 @@ package Game;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
@@ -19,6 +21,7 @@ import sun.audio.AudioStream;
 public class GameFrame extends JFrame{
     
     private GamePanel game;
+    private int Contador = 0;
     
     //Creando objeto de la clase
     private static File Nivel1 = new File("src/Sonidos/Nivel1.wav");    //Musica de niveles
