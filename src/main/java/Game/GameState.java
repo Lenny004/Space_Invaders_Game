@@ -236,7 +236,7 @@ public class GameState {
         clearCombatLists();
         score = 0;
         level = 1;
-        bossHealth = 45;
+        bossHealth = GameBalance.BOSS_HEALTH;
         livesCount = 3;
         bulletLevel = 0;
         speedLevel = 0;

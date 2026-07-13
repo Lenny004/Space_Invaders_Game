@@ -38,6 +38,17 @@ public class MenuEmergente extends javax.swing.JFrame {
         */
         Image icon = new ImageIcon(getClass().getResource("/Imagenes/SpaceChemistryIcon.png")).getImage();
         setIconImage(icon);
+
+        setFocusable(true);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
+                    GameFrame.ReanudarJuego();
+                    dispose();
+                }
+            }
+        });
     }
 
     /**
@@ -54,7 +65,7 @@ public class MenuEmergente extends javax.swing.JFrame {
         btnAyuda = new javax.swing.JButton();
         lblReanudar = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
 
         lblCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Close.png"))); // NOI18N

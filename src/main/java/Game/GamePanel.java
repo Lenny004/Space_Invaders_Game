@@ -29,22 +29,10 @@ public class GamePanel extends JPanel {
     private Color RojoG = new Color(138,8,8);
     private Color Naranja = new Color (245, 80, 0);
     //
-    // Valores necesarios para validar POWER UPS
-    //POWER UP VELOCIDAD BALA
-    private static int ValorO = 0;
-    private static int ValorZ = 0;
-    private static int ValorT = 0;
-    private static int ValorU = 0;
-    private static int ValorW = 0;
-    private static int ValorF = 0;
-    //POWER UP VELOCIDAD
-    private static int ValorN = 0;
-    private static int ValorS = 0;
-    private static int ValorB = 0;
-    private static int ValorA = 0;
-    private static int ValorH = 0;
-    private static int ValorP = 0;
-    //
+    private final CraftingSystem.Flags craftFlags = new CraftingSystem.Flags();
+    private String craftFeedback;
+    private int craftFeedbackTicks;
+    private boolean pauseMenuOpen;
     private KeyboardController controladores;
     // Controla el tamaño de la ventana del juego y la velocidad de fotogramas. 
     private final int AnchoJuego = 1200;
@@ -60,7 +48,7 @@ public class GamePanel extends JPanel {
     private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
-    private int bossHealth = GameBalance.BOSS_HEALTH_INITIAL;
+    private int bossHealth = GameBalance.BOSS_HEALTH;
     private int[] CantidadElemento = new int[12];
     private final ScoreService scoreService = ScoreService.getInstance();
 
@@ -140,7 +128,12 @@ public class GamePanel extends JPanel {
     }
     
     public void ReanudarJuego(){
+        pauseMenuOpen = false;
+        if (controladores != null) {
+            controladores.resetController();
+        }
         gameLoop.resume();
+        requestFocusInWindow();
     }
 
     public void PausarJuego(){
@@ -168,6 +161,7 @@ public class GamePanel extends JPanel {
         }
 
         if (levelManager.isBossLevel(level)) {
+            bossHealth = GameBalance.BOSS_HEALTH;
             bossSoundAudio.play();
         }
 
@@ -271,31 +265,10 @@ public class GamePanel extends JPanel {
 //            }
 //        }
 
-        // Dibuja una viñeta en la barra espaciadora presiona
-        if (controladores.getKeyStatus(32)) {//KEYSTATUS(32) es la barra de espacio según el código ASCII
-            if (newBulletCanFire) {
-                newBeamCanFire = false;
-                bulletSoundAudio.play();
-                PowerUpBalas();
-            }
-        }
-        
         // Dibuja proyectiles del jugador
         for (Projectile projectile : projectiles) {
             if (projectile != null) {
                 projectile.draw(g);
-            }
-        }
-        
-        // Mueve elementos en niveles normales
-        if (level%3 != 0) {
-            if (beam != null) {
-                for (int index = 0; index < ElementoList.size(); index++) {
-                    ElementoList.get(index).setYPosition(ElementoList.get(index).getYPosition() + (GameBalance.ELEMENT_FALL_SPEED));
-                    if (ElementoList.get(index).getYPosition() > 600) {
-                        ElementoList.remove(index);
-                    }
-                }
             }
         }
         
@@ -312,195 +285,11 @@ public class GamePanel extends JPanel {
         for (int index = 0; index < bonusEnemyList.size(); index++) {
             bonusEnemyList.get(index).bonusDraw(g);
         }
-        
-        //Teclas Presionadas para generar elementos
-        //POWER UP BALAS NAVE
-        //H2O
-        if (controladores.getKeyStatus(79)) { //KEYSTATUS(79) es la O según el código ASCII
-            if(ValorO < 1){
-                if (CantidadElemento[5] >=2 && CantidadElemento[8] >=1 ){
-                    CantidadElemento[5] = CantidadElemento[5]-2;
-                    CantidadElemento[8]--;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("O", 500, 80);
-                    this.CantidadBalas = Math.max(CantidadBalas, 3);
-                    ValorO++;
-                }    
-            }  
-        }
-        
-        //Cu3Zn2
-        if (controladores.getKeyStatus(90)) { //KEYSTATUS(90) es la Z según el código ASCII
-            if(ValorZ < 1){
-                if (CantidadElemento[3] >=3 && CantidadElemento[11] >=2 ){
-                    CantidadElemento[3] = CantidadElemento[3]-3;
-                    CantidadElemento[11] = CantidadElemento[11]-2;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("Z", 500, 80);
-                     this.CantidadBalas = Math.max(CantidadBalas, 5);
-                    ValorZ++;
-                }  
-            }
-        }
-                
-        //C7H5N3O6
-        if (controladores.getKeyStatus(84)) { //KEYSTATUS(84) es la T según el código ASCII
-            if(ValorT < 1){
-                if (CantidadElemento[2] >=7 && CantidadElemento[5] >=5 && CantidadElemento[7] >=3 && CantidadElemento[8] >=6){
-                    CantidadElemento[2] = CantidadElemento[2]-7;
-                    CantidadElemento[5] = CantidadElemento[5]-5;
-                    CantidadElemento[7] = CantidadElemento[7]-3;
-                    CantidadElemento[8] = CantidadElemento[8]-6;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("T", 500, 80);
-                     this.CantidadBalas = Math.max(CantidadBalas, 6);
-                    ValorT++;
-                }  
-            }
-        }
-        
-        //U
-        if (controladores.getKeyStatus(85)) { //KEYSTATUS(85) es la U según el código ASCII
-            if(ValorU<1){
-                if (CantidadElemento[9] >=1 ){
-                    CantidadElemento[9]--;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("U", 500, 80);
-                     this.CantidadBalas = Math.max(CantidadBalas, 4);
-                    ValorU++;
-                }
-            }    
-        }
-        
-        //W
-        if (controladores.getKeyStatus(87)) { //KEYSTATUS(87) es la W según el código ASCII
-            if(ValorW<1){
-                if (CantidadElemento[10] >=1 ){
-                    CantidadElemento[10]--;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("W", 500, 80);
-                     this.CantidadBalas = Math.max(CantidadBalas, 2);
-                    ValorW++;
-                }  
-            }
-        }
-        
-        //Fe
-        if (controladores.getKeyStatus(70)) { //KEYSTATUS(70) es la F según el código ASCII
-            if(ValorF<1){
-                if (CantidadElemento[6] >=1 ){
-                    CantidadElemento[6]--;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("F", 500, 80);
-                     this.CantidadBalas = Math.max(CantidadBalas, 1);
-                    ValorF++;
-                }  
-            }
-        }
-        
-        
-        //POWER UP VELOCIDAD NAVE
-        //HNO3
-        if (controladores.getKeyStatus(78)) { //KEYSTATUS(78) es la N según el código ASCII
-            if(ValorN < 1){
-                if(CantidadElemento[5] >=1 && CantidadElemento[7] >=1 && CantidadElemento[8] >=3){
-                    CantidadElemento[5]--;
-                    CantidadElemento[7]--;
-                    CantidadElemento[8] = CantidadElemento[8]-3;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("N", 500, 80);
-                    this.Velocidad = 2;
-                    ValorN++;
-                    PowerUpVelocidad();
-                }
-            }
-        }
-        
-        //H2SO4 
-        if (controladores.getKeyStatus(83)) { //KEYSTATUS(83) es la S según el código ASCII
-            if(ValorS < 1){
-                if (CantidadElemento[5] >=2 && CantidadElemento[1] >=1 && CantidadElemento[8] >=4 ){
-                    CantidadElemento[5] = CantidadElemento[5]-2;
-                    CantidadElemento[1]--;
-                    CantidadElemento[8] = CantidadElemento[8]-4;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("S", 500, 80);
-                    this.Velocidad = 3;
-                    ValorS++;
-                    PowerUpVelocidad();
-                }  
-            }
-        }
-        
-        //C6H6
-        if (controladores.getKeyStatus(66)) { //KEYSTATUS(66) es la B según el código ASCII
-            if(ValorB < 1){
-                if (CantidadElemento[2] >=6 && CantidadElemento[5] >=6 ){
-                    CantidadElemento[2] = CantidadElemento[2]-6;
-                    CantidadElemento[5] = CantidadElemento[5]-6;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("B", 500, 80);
-                    this.Velocidad = 4;
-                    ValorB++;
-                    PowerUpVelocidad();
-                }  
-            }
-        }
-        
-        //C4H10   
-        if (controladores.getKeyStatus(65)) { //KEYSTATUS(65) es la A según el código ASCII
-            if(ValorA < 1){
-                if (CantidadElemento[2] >=4 && CantidadElemento[5] >=10){
-                    CantidadElemento[2] = CantidadElemento[2]-4;
-                    CantidadElemento[5] = CantidadElemento[5]-10;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("A", 500, 80);
-                    this.Velocidad = 6;
-                    ValorA++;
-                    PowerUpVelocidad();
-                }  
-            }
-        }
-        
-        //He
-        if (controladores.getKeyStatus(72)) { //KEYSTATUS(72) es la H según el código ASCII
-            if(ValorH<1){
-                if (CantidadElemento[4] >=1 ){
-                    CantidadElemento[4]--;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("H", 500, 80);
-                    this.Velocidad = 1;
-                    ValorH++;
-                    PowerUpVelocidad();
-                }  
-            }
-        }
-        
-        //C3H8
-        if (controladores.getKeyStatus(80)) { //KEYSTATUS(80) es la P según el código ASCII
-            if(ValorP < 1){
-                if (CantidadElemento[2] >=3 && CantidadElemento[5] >=8){
-                    CantidadElemento[2] = CantidadElemento[2]-3;
-                    CantidadElemento[5] = CantidadElemento[5]-8;
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
-                    g.drawString("P", 500, 80);
-                    this.Velocidad = 5;
-                    ValorP++;
-                    PowerUpVelocidad();
-                }  
-            }
+
+        if (craftFeedback != null && craftFeedbackTicks > 0) {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
+            g.drawString(craftFeedback, 500, 80);
         }
         
         g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 12));
@@ -713,7 +502,19 @@ public class GamePanel extends JPanel {
 // ACTUALIZAR ESTADO DEL JUEGO
     
     public void ActualizarEstadoJuego(int frameNumber) {
-        //MusicaLevel();
+        if (controladores == null) {
+            return;
+        }
+
+        handlePauseInput();
+        if (pauseMenuOpen || !gameLoop.isRunning()) {
+            return;
+        }
+
+        handlePlayerFire();
+        handleCrafting();
+        updateElementDrops();
+
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
         PowerUpVelocidad();
 
@@ -800,71 +601,8 @@ public class GamePanel extends JPanel {
             }
         }
 
-        // Mueve rayos en niveles normales
-        if (level%3 != 0) {
-            if (beam != null) {
-                for (int index = 0; index < beamList.size(); index++) {
-                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (GameBalance.NORMAL_BEAM_SPEED));
-                    if (beamList.get(index).getYPosition() > 800) {
-                        beamList.remove(index);
-                    }
-                }
-            }
-        }
-        // Mueve rayos a una velocidad más rápida para el jefe
-        if (level%3 == 0) {
-            if (beam != null) {
-                for (int index = 0; index < beamList.size(); index++) {
-                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (GameBalance.BOSS_BEAM_SPEED)); // La velocidad del rayo del jefe aumentará en cada nivel
-                    if (beamList.get(index).getYPosition() > 800) {
-                        beamList.remove(index);
-                    }
-                }
-            }
-        }
-
-        // Comprueba si hay colisiones entre haces y escudos
-        try {
-            for (int j = 0; j < shieldList.size(); j++) {
-                for (int index = 0; index < beamList.size(); index++) {
-                    // Se manda a llamar la Clase GameObject 
-                    if (beamList.get(index).Colisionando(shieldList.get(j))) {
-                        // FUERTE
-                        if (shieldList.get(j).getColor() == Color.RED) {
-                            shieldList.get(j).setColor(Color.ORANGE);
-                            shieldSoundAudio.play(); // Plays sound if shield takes damage
-                            beamList.remove(index);
-                        // BIEN
-                        } else if (shieldList.get(j).getColor() == Color.ORANGE) {
-                            shieldList.get(j).setColor(Color.YELLOW);
-                            shieldSoundAudio.play();
-                            beamList.remove(index);
-                        // OKAY
-                        } else if (shieldList.get(j).getColor() == Color.YELLOW) {
-                            shieldList.get(j).setColor(Color.WHITE);
-                            shieldSoundAudio.play();
-                            beamList.remove(index);
-                        // DEBIL, BREAKS ON HIT
-                        } else if (shieldList.get(j).getColor() == Color.WHITE) {
-                            shieldList.remove(j);
-                            shieldSoundAudio.play();
-                            beamList.remove(index);
-                        }
-                    }
-                }
-            }
-        } catch (IndexOutOfBoundsException e) {
-        }
-
-        // Comprueba si hay colisiones entre balas y jugadores
-        for (int index = 0; index < beamList.size(); index++) {
-            //Se manda a llamar la Clase GameObject
-            if (beamList.get(index).Colisionando(NaveJugador)) {
-                beamList.remove(index);
-                damageSoundAudio.play(); // Reproduce sonido de daño
-                lifeList.remove(lifeList.size() - 1); // Elimina la vida si es alcanzado por una bala
-            }
-        }
+        // Mueve rayos y resuelve colisiones con escudos / nave
+        updateEnemyBeams();
 
         // Acelera el disparo del rayo permitiendo solo que se disparen nuevos rayos una vez que todos los rayos antiguos están fuera de la pantalla o han chocado
         if (beamList.isEmpty()) {
@@ -887,10 +625,10 @@ public class GamePanel extends JPanel {
                 beamList.clear();
                 ElementoList.clear();
                 projectiles.clear();
-                bossHealth = GameBalance.BOSS_HEALTH_RESET;
                 numberOfLives -= 1;
                 deathSoundAudio.play(); // Reproduce un sonido de muerte cuando los enemigos llegan al fondo
                 ConfigurarJuego();
+                return;
             }
         }
 
@@ -933,11 +671,106 @@ public class GamePanel extends JPanel {
             if(level%3 == 0) bonusEnemyList.clear();
             lifeList.clear();
             level += 1;
-            bossHealth = GameBalance.BOSS_HEALTH_RESET;
             ConfigurarJuego();
             levelUpSoundAudio.play(); // Plays level up sound 
         }
 
+    }
+
+    private void handlePauseInput() {
+        if (!controladores.getKeyStatus(27) || pauseMenuOpen) {
+            return;
+        }
+        pauseMenuOpen = true;
+        controladores.resetController();
+        PausarJuego();
+        java.awt.EventQueue.invokeLater(() -> {
+            MenuEmergente menu = new MenuEmergente();
+            menu.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    pauseMenuOpen = false;
+                }
+            });
+            menu.setVisible(true);
+        });
+    }
+
+    private void handlePlayerFire() {
+        if (controladores.getKeyStatus(32) && newBulletCanFire) {
+            newBeamCanFire = false;
+            bulletSoundAudio.play();
+            PowerUpBalas();
+        }
+    }
+
+    private void handleCrafting() {
+        if (craftFeedbackTicks > 0) {
+            craftFeedbackTicks--;
+            if (craftFeedbackTicks == 0) {
+                craftFeedback = null;
+            }
+        }
+        CraftingSystem.Result result = CraftingSystem.tryCraft(controladores, CantidadElemento, craftFlags);
+        if (result == null) {
+            return;
+        }
+        craftFeedback = result.getFeedbackKey();
+        craftFeedbackTicks = 40;
+        if (result.getMinBullets() != null) {
+            CantidadBalas = Math.max(CantidadBalas, result.getMinBullets());
+        }
+        if (result.getSpeedLevel() != null) {
+            Velocidad = result.getSpeedLevel();
+            PowerUpVelocidad();
+        }
+    }
+
+    private void updateElementDrops() {
+        for (int index = ElementoList.size() - 1; index >= 0; index--) {
+            ElementoDrop drop = ElementoList.get(index);
+            drop.setYPosition(drop.getYPosition() + GameBalance.ELEMENT_FALL_SPEED);
+            if (drop.getYPosition() > 600) {
+                ElementoList.remove(index);
+            }
+        }
+    }
+
+    private void updateEnemyBeams() {
+        int speed = levelManager != null && levelManager.isBossLevel(level)
+                ? GameBalance.BOSS_BEAM_SPEED
+                : GameBalance.NORMAL_BEAM_SPEED;
+
+        for (int index = beamList.size() - 1; index >= 0; index--) {
+            Beam current = beamList.get(index);
+            current.setYPosition(current.getYPosition() + speed);
+            if (current.getYPosition() > 800) {
+                beamList.remove(index);
+                continue;
+            }
+
+            boolean hitShield = false;
+            for (int j = shieldList.size() - 1; j >= 0; j--) {
+                if (current.Colisionando(shieldList.get(j))) {
+                    CollisionSystem.degradeShield(shieldList, j);
+                    shieldSoundAudio.play();
+                    beamList.remove(index);
+                    hitShield = true;
+                    break;
+                }
+            }
+            if (hitShield) {
+                continue;
+            }
+
+            if (NaveJugador != null && current.Colisionando(NaveJugador)) {
+                beamList.remove(index);
+                damageSoundAudio.play();
+                if (!lifeList.isEmpty()) {
+                    lifeList.remove(lifeList.size() - 1);
+                }
+            }
+        }
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -956,13 +789,17 @@ public class GamePanel extends JPanel {
         projectiles.clear();
         score = 0;
         level = 1;
-        bossHealth = GameBalance.BOSS_HEALTH_INITIAL + 5;
+        bossHealth = GameBalance.BOSS_HEALTH;
         numberOfLives = 3;
         CantidadBalas = 0;
         Velocidad = 0;
         newBulletCanFire = true;
         newBeamCanFire = true;
         newBonusEnemy = true;
+        craftFlags.reset();
+        craftFeedback = null;
+        craftFeedbackTicks = 0;
+        pauseMenuOpen = false;
                 
         for(int i = 1; i <= 11; i++){
             CantidadElemento[i] = 0;

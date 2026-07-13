@@ -26,8 +26,14 @@ public final class GameBalance {
     public static final int SCORE_BOSS = 9000;
     public static final int SCORE_BONUS = 5000;
 
-    public static final int BOSS_HEALTH_INITIAL = 40;
-    public static final int BOSS_HEALTH_RESET = 30;
+    /** Vida del jefe al entrar en un nivel boss (siempre la misma). */
+    public static final int BOSS_HEALTH = 40;
+
+    /** @deprecated usar {@link #BOSS_HEALTH} */
+    public static final int BOSS_HEALTH_INITIAL = BOSS_HEALTH;
+
+    /** @deprecated usar {@link #BOSS_HEALTH} */
+    public static final int BOSS_HEALTH_RESET = BOSS_HEALTH;
 
     public static final int EASY_ENEMY_SPEED = 2;
     public static final int MEDIUM_ENEMY_SPEED = 4;

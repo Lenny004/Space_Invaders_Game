@@ -116,7 +116,7 @@ Completada (extracción incremental).
 | `GameLoop` | Timers de tick y hitmarker |
 | `GameState` | Modelo de estado compartido (base para seguir adelgazando `GamePanel`) |
 
-Pendiente para iteraciones futuras: mover crafteo fuera de `paint()`, y migrar listas/contadores restantes a `GameState`.
+Pendiente para iteraciones futuras: migrar listas/contadores restantes a `GameState`.
 
 ## Estado Fase D
 
@@ -130,7 +130,7 @@ Completada.
 
 ## Estado Fase E
 
-Completada.
+Completada (base) + pulido jugabilidad 1.5.1.
 
 | Entrega | Detalle |
 |---------|---------|
@@ -140,6 +140,8 @@ Completada.
 | Records | Top 5 + historial reciente |
 | Fullscreen | Maximizar ventana de juego |
 | Balance | `GameBalance` + dificultad alineada con `RunEntry` |
-| GamePanel | Spawns fuera de `paint()` |
+| Crafteo | Fuera de `paint()` (`CraftingSystem`); flags se resetean al reiniciar |
+| Pausa | ESC → `MenuEmergente` + `GameLoop.pause()` |
+| Jefe | `bossHealth` unificado al entrar en nivel boss |
 
-Siguiente: i18n de `FrmAyuda`, extraer crafteo de `paint()`, escalado real del playfield (opcional).
+Siguiente: i18n de `FrmAyuda`, migrar `GamePanel` a `GameState`, escalado real del playfield (opcional).

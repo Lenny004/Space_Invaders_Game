@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.1] — Jugabilidad (2026-07-13)
+
+### Corregido
+- Flags de crafteo se resetean al reiniciar partida (`CraftingSystem.Flags` + `ResetearValores`).
+- Vida del jefe unificada (`GameBalance.BOSS_HEALTH`) al entrar en nivel boss.
+- Colisiones de beams sin `try/catch` silenciosos; degradación vía `CollisionSystem`.
+
+### Cambiado
+- Disparo, crafteo y caída de elementos movidos de `paint()` a `ActualizarEstadoJuego`.
+- ESC abre `MenuEmergente` y pausa el `GameLoop`.
+- Recetas de compuestos extraídas a `CraftingSystem` (testeable).
+
 ## [1.5.0] — Fase E (2026-07-13)
 
 ### Añadido
