@@ -4,21 +4,22 @@ import Controlador.KeyboardController;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import persistence.RunEntry;
 
 /**
  * Configuración de oleadas, jefes, nave, vidas y escudos.
+ * Dificultad alineada con {@link RunEntry}: 1=fácil, 2=medio, 3=difícil.
  */
 public class LevelManager {
 
-    /** 1 = fácil, 2 = medio, 3 = difícil (mismo contrato que {@link Configuracion}). */
     private final int tipoDificultad;
 
     public LevelManager(Configuracion dificultad) {
-        this(dificultad != null ? dificultad.getTipoDificultad() : 1);
+        this(dificultad != null ? dificultad.getTipoDificultad() : RunEntry.DIFFICULTY_HARD);
     }
 
     public LevelManager(int tipoDificultad) {
-        this.tipoDificultad = tipoDificultad <= 0 ? 1 : tipoDificultad;
+        this.tipoDificultad = RunEntry.normalizeDifficulty(tipoDificultad);
     }
 
     public int getTipoDificultad() {
@@ -30,7 +31,7 @@ public class LevelManager {
     }
 
     public boolean isVictory(int level) {
-        return level > 15;
+        return level > GameBalance.VICTORY_AFTER_LEVEL;
     }
 
     public List<Enemy> createEnemies(int level) {
@@ -70,9 +71,9 @@ public class LevelManager {
         for (int row = 0; row < 6; row++) {
             for (int column = 0; column < 5; column++) {
                 int xVel = switch (tipoDificultad) {
-                    case 2 -> 4;
-                    case 3 -> 2;
-                    default -> 1 * level;
+                    case RunEntry.DIFFICULTY_EASY -> GameBalance.EASY_ENEMY_SPEED;
+                    case RunEntry.DIFFICULTY_MEDIUM -> GameBalance.MEDIUM_ENEMY_SPEED;
+                    default -> level;
                 };
                 enemies.add(new Enemy(
                         120 + (row * 100), 20 + (column * 60),
@@ -83,10 +84,11 @@ public class LevelManager {
     }
 
     private Enemy createBoss(int level) {
+        int wave = Math.max(1, level / 3);
         int xVel = switch (tipoDificultad) {
-            case 2 -> 2 * (level / 3);
-            case 3 -> Math.max(1, level / 3);
-            default -> 3 * (level / 3);
+            case RunEntry.DIFFICULTY_EASY -> Math.max(1, wave);
+            case RunEntry.DIFFICULTY_MEDIUM -> 2 * wave;
+            default -> 3 * wave;
         };
         return new Enemy(120, 20, xVel, 0, 100, null, 150, 150, level);
     }

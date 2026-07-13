@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.5.0] — Fase E (2026-07-13)
+
+### Añadido
+- `GameConfig`: preferencias persistidas en `data/user-settings.properties` (volumen, mute, idioma, fullscreen, dificultad).
+- `Messages` + `i18n/messages_*.properties` (es/en) para menús y diálogos.
+- Controles de audio, idioma y pantalla completa en `Configuracion`.
+- Historial reciente en pantalla `Records` (además del Top 5).
+- `GameBalance`: constantes de spawn, velocidades y puntuación.
+- `MusicPlayer.setVolume` alineado con efectos.
+
+### Cambiado
+- Dificultad unificada con `RunEntry` (1=fácil, 2=medio, 3=difícil); metadatos de Records corregidos.
+- Spawns de beams/bonus movidos de `paint()` a `ActualizarEstadoJuego`.
+- `GameFrame` maximiza la ventana si fullscreen está activo.
+- Versión del artefacto: `1.5.0-SNAPSHOT`.
+
+### Corregido
+- Tooltips de Records mostraban la dificultad invertida respecto a la UI.
+
 ## [1.4.0] — Persistencia local SQLite (2026-07-13)
 
 ### Eliminado

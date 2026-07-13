@@ -30,12 +30,13 @@ public class Inicio extends javax.swing.JFrame {
     Color LetrasAzul = new Color(31,75,142);
         
     public Inicio() {
+        Messages.reloadFromConfig();
         this.setContentPane(fondo);
         initComponents();
         
         try{
             MusicPlayer.IntentarMusica("src/Sonidos/TituloGame.wav");
-            
+            GameConfig.getInstance().applyAudio();
         }
         catch(Exception e){
             System.out.println("error de reproducción de musica en Menú Inicial");
@@ -47,6 +48,7 @@ public class Inicio extends javax.swing.JFrame {
         btnConfiguracion.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnSalir.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        applyLocaleTexts();
         
         //Forma rectangular de los botones
         ShapedButtonUI squareUI = new ShapedButtonUI();
@@ -66,12 +68,16 @@ public class Inicio extends javax.swing.JFrame {
         BtnCreditos.setUI(squareUI);
         BtnCreditos.setPreferredSize(new Dimension(100, 100));
         
-        /*Utilizamos new ImageIcon(URL location).getImage() donde el argumento
-        *location lo obtenemos a través del método getClass().getResource(String name)
-        *que nos devuelve un URL absoluto del recurso que especificamos como String.
-        */
         Image icon = new ImageIcon(getClass().getResource("/Imagenes/SpaceChemistryIcon.png")).getImage();
         setIconImage(icon);
+    }
+
+    private void applyLocaleTexts() {
+        btnIniciar.setText(Messages.get("menu.start"));
+        btnConfiguracion.setText(Messages.get("menu.settings"));
+        btnAyuda.setText(Messages.get("menu.help"));
+        btnSalir.setText(Messages.get("menu.exit"));
+        lblCreditos.setText(Messages.get("menu.credits"));
     }
     
     /**

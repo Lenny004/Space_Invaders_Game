@@ -40,7 +40,7 @@ Clase principal: `Game.Inicio`.
 JAR ejecutable:
 
 ```bash
-java -jar target/space-chemistry-1.4.0-SNAPSHOT.jar
+java -jar target/space-chemistry-1.5.0-SNAPSHOT.jar
 ```
 
 ## Tests y CI

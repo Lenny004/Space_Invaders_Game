@@ -60,7 +60,7 @@ public class GamePanel extends JPanel {
     private int numberOfLives = 3;
     private int highScore;
     private int markerX, markerY;
-    private int bossHealth = 40;
+    private int bossHealth = GameBalance.BOSS_HEALTH_INITIAL;
     private int[] CantidadElemento = new int[12];
     private final ScoreService scoreService = ScoreService.getInstance();
 
@@ -131,9 +131,6 @@ public class GamePanel extends JPanel {
     private SoundEffect bonusSoundAudio = SoundEffect.load("/Sonidos/bonusSound.wav");
     private SoundEffect damageSoundAudio = SoundEffect.load("/Sonidos/damageSound.wav");
     
-    //Parametro de dificultad
-    Configuracion Dificultad = new Configuracion(); //Creamos objeto de la Clase Configuración (La dificultad del juego)
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Metodos extra
     
@@ -153,10 +150,9 @@ public class GamePanel extends JPanel {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // CONFIGURAR JUEGO
 
-    public final void ConfigurarJuego() {
-        if (levelManager == null) {
-            levelManager = new LevelManager(Dificultad);
-        }
+    public void ConfigurarJuego() {
+        Configuracion.TipoDificultad = GameConfig.getInstance().getDifficulty();
+        levelManager = new LevelManager(Configuracion.TipoDificultad);
 
         // Panel de victoria si gana
         if (levelManager.isVictory(level)) {
@@ -295,7 +291,7 @@ public class GamePanel extends JPanel {
         if (level%3 != 0) {
             if (beam != null) {
                 for (int index = 0; index < ElementoList.size(); index++) {
-                    ElementoList.get(index).setYPosition(ElementoList.get(index).getYPosition() + (4));
+                    ElementoList.get(index).setYPosition(ElementoList.get(index).getYPosition() + (GameBalance.ELEMENT_FALL_SPEED));
                     if (ElementoList.get(index).getYPosition() > 600) {
                         ElementoList.remove(index);
                     }
@@ -308,50 +304,9 @@ public class GamePanel extends JPanel {
             ElementoList.get(index).draw(g);
         }
         
-        
-        // Genera rayos aleatorios disparados por enemigos.
-        if (level%3 != 0) {
-            if (newBeamCanFire) {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    if (randomDisparosE.nextInt(30) == index) {
-                        beam = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition(), 0, Color.YELLOW);
-                        beamList.add(beam);
-                        beamSoundAudio.play(); // Reproduce el sonido del rayo para enemigos normales.
-                    }
-                    newBeamCanFire = false;
-                }
-            }
-        }
-        
-        // Genera vigas a un ritmo más rápido para el jefe.
-        if (level%3 == 0) {
-            if (newBeamCanFire) {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    if (randomDisparosE.nextInt(5) == index) {
-                        beam = new Beam(enemyList.get(index).getXPosition() + 75, enemyList.get(index).getYPosition() + 140, 0, Color.YELLOW);
-                        beam2 = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
-                        beam3 = new Beam(enemyList.get(index).getXPosition() + 150, enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
-                        beamList.add(beam);
-                        beamList.add(beam2);
-                        beamList.add(beam3);
-                        beamSoundAudio.play(); // Reproduce sonido de haz para el jefe
-                    }
-                    newBeamCanFire = false;
-                }
-            }
-        }
-        
         // Dibuja los rayos generados
         for (int index = 0; index < beamList.size(); index++) {
             beamList.get(index).draw(g);
-        }
-        // Genera un enemigo de bonificación aleatorio
-        if (newBonusEnemy && level%3 != 0) {
-            if (randomDisparosE.nextInt(3000) == 1500) {
-                bonusEnemy = new Ship(-50, 30, Color.RED, null);
-                bonusEnemyList.add(bonusEnemy);
-                newBonusEnemy = false;
-            }
         }
         // Coloca enemigo bonus
         for (int index = 0; index < bonusEnemyList.size(); index++) {
@@ -678,7 +633,7 @@ public class GamePanel extends JPanel {
     public void ColisionesBalas(int index){
         // Puntaje de actualizaciones para niveles normales
         if (level%3 != 0) {
-            score += 100;
+            score += GameBalance.SCORE_ALIEN;
             hitMarker = true;
             markerX = enemyList.get(index).getXPosition(); // Obtiene posiciones de las que se genera el "+ 100"
             markerY = enemyList.get(index).getYPosition();
@@ -703,7 +658,7 @@ public class GamePanel extends JPanel {
             bossHealth -= 1;
             if (bossHealth == 0) {
                 enemyList.remove(index);
-                score += 9000;// Puntaje de bonificación por derrotar al jefe
+                score += GameBalance.SCORE_BOSS;// Puntaje de bonificación por derrotar al jefe
             }
         }
     }
@@ -712,6 +667,46 @@ public class GamePanel extends JPanel {
         CollisionSystem.degradeShield(shieldList, index);
         shieldSoundAudio.play();
         newBulletCanFire = true;
+    }
+
+    private void spawnEnemyBeams() {
+        if (!newBeamCanFire || enemyList.isEmpty()) {
+            return;
+        }
+        if (level % 3 != 0) {
+            for (int index = 0; index < enemyList.size(); index++) {
+                if (randomDisparosE.nextInt(GameBalance.NORMAL_BEAM_CHANCE) == index) {
+                    beam = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition(), 0, Color.YELLOW);
+                    beamList.add(beam);
+                    beamSoundAudio.play();
+                }
+                newBeamCanFire = false;
+            }
+            return;
+        }
+        for (int index = 0; index < enemyList.size(); index++) {
+            if (randomDisparosE.nextInt(GameBalance.BOSS_BEAM_CHANCE) == index) {
+                beam = new Beam(enemyList.get(index).getXPosition() + 75, enemyList.get(index).getYPosition() + 140, 0, Color.YELLOW);
+                beam2 = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
+                beam3 = new Beam(enemyList.get(index).getXPosition() + 150, enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
+                beamList.add(beam);
+                beamList.add(beam2);
+                beamList.add(beam3);
+                beamSoundAudio.play();
+            }
+            newBeamCanFire = false;
+        }
+    }
+
+    private void spawnBonusEnemy() {
+        if (!newBonusEnemy || level % 3 == 0) {
+            return;
+        }
+        if (randomDisparosE.nextInt(GameBalance.BONUS_SPAWN_RANGE) == GameBalance.BONUS_SPAWN_HIT) {
+            bonusEnemy = new Ship(-50, 30, Color.RED, null);
+            bonusEnemyList.add(bonusEnemy);
+            newBonusEnemy = false;
+        }
     }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -729,13 +724,20 @@ public class GamePanel extends JPanel {
 
         // Agrega la opción para restablecer el puntaje alto
         if (controladores.getKeyStatus(82)) { // KEYSTATUS(82) es la tecla R según el código ASCII
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Te gustaría reiniciar el Highscore?", ":)", 0);
+            int respuesta = JOptionPane.showConfirmDialog(
+                    null,
+                    Messages.get("dialog.reset.highscore"),
+                    Messages.get("dialog.yes.title"),
+                    JOptionPane.YES_NO_OPTION);
             controladores.resetController();
             if (respuesta == 0) {
                 scoreService.clearHighScores();
                 highScore = 0;
             }
         }
+
+        spawnEnemyBeams();
+        spawnBonusEnemy();
 
         // Hace que los enemigos se muevan y cambien de dirección en las fronteras.
         if(level%3 != 0){
@@ -782,7 +784,7 @@ public class GamePanel extends JPanel {
                             bonusEnemyList.remove(bonusIndex);
                             newBonusEnemy = true;
                             bonusSoundAudio.play();
-                            score += 5000;
+                            score += GameBalance.SCORE_BONUS;
                         }
                     }
                 });
@@ -802,7 +804,7 @@ public class GamePanel extends JPanel {
         if (level%3 != 0) {
             if (beam != null) {
                 for (int index = 0; index < beamList.size(); index++) {
-                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (4));
+                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (GameBalance.NORMAL_BEAM_SPEED));
                     if (beamList.get(index).getYPosition() > 800) {
                         beamList.remove(index);
                     }
@@ -813,7 +815,7 @@ public class GamePanel extends JPanel {
         if (level%3 == 0) {
             if (beam != null) {
                 for (int index = 0; index < beamList.size(); index++) {
-                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (5)); // La velocidad del rayo del jefe aumentará en cada nivel
+                    beamList.get(index).setYPosition(beamList.get(index).getYPosition() + (GameBalance.BOSS_BEAM_SPEED)); // La velocidad del rayo del jefe aumentará en cada nivel
                     if (beamList.get(index).getYPosition() > 800) {
                         beamList.remove(index);
                     }
@@ -885,7 +887,7 @@ public class GamePanel extends JPanel {
                 beamList.clear();
                 ElementoList.clear();
                 projectiles.clear();
-                bossHealth = 30;
+                bossHealth = GameBalance.BOSS_HEALTH_RESET;
                 numberOfLives -= 1;
                 deathSoundAudio.play(); // Reproduce un sonido de muerte cuando los enemigos llegan al fondo
                 ConfigurarJuego();
@@ -903,7 +905,11 @@ public class GamePanel extends JPanel {
             deathSoundAudio.play(); // Reproduce el sonido de la muerte cuando te quedas sin vidas
             saveCurrentScore(false);
             // Le da al jugador la opción de volver a jugar o salir
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Te gustaría jugar de nuevo?", "Tu perdiste el juego con " + score + " puntos", 0);
+            int respuesta = JOptionPane.showConfirmDialog(
+                    null,
+                    Messages.get("dialog.play.again"),
+                    Messages.format("dialog.game.over", score),
+                    JOptionPane.YES_NO_OPTION);
             // Si eligen jugar de nuevo, esto reinicia todos los elementos del juego.
             if (respuesta == 0) {
                 ResetearValores();
@@ -927,7 +933,7 @@ public class GamePanel extends JPanel {
             if(level%3 == 0) bonusEnemyList.clear();
             lifeList.clear();
             level += 1;
-            bossHealth = 30;
+            bossHealth = GameBalance.BOSS_HEALTH_RESET;
             ConfigurarJuego();
             levelUpSoundAudio.play(); // Plays level up sound 
         }
@@ -950,7 +956,7 @@ public class GamePanel extends JPanel {
         projectiles.clear();
         score = 0;
         level = 1;
-        bossHealth = 45;
+        bossHealth = GameBalance.BOSS_HEALTH_INITIAL + 5;
         numberOfLives = 3;
         CantidadBalas = 0;
         Velocidad = 0;
@@ -969,12 +975,7 @@ public class GamePanel extends JPanel {
         if (username == null || username.isBlank()) {
             username = "Player";
         }
-        int difficulty = RunEntry.DIFFICULTY_EASY;
-        try {
-            difficulty = Dificultad.getTipoDificultad();
-        } catch (Exception ignored) {
-            // Configuracion puede fallar fuera de UI; default fácil
-        }
+        int difficulty = GameConfig.getInstance().getDifficulty();
         try {
             scoreService.saveRun(new RunEntry(username, score, level, difficulty, won));
             highScore = Math.max(highScore, scoreService.bestScore());
@@ -985,10 +986,16 @@ public class GamePanel extends JPanel {
     }
         
     public void IniciarJuego(){
+        Messages.reloadFromConfig();
         // Establecer el tamaño del Panel
         this.setSize(AnchoJuego, AlturaJuego);
         this.setPreferredSize(new Dimension(AnchoJuego, AlturaJuego));
         this.setBackground(Color.BLACK);
+
+        GameConfig.getInstance().applyTo(
+                beamSoundAudio, bulletSoundAudio, levelUpSoundAudio, deathSoundAudio,
+                hitSoundAudio, shieldSoundAudio, bossSoundAudio, bonusSoundAudio, damageSoundAudio);
+        GameConfig.getInstance().applyAudio();
 
         // Registrar KeyboardController como KeyListener
         controladores = new KeyboardController();

@@ -1,10 +1,14 @@
 package Game;
 
 import Tipografia.Fuente;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import persistence.RunEntry;
 import persistence.ScoreService;
@@ -15,13 +19,21 @@ import persistence.ScoreService;
  */
 public class Records extends javax.swing.JFrame {
 
+    private static final DateTimeFormatter DATE_FMT =
+            DateTimeFormatter.ofPattern("dd/MM HH:mm").withZone(ZoneId.systemDefault());
+
     FondoGame1 fondo = new FondoGame1();
-    //Objeto de la clase Fuente
     Fuente TipoFuente = new Fuente();
+    private JLabel lblRecentTitle;
+    private final JLabel[] histNames = new JLabel[5];
+    private final JLabel[] histScores = new JLabel[5];
     
     public Records() {
+        Messages.reloadFromConfig();
         this.setContentPane(fondo);
         initComponents();
+        installHistorySection();
+        applyLocaleTexts();
         mostrarDatos();
         lblNombre.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 12));
         lblPlace.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 12));
@@ -42,12 +54,77 @@ public class Records extends javax.swing.JFrame {
         lblR4.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         lblR5.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         
-        /*Utilizamos new ImageIcon(URL location).getImage() donde el argumento
-        *location lo obtenemos a través del método getClass().getResource(String name)
-        *que nos devuelve un URL absoluto del recurso que especificamos como String.
-        */
         Image icon = new ImageIcon(getClass().getResource("/Imagenes/SpaceChemistryIcon.png")).getImage();
         setIconImage(icon);
+    }
+
+    private void installHistorySection() {
+        // Compactar top 5 para dejar sitio al historial
+        lbl1.setBounds(40, 36, 20, 16);
+        lbl2.setBounds(40, 62, 20, 16);
+        lbl3.setBounds(40, 88, 20, 16);
+        lbl4.setBounds(40, 114, 20, 16);
+        lbl5.setBounds(41, 140, 20, 16);
+        lblnombre1.setBounds(180, 36, 307, 16);
+        lblnombre2.setBounds(180, 62, 307, 16);
+        lblnombre3.setBounds(180, 88, 307, 16);
+        lblnombre4.setBounds(180, 114, 307, 16);
+        lblnombre5.setBounds(180, 140, 307, 16);
+        lblR1.setBounds(590, 36, 150, 16);
+        lblR2.setBounds(590, 62, 150, 16);
+        lblR3.setBounds(590, 88, 150, 16);
+        lblR4.setBounds(590, 114, 150, 16);
+        lblR5.setBounds(590, 140, 150, 16);
+
+        lblRecentTitle = new JLabel();
+        lblRecentTitle.setForeground(new Color(99, 183, 217));
+        lblRecentTitle.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 12));
+        jPanel1.add(lblRecentTitle);
+        lblRecentTitle.setBounds(23, 180, 200, 16);
+
+        Color[] colors = {
+                new Color(99, 183, 217),
+                new Color(182, 167, 214),
+                new Color(182, 167, 214),
+                new Color(182, 167, 214),
+                new Color(231, 125, 176)
+        };
+        for (int i = 0; i < 5; i++) {
+            int y = 210 + i * 28;
+            histNames[i] = new JLabel("---");
+            histNames[i].setForeground(colors[i]);
+            histNames[i].setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
+            jPanel1.add(histNames[i]);
+            histNames[i].setBounds(40, y, 450, 16);
+
+            histScores[i] = new JLabel("0");
+            histScores[i].setForeground(colors[i]);
+            histScores[i].setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
+            jPanel1.add(histScores[i]);
+            histScores[i].setBounds(520, y, 220, 16);
+        }
+    }
+
+    private void applyLocaleTexts() {
+        lblPlace.setText(Messages.get("records.place"));
+        lblNombre.setText(Messages.get("records.player"));
+        lblScore.setText(Messages.get("records.score"));
+        if (lblRecentTitle != null) {
+            lblRecentTitle.setText(Messages.get("records.recent"));
+        }
+    }
+
+    private static String difficultyText(int difficulty) {
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_MEDIUM -> Messages.get("diff.medium");
+            case RunEntry.DIFFICULTY_HARD -> Messages.get("diff.hard");
+            default -> Messages.get("diff.easy");
+        };
+    }
+
+    private static String tipFor(RunEntry run) {
+        String result = run.isWon() ? Messages.get("result.win") : Messages.get("result.loss");
+        return Messages.format("tooltip.run", run.getLevelReached(), difficultyText(run.getDifficulty()), result);
     }
 
     /**
@@ -237,24 +314,41 @@ public class Records extends javax.swing.JFrame {
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void mostrarDatos (){
-        List<RunEntry> top = ScoreService.getInstance().topRuns(5);
+        ScoreService scores = ScoreService.getInstance();
+        List<RunEntry> top = scores.topRuns(5);
         javax.swing.JLabel[] names = {lblnombre1, lblnombre2, lblnombre3, lblnombre4, lblnombre5};
-        javax.swing.JLabel[] scores = {lblR1, lblR2, lblR3, lblR4, lblR5};
+        javax.swing.JLabel[] scoreLabels = {lblR1, lblR2, lblR3, lblR4, lblR5};
         for (int i = 0; i < names.length; i++) {
             if (i < top.size()) {
                 RunEntry run = top.get(i);
                 names[i].setText(run.getUsername());
-                scores[i].setText(String.valueOf(run.getScore()));
-                String tip = "Nivel " + run.getLevelReached()
-                        + " · " + RunEntry.difficultyLabel(run.getDifficulty())
-                        + " · " + (run.isWon() ? "Victoria" : "Derrota");
+                scoreLabels[i].setText(String.valueOf(run.getScore()));
+                String tip = tipFor(run);
                 names[i].setToolTipText(tip);
-                scores[i].setToolTipText(tip);
+                scoreLabels[i].setToolTipText(tip);
             } else {
                 names[i].setText("---");
-                scores[i].setText("0");
+                scoreLabels[i].setText("0");
                 names[i].setToolTipText(null);
-                scores[i].setToolTipText(null);
+                scoreLabels[i].setToolTipText(null);
+            }
+        }
+
+        List<RunEntry> recent = scores.history(5);
+        for (int i = 0; i < histNames.length; i++) {
+            if (i < recent.size()) {
+                RunEntry run = recent.get(i);
+                String when = DATE_FMT.format(run.getPlayedAt());
+                histNames[i].setText(when + "  " + run.getUsername());
+                histScores[i].setText(String.valueOf(run.getScore()));
+                String tip = tipFor(run);
+                histNames[i].setToolTipText(tip);
+                histScores[i].setToolTipText(tip);
+            } else {
+                histNames[i].setText("---");
+                histScores[i].setText("0");
+                histNames[i].setToolTipText(null);
+                histScores[i].setToolTipText(null);
             }
         }
     }

@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 
 /**
  * Reproductor de música de fondo con bucle.
@@ -16,6 +17,7 @@ public class MusicPlayer {
 
     private static Clip musica;
     private static String lastSource;
+    private static float volume = 0.7f;
 
     private MusicPlayer() {
     }
@@ -52,6 +54,7 @@ public class MusicPlayer {
                     musica = (Clip) AudioSystem.getLine(info);
                     musica.open(audioStream);
                     lastSource = normalized;
+                    applyVolumeToClip();
                     musica.loop(Clip.LOOP_CONTINUOUSLY);
                 }
             }
@@ -71,6 +74,24 @@ public class MusicPlayer {
         } catch (Exception e) {
             System.out.println("No se pudo Detener la canción");
         }
+    }
+
+    /**
+     * Volumen lineal 0.0–1.0 (mapeado a MASTER_GAIN).
+     */
+    public static void setVolume(float gainPercent) {
+        volume = Math.max(0f, Math.min(1f, gainPercent));
+        applyVolumeToClip();
+    }
+
+    private static void applyVolumeToClip() {
+        if (musica == null || !musica.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            return;
+        }
+        FloatControl gain = (FloatControl) musica.getControl(FloatControl.Type.MASTER_GAIN);
+        float min = gain.getMinimum();
+        float max = gain.getMaximum();
+        gain.setValue(min + (max - min) * volume);
     }
 
     private static String normalize(String source) {

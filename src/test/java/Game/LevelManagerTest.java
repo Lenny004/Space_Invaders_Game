@@ -42,12 +42,12 @@ class LevelManagerTest {
     }
 
     @Test
-    void easyDifficultyScalesVelocityWithLevel() {
+    void easyDifficultyUsesSlowVelocity() {
         LevelManager easy = new LevelManager(1);
         Enemy sample = easy.createEnemies(2).get(0);
-        // En modo fácil: xVel = level
+        int before = sample.getXPosition();
         sample.move();
-        assertEquals(120 + 2, sample.getXPosition());
+        assertEquals(before + GameBalance.EASY_ENEMY_SPEED, sample.getXPosition());
     }
 
     @Test
@@ -56,7 +56,16 @@ class LevelManagerTest {
         Enemy sample = medium.createEnemies(5).get(0);
         int before = sample.getXPosition();
         sample.move();
-        assertEquals(before + 4, sample.getXPosition());
+        assertEquals(before + GameBalance.MEDIUM_ENEMY_SPEED, sample.getXPosition());
+    }
+
+    @Test
+    void hardDifficultyScalesVelocityWithLevel() {
+        LevelManager hard = new LevelManager(3);
+        Enemy sample = hard.createEnemies(2).get(0);
+        int before = sample.getXPosition();
+        sample.move();
+        assertEquals(before + 2, sample.getXPosition());
     }
 
     @Test
