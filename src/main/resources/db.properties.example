@@ -1,0 +1,14 @@
+# Copia este archivo como db.properties y ajusta los valores de tu entorno.
+# db.properties NO debe subirse al repositorio (está en .gitignore).
+
+db.host=localhost
+db.instance=SQLEXPRESS
+db.name=spaceInvaders
+db.integratedSecurity=true
+
+# Si no usas autenticación de Windows, deja integratedSecurity=false y completa:
+db.user=
+db.password=
+
+# Opcional: URL JDBC completa (si se define, ignora host/instance/name)
+# db.url=jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=spaceInvaders;encrypt=true;trustServerCertificate=true;integratedSecurity=true;
