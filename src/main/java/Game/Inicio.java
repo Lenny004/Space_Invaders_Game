@@ -1,4 +1,4 @@
-package Game;
+﻿package Game;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -405,7 +405,7 @@ public class Inicio extends javax.swing.JFrame {
 
     private void BtnCreditosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnCreditosMouseClicked
         this.dispose();
-        Créditos credi = new Créditos();
+        Creditos credi = new Creditos();
         credi.setVisible(true);
     }//GEN-LAST:event_BtnCreditosMouseClicked
 

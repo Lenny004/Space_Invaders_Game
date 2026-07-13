@@ -3,15 +3,11 @@ package Game;
 import Tipografia.Fuente;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.sql.ResultSet;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
-import ClaseConexion.Conexion;
-import Clases.*;
-import java.sql.ResultSet;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import persistence.ScoreEntry;
+import persistence.ScoreService;
 
 /**
  *
@@ -241,36 +237,17 @@ public class Records extends javax.swing.JFrame {
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void mostrarDatos (){
-        Controlador obj = new Controlador();
-        ResultSet rs = obj.getTabla();
-        try{
-            int c = 0;
-            while(rs.next()){
-                if(c == 0){
-                    lblnombre1.setText(rs.getString("username"));
-                    lblR1.setText(rs.getString("score"));
-                }
-                else if(c == 1){
-                    lblnombre2.setText(rs.getString("username"));
-                    lblR2.setText(rs.getString("score"));
-                }
-                else if(c == 2){
-                    lblnombre3.setText(rs.getString("username"));
-                    lblR3.setText(rs.getString("score"));
-                }
-                else if(c == 3){
-                    lblnombre4.setText(rs.getString("username"));
-                    lblR4.setText(rs.getString("score"));
-                }
-                else{
-                    lblnombre5.setText(rs.getString("username"));
-                    lblR5.setText(rs.getString("score"));
-                }
-                c++;
+        List<ScoreEntry> top = ScoreService.getInstance().top(5);
+        javax.swing.JLabel[] names = {lblnombre1, lblnombre2, lblnombre3, lblnombre4, lblnombre5};
+        javax.swing.JLabel[] scores = {lblR1, lblR2, lblR3, lblR4, lblR5};
+        for (int i = 0; i < names.length; i++) {
+            if (i < top.size()) {
+                names[i].setText(top.get(i).getUsername());
+                scores[i].setText(String.valueOf(top.get(i).getScore()));
+            } else {
+                names[i].setText("---");
+                scores[i].setText("0");
             }
-       
-        }catch(Exception e){
-            System.out.println(e);
         }
     }
     

@@ -29,7 +29,7 @@ El juego es funcional como prototipo académico Swing, pero no era portable ni c
 5. **Archivos `.form` de NetBeans** — útiles solo con el diseñador de NetBeans; el layout AbsoluteLayout acopla UI al IDE.
 6. **Sin tests automatizados** — carpeta `src/test/java` preparada pero vacía.
 7. **SQL Server como única persistencia** — acoplamiento fuerte; dificulta demos sin BD.
-8. **Nombre de clase con tilde** — `Créditos.java` puede dar problemas en algunos sistemas de archivos/CI.
+8. ~~**Nombre de clase con tilde** — `Créditos.java`~~ → resuelto en Fase B (`Creditos.java`).
 9. **Highscore dual** — archivo local `Highscore.txt` + tabla SQL sin estrategia unificada.
 10. **Seguridad JDBC** — `encrypt=true;trustServerCertificate=true` es válido para desarrollo, no para producción.
 

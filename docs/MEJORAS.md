@@ -90,8 +90,17 @@ Implementaciones: `JdbcScoreRepository`, `FileScoreRepository`, `InMemoryScoreRe
 
 ```
 Fase A (hecha)   Modernizar build + APIs rotas + docs + gitignore
-Fase B           ScoreRepository + modo offline + renombrar Creditos
+Fase B (hecha)   ScoreRepository + modo offline + renombrar Creditos
 Fase C           Extraer sistemas de GamePanel + unificar Bullet
 Fase D           Tests + CI + jpackage
 Fase E           Pulido UX / i18n / balance de niveles
 ```
+
+## Estado Fase B
+
+Completada. Ver [CHANGELOG.md](CHANGELOG.md).
+
+- Offline: `scores.json` vía `FileScoreRepository`
+- SQL opcional: `JdbcScoreRepository` cuando `db.properties` conecta
+- UI: `ScoreService` en `GamePanel` / `Records` / `FrmNombre`
+- `Creditos.java` (sin tilde)

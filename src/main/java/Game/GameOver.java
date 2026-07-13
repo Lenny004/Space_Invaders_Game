@@ -5,7 +5,6 @@
  */
 package Game;
 
-import Clases.Controlador;
 import Tipografia.Fuente;
 import java.awt.Color;
 import java.awt.Dimension;

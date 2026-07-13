@@ -20,6 +20,8 @@ javac -version
 
 ## SQL Server (opcional)
 
+Los records funcionan offline en `scores.json`. SQL Server solo es necesario si quieres sincronizar el top en una base compartida.
+
 1. Instala SQL Server Express + SSMS.
 2. Habilita TCP/IP y conoce tu instancia (`SQLEXPRESS`, etc.).
 3. Ejecuta `sql/spaceInvaders.sql` **con cuidado**:
@@ -66,7 +68,8 @@ Clase principal: `Game.Inicio`.
 | Síntoma | Causa probable | Solución |
 |---------|----------------|----------|
 | No se oye música | WAV no encontrado en classpath | Verificar `src/main/resources/Sonidos` |
-| Scores no guardan | BD mal configurada | Revisar consola y `db.properties` |
+| Scores no aparecen en Records | Primera partida / archivo vacío | Juega una partida; se crea `scores.json` |
+| Scores no guardan en SQL | BD mal configurada | Revisar consola y `db.properties`; el archivo local sí guarda |
 | `UnsupportedClassVersionError` | JDK < 17 | Actualizar JAVA_HOME |
 | Pantalla en blanco / NPE en imágenes | Recurso mal nombrado | Rutas case-sensitive: `/Imagenes/...` |
 

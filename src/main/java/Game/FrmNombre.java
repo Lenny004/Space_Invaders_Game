@@ -205,23 +205,24 @@ public class FrmNombre extends javax.swing.JFrame {
     static public String nombre;
     
     private void btnListoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListoMouseClicked
-        try{
-            if(JNombre.getText().trim().equals("")){
-                JOptionPane.showMessageDialog(null, "No has ingresado un nombre para esta partida", "Campos vacios", JOptionPane.WARNING_MESSAGE);
-            }
-            else if (JNombre.getText().length() <=15){
-                nombre = JNombre.getText();
-                this.dispose();
-                setVisible(false);
-                InitializeGame();
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "El nombre ingresado sobrepasa la longitud máxima", "Nombre Invalido", JOptionPane.WARNING_MESSAGE);
-            }
+        String raw = JNombre.getText();
+        if (raw == null || raw.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No has ingresado un nombre para esta partida", "Campos vacios", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error al conectar con la base", "No se pudo conectar", JOptionPane.WARNING_MESSAGE);
+        String candidate = raw.trim();
+        if (candidate.length() > persistence.ScoreEntry.MAX_USERNAME_LENGTH) {
+            JOptionPane.showMessageDialog(null, "El nombre ingresado sobrepasa la longitud máxima", "Nombre Invalido", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+        if (!persistence.ScoreEntry.isValidUsername(candidate)) {
+            JOptionPane.showMessageDialog(null, "El nombre solo puede contener letras y números (sin espacios)", "Nombre Invalido", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        nombre = candidate;
+        this.dispose();
+        setVisible(false);
+        InitializeGame();
     }//GEN-LAST:event_btnListoMouseClicked
 
     private void JNombreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JNombreKeyPressed

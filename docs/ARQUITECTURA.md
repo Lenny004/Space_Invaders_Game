@@ -26,6 +26,7 @@ src/test/java/          → tests (preparado)
 docs/                   → documentación Markdown
 sql/                    → scripts de BD
 legacy/netbeans/        → proyecto histórico
+src/main/java/persistence/ → scores offline + JDBC
 ```
 
 Esta disposición permite:

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,13 +15,13 @@ import javax.swing.JPanel;
  *
  * @author César, Lenny, Aristides, Miguel
  */
-public class Créditos extends javax.swing.JFrame {
+public class Creditos extends javax.swing.JFrame {
 
     FondoGame1 fondo = new FondoGame1();
     Fuente TipoFuente = new Fuente();
     
     
-    public Créditos() {
+    public Creditos() {
         this.setContentPane(fondo);
         initComponents();
         jLblNombreJosue.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
@@ -284,13 +284,13 @@ public class Créditos extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Créditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Creditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Créditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Creditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Créditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Creditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Créditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Creditos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -298,7 +298,7 @@ public class Créditos extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Créditos().setVisible(true);
+                new Creditos().setVisible(true);
             }
         });
     }

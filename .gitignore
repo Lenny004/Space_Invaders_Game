@@ -115,6 +115,7 @@ Icon
 Highscore.txt
 *.bak
 *.orig
+scores.json
 
 # -----------------------------------------------------------------------------
 # Empaquetado / distribución

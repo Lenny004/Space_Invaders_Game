@@ -6,7 +6,7 @@ Proyecto originalmente desarrollado como trabajo académico (NetBeans / Java 8) 
 
 ## Descripción
 
-Controlas una nave espacial, derrotas oleadas de enemigos y jefes, recolectas elementos químicos y formas compuestos que otorgan ventajas. Los puntajes altos pueden guardarse en **SQL Server**.
+Controlas una nave espacial, derrotas oleadas de enemigos y jefes, recolectas elementos químicos y formas compuestos que otorgan ventajas. Los puntajes se guardan **offline** en `scores.json`; **SQL Server es opcional** para sincronizar records.
 
 Autores originales:
 
@@ -21,7 +21,7 @@ Autores originales:
 |-------------|----------------|--------|
 | **JDK** | 17+ | Temurin, Oracle, Microsoft Build of OpenJDK, etc. |
 | **Apache Maven** | 3.9+ | Gestión de dependencias y build |
-| **SQL Server** | Express o superior | Solo si quieres persistir highscores |
+| **SQL Server** | Express o superior | Opcional; records también funcionan offline |
 | **Windows** (opcional) | — | Autenticación integrada JDBC; en otros SO usa usuario/contraseña |
 
 ## Instalación
@@ -33,7 +33,9 @@ git clone https://github.com/<tu-usuario>/Space-Chemistry.git
 cd Space-Chemistry
 ```
 
-### 2. Configurar la base de datos (opcional pero recomendado)
+### 2. Configurar la base de datos (opcional)
+
+Los records funcionan sin SQL Server (`scores.json` en el directorio de ejecución). Si quieres sincronizar con SQL Server:
 
 1. Ejecuta el script `sql/spaceInvaders.sql` en SQL Server Management Studio (o `sqlcmd`), **omitendo** las líneas `DROP DATABASE` si solo quieres crear el esquema.
 2. Copia la plantilla de configuración:
@@ -83,9 +85,10 @@ Space-Chemistry/
 ├── src/
 │   ├── main/
 │   │   ├── java/              # Código fuente
+│   │   │   ├── persistence/   # Scores offline + JDBC opcional
 │   │   │   ├── Game/          # UI, lógica de juego, entidades
 │   │   │   ├── ClaseConexion/ # JDBC
-│   │   │   ├── Clases/        # Controlador de puntajes
+│   │   │   ├── Clases/        # Compatibilidad (Controlador deprecado)
 │   │   │   ├── Controlador/   # Teclado
 │   │   │   └── Tipografia/    # Fuentes personalizadas
 │   │   └── resources/
@@ -126,4 +129,5 @@ Si publicas el repositorio de forma abierta, considera añadir un archivo `LICEN
 - [Arquitectura y estructura](docs/ARQUITECTURA.md)
 - [Migración a Java 17 / Maven](docs/MIGRACION.md)
 - [Propuestas de mejora](docs/MEJORAS.md)
+- [Changelog](docs/CHANGELOG.md)
 - [Guía de setup](docs/SETUP.md)

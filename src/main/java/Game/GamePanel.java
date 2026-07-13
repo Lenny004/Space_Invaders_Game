@@ -1,24 +1,20 @@
 ﻿package Game;
 
-import Clases.Controlador;
 import Controlador.KeyboardController;
-import java.awt.Color;
 import Tipografia.Fuente;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import persistence.ScoreService;
 
 /**
  *
@@ -70,7 +66,7 @@ public class GamePanel extends JPanel {
     private int markerX, markerY;
     private int bossHealth = 40;
     private int[] CantidadElemento = new int[12];
-    File archivoPuntaje = new File("Highscore.txt");
+    private final ScoreService scoreService = ScoreService.getInstance();
 
     //Agregamos objectos de las clases
     private Ship NaveJugador; //Creamos objeto de de la Clase Ship
@@ -183,10 +179,7 @@ public class GamePanel extends JPanel {
         
         //Panel de victoria si gana
         if(level > 15){
-            Controlador obj = new Controlador();
-            obj.setUsername(FrmNombre.nombre);
-            obj.setScoreU(score);
-            obj.guardarScore();
+            saveCurrentScore();
             
             Victoria vic = new Victoria();
             vic.AsignarScore(score);
@@ -1011,65 +1004,20 @@ public class GamePanel extends JPanel {
         //MusicaLevel();
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
         PowerUpVelocidad();
-        // Actualiza highscore
-        try {
-            Scanner fileScan = new Scanner(archivoPuntaje);
-            while (fileScan.hasNextInt()) {
-                String nextLine = fileScan.nextLine();
-                Scanner lineScan = new Scanner(nextLine);
-                highScore = lineScan.nextInt();
-            }
-        } catch (FileNotFoundException e) {
-            
+
+        // High score en memoria (sin I/O por frame)
+        if (score > highScore) {
+            highScore = score;
         }
-        
-//        //Pausar Juego
-//        if(controladores.getKeyStatus2(KeyEvent.VK_ESCAPE)){//VK_ESCAPE(ESC) es la tecla escape del teclado
-//            try{
-//                GameFrame.PausarJuego();
-//                MenuEmergente emergente = new MenuEmergente();
-//                emergente.setVisible(true);
-//            }
-//            catch(Exception e){
-//                
-//            }
-//        }
-        
+
         // Agrega la opción para restablecer el puntaje alto
         if (controladores.getKeyStatus(82)) { // KEYSTATUS(82) es la tecla R según el código ASCII
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Te gustaría reiniciar el Highscore?", ":)", 0);
-            //Llama a la Clase KeyboardController
-            
             controladores.resetController();
             if (respuesta == 0) {
-                try {
-                    String scoreString = Integer.toString(0);
-                    //La clase Java PrintWriter es la implementación de la clase Writer. 
-                    //Se utiliza para imprimir la representación formateada de objetos en el flujo de salida de texto.
-                    
-                    //Crea un archivo OutputStream para escribir en el archivo con el nombre especificado. 
-                    //Si el segundo argumento es verdadero, los bytes se escribirán al final del archivo 
-                    //en lugar de al principio.
-                    PrintWriter pw = new PrintWriter(new FileOutputStream(archivoPuntaje, false));
-                    pw.write(scoreString);
-                    pw.close();
-                } 
-                catch (FileNotFoundException e) {
-                    
-                }
+                scoreService.clearHighScores();
+                highScore = 0;
             }
-        }
-        // Actualiza el archivo de texto de la puntuación más alta si su puntuación supera la puntuación más alta anterior
-        try {
-            if (score > highScore) {
-                String scoreString = Integer.toString(score);
-                PrintWriter pw = new PrintWriter(new FileOutputStream(archivoPuntaje, false));
-                pw.write(scoreString);
-                pw.close();
-            }
-        } 
-        catch (FileNotFoundException e) {
-            
         }
 
         // Hace que los enemigos se muevan y cambien de dirección en las fronteras.
@@ -1423,10 +1371,7 @@ public class GamePanel extends JPanel {
             }
             // Si eligen no volver a jugar, se cierra el juego.
             if (respuesta == 1) {
-                Controlador obj = new Controlador();
-                obj.setUsername(FrmNombre.nombre);
-                obj.setScoreU(score);
-                obj.guardarScore();
+                saveCurrentScore();
                 GameOver fin = new GameOver();
                 fin.AsignarScore(score);
                 fin.setVisible(true);
@@ -1476,6 +1421,22 @@ public class GamePanel extends JPanel {
         for(int i = 1; i <= 11; i++){
             CantidadElemento[i] = 0;
         }
+        highScore = scoreService.bestScore();
+    }
+
+    private void saveCurrentScore() {
+        String username = FrmNombre.nombre;
+        if (username == null || username.isBlank()) {
+            username = "Player";
+        }
+        try {
+            scoreService.save(username, score);
+            highScore = Math.max(highScore, scoreService.bestScore());
+        } catch (IllegalArgumentException ex) {
+            // Nombre inválido: guardar bajo Player
+            scoreService.save("Player", score);
+            highScore = Math.max(highScore, score);
+        }
     }
         
     public void IniciarJuego(){
@@ -1490,6 +1451,7 @@ public class GamePanel extends JPanel {
 
         // Llama a setupGame para inicializar campos
         ResetearValores();
+        highScore = scoreService.bestScore();
         ConfigurarJuego();
         this.setFocusable(true);
         this.requestFocusInWindow();
