@@ -107,6 +107,8 @@ public class Configuracion extends javax.swing.JFrame {
 
         installExtraSettings();
         applyLocaleTexts();
+        pack();
+        setLocationRelativeTo(null);
         
         Image icon = new ImageIcon(getClass().getResource("/Imagenes/SpaceChemistryIcon.png")).getImage();
         setIconImage(icon);
