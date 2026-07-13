@@ -11,8 +11,8 @@
 
     <name>Space Chemistry</name>
     <description>
-        Videojuego educativo estilo Space Invaders que combina acción arcade
-        con química: elementos, compuestos, power-ups y quizzes.
+        Videojuego estilo Space Invaders que combina acción arcade
+        con química: elementos, compuestos y power-ups.
     </description>
 
     <properties>

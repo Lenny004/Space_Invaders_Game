@@ -1,10 +1,7 @@
 Nombre Proyecto: Space Chemistry
 
-Integrantes: 
-Lenny Adrián Elías Sánchez - Coordinador
-Josué Aristides Meléndez Alemán
-César Esaú Flores Martínez
-Miguel Alexander Hernández Martínez
+Desarrollador:
+Lenny Adrián Elías Sánchez
 
 
 Nuestro proyecto hace uso de bases de datos para guardar el Score (Puntaje) del juego y es necesario que se ejecute la base de datos para correr el juego, el nombre de la base de datos es "spaceInvaders" y se encuentra dentro de la carpeta principal, Agregar a las librerias de Java el archivo .jar "sqljdbc42" y con ello se podra ejecutar el juego. Luego en el Package de "ClaseConexion" modificar la Clase "Conexion" en el apartado de "cn = DriverManager.getConnection("jdbc:sqlserver://LENNYX\\SERVIDORSQL; databaseName=spaceInvaders; IntegratedSecurity=true;");" En el apartado que dice "LENNYX" colocar el nombre del Host de su computador y "SERVIDORSQL" por SQLEXPRESS o el servidor que posea su computadora.
@@ -16,4 +13,3 @@ El código por circunstancias de utilización de Base de Datos no ha sido cifrad
 Ahora ya puedes ser el Heroe del Mundo!
 
 DISFRUTA DE LA EXPERIENCIA!
-

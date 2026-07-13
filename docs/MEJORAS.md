@@ -49,7 +49,7 @@ Persistencia local con SQLite (`SqliteScoreRepository`):
 | **State** | Menú / Jugando / Pausa / GameOver / Victoria |
 | **Strategy** | Dificultad (fácil/medio/difícil) en vez de `switch` repartidos |
 | **Factory** | Creación de enemigos y jefes por nivel |
-| **Observer / Event bus** | Colisiones → sonido, score, quizz |
+| **Observer / Event bus** | Colisiones → sonido, score |
 | **Command** | Input de teclado mapeado a acciones |
 | **Object Pool** | Balas y beams (menos GC en el loop) |
 | **Singleton controlado** (o DI simple) | `AudioService`, `ConfigService` en lugar de estáticos sueltos |
@@ -67,7 +67,7 @@ Persistencia local con SQLite (`SqliteScoreRepository`):
 - ~~Modo offline sin SQL~~ → SQLite local con historial (`data/space-chemistry.db`).
 - Volumen y mute en configuración (API ya preparada en `SoundEffect.setVolume`).
 - Escalado de resolución / fullscreen.
-- Internacionalización (es/en) de menús y quizzes.
+- Internacionalización (es/en) de menús.
 - Empaquetado con `jpackage` (instalador Windows/macOS/Linux).
 - Pantalla Records con historial reciente (además del top; tooltips ya muestran metadatos).
 

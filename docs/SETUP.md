@@ -83,4 +83,4 @@ Salida en `target/dist/` (app image / instalador según SO). En Windows habilita
 
 ## Assets
 
-Las imágenes y sonidos son originales del equipo. No reutilizar fuera del proyecto sin autorización (ver README).
+Las imágenes y sonidos son originales del desarrollador. No reutilizar fuera del proyecto sin autorización (ver README).

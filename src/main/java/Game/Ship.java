@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 
 /**
  *
- * @author Lenny, César, Arístides, Miguel
+ * @author Lenny
  */
 public class Ship extends ControlledGameObject {
      

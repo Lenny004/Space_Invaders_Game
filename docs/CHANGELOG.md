@@ -2,6 +2,9 @@
 
 ## [1.4.0] — Persistencia local SQLite (2026-07-13)
 
+### Eliminado
+- Sistema de quizzes / preguntas de química (`Quizz`) al inicio de partida.
+
 ### Añadido
 - `SqliteScoreRepository` con archivo `data/space-chemistry.db` (sin servidor).
 - `RunEntry`: score + nivel, dificultad, victoria/derrota y fecha.

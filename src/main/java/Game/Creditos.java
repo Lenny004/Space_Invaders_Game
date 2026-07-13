@@ -13,37 +13,21 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author César, Lenny, Aristides, Miguel
+ * @author Lenny
  */
 public class Creditos extends javax.swing.JFrame {
 
     FondoGame1 fondo = new FondoGame1();
     Fuente TipoFuente = new Fuente();
-    
-    
+
     public Creditos() {
         this.setContentPane(fondo);
         initComponents();
-        jLblNombreJosue.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblApellidoJosue.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblTipoJosue.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        
+
         jLblNombreLenny.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         jLblApellidoLenny.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         jLblTipoLenny.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        
-        jLblNombreMiguel.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblApellidoMiguel.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblTipoMiguel.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        
-        jLblNombreCesar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblApellidoCesar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        jLblTipoCesar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
-        
-        /*Utilizamos new ImageIcon(URL location).getImage() donde el argumento
-        *location lo obtenemos a través del método getClass().getResource(String name)
-        *que nos devuelve un URL absoluto del recurso que especificamos como String.
-        */
+
         Image icon = new ImageIcon(getClass().getResource("/Imagenes/SpaceChemistryIcon.png")).getImage();
         setIconImage(icon);
     }
@@ -60,30 +44,12 @@ public class Creditos extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         lblCerrar = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLblTipoJosue = new javax.swing.JLabel();
-        jLblNombreJosue = new javax.swing.JLabel();
-        jLblApellidoJosue = new javax.swing.JLabel();
-        lblAris = new javax.swing.JLabel();
-        jLabelJosue = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblLenny = new javax.swing.JLabel();
         jLblNombreLenny = new javax.swing.JLabel();
         jLblTipoLenny = new javax.swing.JLabel();
         jLblApellidoLenny = new javax.swing.JLabel();
         jLabelJosue1 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        lblMiguel = new javax.swing.JLabel();
-        jLblApellidoMiguel = new javax.swing.JLabel();
-        jLblNombreMiguel = new javax.swing.JLabel();
-        jLblTipoMiguel = new javax.swing.JLabel();
-        jLabelJosue2 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        lblCesar = new javax.swing.JLabel();
-        jLblTipoCesar = new javax.swing.JLabel();
-        jLblApellidoCesar = new javax.swing.JLabel();
-        jLblNombreCesar = new javax.swing.JLabel();
-        jLabelJosue3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(950, 525));
@@ -112,41 +78,6 @@ public class Creditos extends javax.swing.JFrame {
         lblCerrar.setBounds(915, 6, 29, 29);
         getContentPane().add(jLabel2);
         jLabel2.setBounds(890, 92, 0, 0);
-
-        jPanel1.setLayout(null);
-
-        jLblTipoJosue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblTipoJosue.setForeground(new java.awt.Color(255, 255, 255));
-        jLblTipoJosue.setText("-Programador");
-        jPanel1.add(jLblTipoJosue);
-        jLblTipoJosue.setBounds(260, 120, 100, 20);
-
-        jLblNombreJosue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblNombreJosue.setForeground(new java.awt.Color(255, 255, 255));
-        jLblNombreJosue.setText("Josue Aristides ");
-        jPanel1.add(jLblNombreJosue);
-        jLblNombreJosue.setBounds(200, 70, 150, 20);
-
-        jLblApellidoJosue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblApellidoJosue.setForeground(new java.awt.Color(255, 255, 255));
-        jLblApellidoJosue.setText("Melendez Aleman");
-        jPanel1.add(jLblApellidoJosue);
-        jLblApellidoJosue.setBounds(200, 90, 150, 20);
-
-        lblAris.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Aristides.png"))); // NOI18N
-        jPanel1.add(lblAris);
-        lblAris.setBounds(6, 6, 160, 174);
-
-        jLabelJosue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabelJosue.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelJosue.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/TGamePanel.png"))); // NOI18N
-        jLabelJosue.setToolTipText("");
-        jLabelJosue.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jPanel1.add(jLabelJosue);
-        jLabelJosue.setBounds(172, 40, 200, 119);
-
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(72, 73, 420, 180);
 
         jPanel2.setLayout(null);
 
@@ -181,77 +112,7 @@ public class Creditos extends javax.swing.JFrame {
         jLabelJosue1.setBounds(170, 40, 200, 119);
 
         getContentPane().add(jPanel2);
-        jPanel2.setBounds(72, 271, 380, 190);
-
-        jPanel3.setLayout(null);
-
-        lblMiguel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Miguel.png"))); // NOI18N
-        jPanel3.add(lblMiguel);
-        lblMiguel.setBounds(6, 6, 160, 174);
-
-        jLblApellidoMiguel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblApellidoMiguel.setForeground(new java.awt.Color(255, 255, 255));
-        jLblApellidoMiguel.setText("Hernandez Martinez");
-        jPanel3.add(jLblApellidoMiguel);
-        jLblApellidoMiguel.setBounds(190, 90, 150, 20);
-
-        jLblNombreMiguel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblNombreMiguel.setForeground(new java.awt.Color(255, 255, 255));
-        jLblNombreMiguel.setText("Miguel Alexander");
-        jPanel3.add(jLblNombreMiguel);
-        jLblNombreMiguel.setBounds(190, 70, 150, 20);
-
-        jLblTipoMiguel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblTipoMiguel.setForeground(new java.awt.Color(255, 255, 255));
-        jLblTipoMiguel.setText("-Programador");
-        jPanel3.add(jLblTipoMiguel);
-        jLblTipoMiguel.setBounds(250, 120, 100, 20);
-
-        jLabelJosue2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabelJosue2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelJosue2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/TGamePanel.png"))); // NOI18N
-        jLabelJosue2.setToolTipText("");
-        jLabelJosue2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jPanel3.add(jLabelJosue2);
-        jLabelJosue2.setBounds(160, 40, 200, 119);
-
-        getContentPane().add(jPanel3);
-        jPanel3.setBounds(482, 271, 370, 170);
-
-        jPanel4.setLayout(null);
-
-        lblCesar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Cesar.png"))); // NOI18N
-        jPanel4.add(lblCesar);
-        lblCesar.setBounds(10, 0, 160, 174);
-
-        jLblTipoCesar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblTipoCesar.setForeground(new java.awt.Color(255, 255, 255));
-        jLblTipoCesar.setText("-Programador ");
-        jPanel4.add(jLblTipoCesar);
-        jLblTipoCesar.setBounds(250, 120, 100, 20);
-
-        jLblApellidoCesar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblApellidoCesar.setForeground(new java.awt.Color(255, 255, 255));
-        jLblApellidoCesar.setText("Flores Martinez");
-        jPanel4.add(jLblApellidoCesar);
-        jLblApellidoCesar.setBounds(190, 90, 150, 20);
-
-        jLblNombreCesar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLblNombreCesar.setForeground(new java.awt.Color(255, 255, 255));
-        jLblNombreCesar.setText("Cesar Esau");
-        jPanel4.add(jLblNombreCesar);
-        jLblNombreCesar.setBounds(190, 70, 150, 20);
-
-        jLabelJosue3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabelJosue3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelJosue3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/TGamePanel.png"))); // NOI18N
-        jLabelJosue3.setToolTipText("");
-        jLabelJosue3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jPanel4.add(jLabelJosue3);
-        jLabelJosue3.setBounds(160, 40, 200, 119);
-
-        getContentPane().add(jPanel4);
-        jPanel4.setBounds(480, 70, 360, 170);
+        jPanel2.setBounds(285, 170, 380, 190);
 
         pack();
         setLocationRelativeTo(null);
@@ -274,7 +135,7 @@ public class Creditos extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -302,18 +163,15 @@ public class Creditos extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private class FondoGame1 extends JPanel {
         public Image imagen;
         public void paint(Graphics g) {
             imagen = new ImageIcon(getClass().getResource("/Imagenes/Space1.gif")).getImage();
             g.drawImage(imagen, 0, 0, getWidth(), getHeight(), this);
             setOpaque(false);
-            jPanel1.setOpaque(false);
             jPanel2.setOpaque(false);
-            jPanel3.setOpaque(false);
-            jPanel4.setOpaque(false);
-            
+
             super.paint(g);
         }
     }
@@ -321,30 +179,12 @@ public class Creditos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabelJosue;
     private javax.swing.JLabel jLabelJosue1;
-    private javax.swing.JLabel jLabelJosue2;
-    private javax.swing.JLabel jLabelJosue3;
-    private javax.swing.JLabel jLblApellidoCesar;
-    private javax.swing.JLabel jLblApellidoJosue;
     private javax.swing.JLabel jLblApellidoLenny;
-    private javax.swing.JLabel jLblApellidoMiguel;
-    private javax.swing.JLabel jLblNombreCesar;
-    private javax.swing.JLabel jLblNombreJosue;
     private javax.swing.JLabel jLblNombreLenny;
-    private javax.swing.JLabel jLblNombreMiguel;
-    private javax.swing.JLabel jLblTipoCesar;
-    private javax.swing.JLabel jLblTipoJosue;
     private javax.swing.JLabel jLblTipoLenny;
-    private javax.swing.JLabel jLblTipoMiguel;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JLabel lblAris;
     private javax.swing.JLabel lblCerrar;
-    private javax.swing.JLabel lblCesar;
     private javax.swing.JLabel lblLenny;
-    private javax.swing.JLabel lblMiguel;
     // End of variables declaration//GEN-END:variables
 }

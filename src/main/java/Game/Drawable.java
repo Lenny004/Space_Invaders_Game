@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 /**
  *
- * @authors Lenny, César, Arístides, Miguel
+ * @author Lenny
  */
 public interface Drawable {
     

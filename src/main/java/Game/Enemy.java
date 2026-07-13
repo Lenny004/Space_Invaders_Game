@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 /**
  *
- * @authors Lenny, César, Arístides, Miguel
+ * @author Lenny
  */
 public class Enemy extends MovingGameObject {
 

@@ -5,7 +5,7 @@ import java.awt.Color;
 
 /**
  *
- * @author Lenny, César, Miguel, Arístides
+ * @author Lenny
  */
 public abstract class ControlledGameObject extends GameObject implements Moveable {
     

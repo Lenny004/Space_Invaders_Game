@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Lenny, César, Miguel, Arístides
+ * @author Lenny
  */
 public class Beam extends MovingGameObject {
 

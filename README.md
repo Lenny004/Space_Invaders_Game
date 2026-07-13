@@ -1,6 +1,6 @@
 # Space Chemistry
 
-Videojuego educativo en Java, estilo *Space Invaders*, que combina acción arcade con química: elementos de la tabla periódica, compuestos, power-ups y quizzes.
+Videojuego en Java, estilo *Space Invaders*, que combina acción arcade con química: elementos de la tabla periódica, compuestos y power-ups.
 
 Proyecto originalmente desarrollado como trabajo académico (NetBeans / Java 8) y modernizado a **Java 17** con estructura **Maven**.
 
@@ -8,12 +8,9 @@ Proyecto originalmente desarrollado como trabajo académico (NetBeans / Java 8) 
 
 Controlas una nave espacial, derrotas oleadas de enemigos y jefes, recolectas elementos químicos y formas compuestos que otorgan ventajas. Los puntajes e historial de partidas se guardan **en local** con SQLite (`data/space-chemistry.db`).
 
-Autores originales:
+Desarrollador:
 
-- Lenny Adrián Elías Sánchez (coordinador)
-- Josué Aristides Meléndez Alemán
-- César Esaú Flores Martínez
-- Miguel Alexander Hernández Martínez
+- Lenny Adrián Elías Sánchez
 
 ## Requisitos previos
 
@@ -108,11 +105,11 @@ Detalle de arquitectura y roadmap: ver carpeta [`docs/`](docs/).
 
 1. Abre un *issue* describiendo el bug o la mejora (pasos para reproducir, JDK, SO).
 2. Para cambios de código: crea una rama, haz commits claros y abre un Pull Request.
-3. Respeta los assets gráficos: las imágenes fueron creadas para este juego y no deben reutilizarse sin autorización de los autores.
+3. Respeta los assets gráficos: las imágenes fueron creadas para este juego y no deben reutilizarse sin autorización del autor.
 
 ## Licencia
 
-Código disponible con fines educativos y de aprendizaje personal. Los assets (imágenes, sonidos, tipografía) permanecen bajo derechos de sus autores; no redistribuir ni reclamar autoría sin permiso.
+Código disponible con fines educativos y de aprendizaje personal. Los assets (imágenes, sonidos, tipografía) permanecen bajo derechos del autor; no redistribuir ni reclamar autoría sin permiso.
 
 Si publicas el repositorio de forma abierta, considera añadir un archivo `LICENSE` (por ejemplo MIT solo para el código fuente).
 

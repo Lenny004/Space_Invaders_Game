@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Lenny, César, Miguel, Arístides
+ * @author Lenny
  */
 public abstract class GameObject implements Drawable {
 

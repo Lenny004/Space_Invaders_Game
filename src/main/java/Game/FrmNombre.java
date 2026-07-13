@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Josue
+ * @author Lenny
  */
 public class FrmNombre extends javax.swing.JFrame {
 

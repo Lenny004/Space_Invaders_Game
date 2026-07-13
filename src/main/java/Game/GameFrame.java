@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Lenny, César, Miguel, Arístides
+ * @author Lenny
  */
 
 public class GameFrame extends JFrame{
@@ -50,11 +50,6 @@ public class GameFrame extends JFrame{
         this.setLocationRelativeTo(null);
 
         game.start();
-
-        //Realiza una serie de preguntas
-        game.Preguntar();
-        game.quizz.setVisible(false);
-        game.quizz.setVisible(true);
     }
     
     public void DetenerJuego(){

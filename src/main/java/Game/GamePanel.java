@@ -16,7 +16,7 @@ import persistence.ScoreService;
 
 /**
  *
- * @author Lenny, Cesar, Arítides. Miguel
+ * @author Lenny
  */
 
 public class GamePanel extends JPanel {
@@ -142,26 +142,12 @@ public class GamePanel extends JPanel {
         return bossHealth;
     }
     
-    public static Quizz quizz = new Quizz();
-
     public void ReanudarJuego(){
         gameLoop.resume();
-        score+= quizz.bonus;
-        quizz.bonus = 0;
-        quizz.valor = 0;
     }
 
     public void PausarJuego(){
         gameLoop.pause();
-    }
-
-    public void Preguntar(){
-        quizz.MetodoPreguntas();
-        quizz.setVisible(true);
-    }
-
-    public void sumarBonus(){
-        System.out.println(quizz.bonus);
     }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -971,7 +957,6 @@ public class GamePanel extends JPanel {
         newBulletCanFire = true;
         newBeamCanFire = true;
         newBonusEnemy = true;
-        Quizz.ReiniciarQuizz();
                 
         for(int i = 1; i <= 11; i++){
             CantidadElemento[i] = 0;
