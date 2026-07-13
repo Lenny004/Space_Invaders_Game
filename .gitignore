@@ -116,6 +116,11 @@ Highscore.txt
 *.bak
 *.orig
 scores.json
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
 
 # -----------------------------------------------------------------------------
 # Empaquetado / distribución

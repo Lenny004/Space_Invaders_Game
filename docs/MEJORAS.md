@@ -34,16 +34,13 @@ public class Projectile extends MovingGameObject {
 
 ### Repository para scores
 
-```java
-public interface ScoreRepository {
-    void save(String username, int score);
-    List<ScoreEntry> top(int limit);
-}
-```
+Persistencia local con SQLite (`SqliteScoreRepository`):
 
-Implementaciones: `JdbcScoreRepository`, `FileScoreRepository`, `InMemoryScoreRepository` (demos/tests).
+- Top scores
+- Historial de partidas (`RunEntry`: nivel, dificultad, victoria, fecha)
+- Migración desde `scores.json` / `Highscore.txt`
 
-**Por qué:** el menú y el juego no dependen de SQL Server para arrancar.
+`FileScoreRepository` queda como puente de migración. `JdbcScoreRepository` está deprecado.
 
 ## 2. Patrones de diseño recomendados
 
@@ -67,11 +64,12 @@ Implementaciones: `JdbcScoreRepository`, `FileScoreRepository`, `InMemoryScoreRe
 
 ## 4. Mejoras de producto
 
-- Modo offline sin SQL (guardar solo en archivo o SQLite).
+- ~~Modo offline sin SQL~~ → SQLite local con historial (`data/space-chemistry.db`).
 - Volumen y mute en configuración (API ya preparada en `SoundEffect.setVolume`).
 - Escalado de resolución / fullscreen.
 - Internacionalización (es/en) de menús y quizzes.
 - Empaquetado con `jpackage` (instalador Windows/macOS/Linux).
+- Pantalla Records con historial reciente (además del top; tooltips ya muestran metadatos).
 
 ## 5. Calidad de código
 

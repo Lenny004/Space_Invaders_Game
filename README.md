@@ -6,7 +6,7 @@ Proyecto originalmente desarrollado como trabajo académico (NetBeans / Java 8) 
 
 ## Descripción
 
-Controlas una nave espacial, derrotas oleadas de enemigos y jefes, recolectas elementos químicos y formas compuestos que otorgan ventajas. Los puntajes se guardan **offline** en `scores.json`; **SQL Server es opcional** para sincronizar records.
+Controlas una nave espacial, derrotas oleadas de enemigos y jefes, recolectas elementos químicos y formas compuestos que otorgan ventajas. Los puntajes e historial de partidas se guardan **en local** con SQLite (`data/space-chemistry.db`).
 
 Autores originales:
 
@@ -21,8 +21,7 @@ Autores originales:
 |-------------|----------------|--------|
 | **JDK** | 17+ | Temurin, Oracle, Microsoft Build of OpenJDK, etc. |
 | **Apache Maven** | 3.9+ | Gestión de dependencias y build |
-| **SQL Server** | Express o superior | Opcional; records también funcionan offline |
-| **Windows** (opcional) | — | Autenticación integrada JDBC; en otros SO usa usuario/contraseña |
+| **Windows / macOS / Linux** | — | Juego 100% local; no requiere base de datos externa |
 
 ## Instalación
 
@@ -33,27 +32,15 @@ git clone https://github.com/<tu-usuario>/Space-Chemistry.git
 cd Space-Chemistry
 ```
 
-### 2. Configurar la base de datos (opcional)
+### 2. Persistencia local
 
-Los records funcionan sin SQL Server (`scores.json` en el directorio de ejecución). Si quieres sincronizar con SQL Server:
+No hace falta instalar ninguna base de datos. Al jugar se crea automáticamente:
 
-1. Ejecuta el script `sql/spaceInvaders.sql` en SQL Server Management Studio (o `sqlcmd`), **omitendo** las líneas `DROP DATABASE` si solo quieres crear el esquema.
-2. Copia la plantilla de configuración:
-
-```bash
-copy src\main\resources\db.properties.example src\main\resources\db.properties
+```text
+data/space-chemistry.db
 ```
 
-3. Edita `db.properties` con tu host e instancia:
-
-```properties
-db.host=localhost
-db.instance=SQLEXPRESS
-db.name=spaceInvaders
-db.integratedSecurity=true
-```
-
-> `db.properties` está en `.gitignore` para no subir credenciales ni rutas locales.
+Si existía `scores.json` o `Highscore.txt`, se migran una sola vez a SQLite.
 
 ### 3. Compilar
 
@@ -70,10 +57,8 @@ mvn exec:java
 O bien:
 
 ```bash
-java -jar target/space-chemistry-1.3.0-SNAPSHOT.jar
+java -jar target/space-chemistry-1.4.0-SNAPSHOT.jar
 ```
-
-Si usas autenticación integrada de Windows con SQL Server, asegúrate de tener el DLL nativo de autenticación en el `PATH` (consulta [mssql-jdbc](https://github.com/microsoft/mssql-jdbc)).
 
 ### Instalador (opcional)
 
@@ -89,22 +74,21 @@ mvn -P jpackage package
 Space-Chemistry/
 ├── .github/workflows/         # CI (JDK 17 y 21)
 ├── docs/                      # Documentación técnica
-├── sql/                       # Scripts de base de datos
+├── sql/                       # Scripts históricos (referencia)
 ├── legacy/netbeans/           # Proyecto Ant/NetBeans original (referencia)
 ├── src/
 │   ├── main/
 │   │   ├── java/              # Código fuente
-│   │   │   ├── persistence/   # Scores offline + JDBC opcional
+│   │   │   ├── persistence/   # SQLite local (scores + historial)
 │   │   │   ├── Game/          # UI, lógica de juego, entidades
-│   │   │   ├── ClaseConexion/ # JDBC
+│   │   │   ├── ClaseConexion/ # Legacy JDBC (no usado)
 │   │   │   ├── Clases/        # Compatibilidad (Controlador deprecado)
 │   │   │   ├── Controlador/   # Teclado
 │   │   │   └── Tipografia/    # Fuentes personalizadas
 │   │   └── resources/
 │   │       ├── Imagenes/
 │   │       ├── Sonidos/
-│   │       ├── Tipografia/
-│   │       └── db.properties.example
+│   │       └── Tipografia/
 │   └── test/java/             # Tests JUnit 5
 ├── pom.xml
 └── README.md

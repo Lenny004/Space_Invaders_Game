@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.4.0] — Persistencia local SQLite (2026-07-13)
+
+### Añadido
+- `SqliteScoreRepository` con archivo `data/space-chemistry.db` (sin servidor).
+- `RunEntry`: score + nivel, dificultad, victoria/derrota y fecha.
+- Historial de partidas (`history` / `historyFor`) vía `ScoreService`.
+- Migración automática desde `scores.json` / `Highscore.txt` a SQLite.
+- Tooltips en Records con nivel, dificultad y resultado.
+
+### Cambiado
+- Persistencia principal: SQLite local (ya no SQL Server).
+- Al perder se guarda la partida siempre (también si eliges reintentar).
+- Dependencia Maven: `sqlite-jdbc` (eliminado `mssql-jdbc` del build).
+- Versión del artefacto: `1.4.0-SNAPSHOT`.
+
+### Deprecado
+- `JdbcScoreRepository` (stub; el juego es local).
+
 ## [1.3.0] — Fase D (2026-07-12)
 
 ### Añadido

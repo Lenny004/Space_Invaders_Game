@@ -26,7 +26,7 @@ src/test/java/          → tests (preparado)
 docs/                   → documentación Markdown
 sql/                    → scripts de BD
 legacy/netbeans/        → proyecto histórico
-src/main/java/persistence/ → scores offline + JDBC
+src/main/java/persistence/ → SQLite local (scores + historial)
 ```
 
 Esta disposición permite:
@@ -106,7 +106,7 @@ com.spacechemistry
   ├── entities            # Ship, Enemy, Projectile, Shield…
   ├── systems             # CollisionSystem, PowerUpSystem, ScoreSystem
   ├── audio               # MusicPlayer, SoundEffect
-  ├── persistence         # ScoreRepository, JdbcScoreRepository, FileScoreRepository
+  ├── persistence         # SqliteScoreRepository, RunEntry, ScoreService
   └── resources           # carga tipografías / imágenes
 ```
 

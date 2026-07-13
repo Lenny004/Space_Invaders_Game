@@ -6,7 +6,7 @@ import java.awt.Image;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import persistence.ScoreEntry;
+import persistence.RunEntry;
 import persistence.ScoreService;
 
 /**
@@ -237,16 +237,24 @@ public class Records extends javax.swing.JFrame {
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void mostrarDatos (){
-        List<ScoreEntry> top = ScoreService.getInstance().top(5);
+        List<RunEntry> top = ScoreService.getInstance().topRuns(5);
         javax.swing.JLabel[] names = {lblnombre1, lblnombre2, lblnombre3, lblnombre4, lblnombre5};
         javax.swing.JLabel[] scores = {lblR1, lblR2, lblR3, lblR4, lblR5};
         for (int i = 0; i < names.length; i++) {
             if (i < top.size()) {
-                names[i].setText(top.get(i).getUsername());
-                scores[i].setText(String.valueOf(top.get(i).getScore()));
+                RunEntry run = top.get(i);
+                names[i].setText(run.getUsername());
+                scores[i].setText(String.valueOf(run.getScore()));
+                String tip = "Nivel " + run.getLevelReached()
+                        + " · " + RunEntry.difficultyLabel(run.getDifficulty())
+                        + " · " + (run.isWon() ? "Victoria" : "Derrota");
+                names[i].setToolTipText(tip);
+                scores[i].setToolTipText(tip);
             } else {
                 names[i].setText("---");
                 scores[i].setText("0");
+                names[i].setToolTipText(null);
+                scores[i].setToolTipText(null);
             }
         }
     }

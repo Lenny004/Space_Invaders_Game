@@ -1,6 +1,7 @@
--- Space Chemistry — esquema de highscores
--- Ejecutar en SQL Server (Express o superior).
--- IMPORTANTE: no ejecutes la sección de DROP en entornos con datos.
+-- Space Chemistry — esquema histórico (SQL Server).
+-- El juego ya NO usa SQL Server: la persistencia activa es SQLite
+-- en data/space-chemistry.db (ver SqliteScoreRepository).
+-- Este script se conserva solo como referencia del proyecto académico original.
 
 CREATE DATABASE spaceInvaders;
 GO
@@ -17,18 +18,3 @@ BEGIN
     );
 END
 GO
-
--- Datos de ejemplo (opcional)
--- INSERT INTO dbo.highscore (username, score) VALUES ('John', 10000);
--- INSERT INTO dbo.highscore (username, score) VALUES ('Demo', 5000);
-
--- Consulta de top 5
--- SELECT TOP 5 username, score FROM dbo.highscore ORDER BY score DESC;
-
--- =====================================================================
--- PELIGRO: solo para reset total en desarrollo
--- =====================================================================
--- USE master;
--- GO
--- DROP DATABASE spaceInvaders;
--- GO

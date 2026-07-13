@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import persistence.RunEntry;
 import persistence.ScoreService;
 
 /**
@@ -173,7 +174,7 @@ public class GamePanel extends JPanel {
 
         // Panel de victoria si gana
         if (levelManager.isVictory(level)) {
-            saveCurrentScore();
+            saveCurrentScore(true);
             Victoria vic = new Victoria();
             vic.AsignarScore(score);
             vic.setVisible(true);
@@ -914,6 +915,7 @@ public class GamePanel extends JPanel {
         // Termina el juego si el jugador se queda sin vidas
         else if (lifeList.isEmpty()) {
             deathSoundAudio.play(); // Reproduce el sonido de la muerte cuando te quedas sin vidas
+            saveCurrentScore(false);
             // Le da al jugador la opción de volver a jugar o salir
             int respuesta = JOptionPane.showConfirmDialog(null, "¿Te gustaría jugar de nuevo?", "Tu perdiste el juego con " + score + " puntos", 0);
             // Si eligen jugar de nuevo, esto reinicia todos los elementos del juego.
@@ -923,7 +925,6 @@ public class GamePanel extends JPanel {
             }
             // Si eligen no volver a jugar, se cierra el juego.
             if (respuesta == 1) {
-                saveCurrentScore();
                 GameOver fin = new GameOver();
                 fin.AsignarScore(score);
                 fin.setVisible(true);
@@ -978,17 +979,22 @@ public class GamePanel extends JPanel {
         highScore = scoreService.bestScore();
     }
 
-    private void saveCurrentScore() {
+    private void saveCurrentScore(boolean won) {
         String username = FrmNombre.nombre;
         if (username == null || username.isBlank()) {
             username = "Player";
         }
+        int difficulty = RunEntry.DIFFICULTY_EASY;
         try {
-            scoreService.save(username, score);
+            difficulty = Dificultad.getTipoDificultad();
+        } catch (Exception ignored) {
+            // Configuracion puede fallar fuera de UI; default fácil
+        }
+        try {
+            scoreService.saveRun(new RunEntry(username, score, level, difficulty, won));
             highScore = Math.max(highScore, scoreService.bestScore());
         } catch (IllegalArgumentException ex) {
-            // Nombre inválido: guardar bajo Player
-            scoreService.save("Player", score);
+            scoreService.saveRun(new RunEntry("Player", score, level, difficulty, won));
             highScore = Math.max(highScore, score);
         }
     }

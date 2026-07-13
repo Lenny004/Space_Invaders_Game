@@ -18,32 +18,15 @@ javac -version
 2. Añade `bin` al `PATH`.
 3. Verifica: `mvn -version`.
 
-## SQL Server (opcional)
+## Persistencia local (SQLite)
 
-Los records funcionan offline en `scores.json`. SQL Server solo es necesario si quieres sincronizar el top en una base compartida.
+No se necesita SQL Server. Los records e historial viven en:
 
-1. Instala SQL Server Express + SSMS.
-2. Habilita TCP/IP y conoce tu instancia (`SQLEXPRESS`, etc.).
-3. Ejecuta `sql/spaceInvaders.sql` **con cuidado**:
-   - Usa solo el `CREATE DATABASE`, `USE` y `CREATE TABLE`.
-   - No ejecutes `DROP DATABASE` en un entorno con datos.
-4. Copia `db.properties.example` → `db.properties` y ajusta host/instancia.
-
-### Autenticación integrada (Windows)
-
-```properties
-db.integratedSecurity=true
+```text
+data/space-chemistry.db
 ```
 
-Puede requerir el DLL nativo de autenticación del driver MSSQL en el `PATH`.
-
-### Usuario y contraseña
-
-```properties
-db.integratedSecurity=false
-db.user=sa
-db.password=TuPassword
-```
+Se crea solo al guardar la primera partida. Si hay `scores.json` o `Highscore.txt` antiguos, se importan una vez.
 
 ## Primera ejecución
 
@@ -57,7 +40,7 @@ Clase principal: `Game.Inicio`.
 JAR ejecutable:
 
 ```bash
-java -jar target/space-chemistry-1.3.0-SNAPSHOT.jar
+java -jar target/space-chemistry-1.4.0-SNAPSHOT.jar
 ```
 
 ## Tests y CI
@@ -92,8 +75,8 @@ Salida en `target/dist/` (app image / instalador según SO). En Windows habilita
 | Síntoma | Causa probable | Solución |
 |---------|----------------|----------|
 | No se oye música | WAV no encontrado en classpath | Verificar `src/main/resources/Sonidos` |
-| Scores no aparecen en Records | Primera partida / archivo vacío | Juega una partida; se crea `scores.json` |
-| Scores no guardan en SQL | BD mal configurada | Revisar consola y `db.properties`; el archivo local sí guarda |
+| Scores no aparecen en Records | Primera partida / DB vacía | Juega una partida; se crea `data/space-chemistry.db` |
+| Scores no guardan | Permisos en carpeta `data/` | Ejecutar desde un directorio escribible |
 | `UnsupportedClassVersionError` | JDK < 17 | Actualizar JAVA_HOME |
 | Pantalla en blanco / NPE en imágenes | Recurso mal nombrado | Rutas case-sensitive: `/Imagenes/...` |
 | `illegal character: '\ufeff'` | BOM UTF-8 en fuentes | Guardar como UTF-8 sin BOM |

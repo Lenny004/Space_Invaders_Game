@@ -1,9 +1,7 @@
 package Clases;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.List;
-import persistence.JdbcScoreRepository;
 import persistence.ScoreEntry;
 import persistence.ScoreService;
 
@@ -14,7 +12,6 @@ import persistence.ScoreService;
 public class Controlador {
 
     private final ScoreService scoreService = ScoreService.getInstance();
-    private final JdbcScoreRepository jdbc = new JdbcScoreRepository();
     private Integer idU;
     private String username;
     private Integer score;
@@ -24,7 +21,7 @@ public class Controlador {
     }
 
     public void setCn(Connection cn) {
-        // no-op: la conexión la gestiona JdbcScoreRepository
+        // no-op: persistencia local vía ScoreService / SQLite
     }
 
     public Integer getIdU() {
@@ -51,27 +48,14 @@ public class Controlador {
         this.score = score;
     }
 
-    public Controlador() {
-    }
-
-    public boolean consultarId() {
-        return false;
-    }
-
-    public boolean consultarTopScores() {
-        List<ScoreEntry> top = scoreService.top(1);
-        if (top.isEmpty()) {
-            return false;
-        }
-        username = top.get(0).getUsername();
-        score = top.get(0).getScore();
-        return true;
-    }
-
-    public boolean guardarScore() {
+    public boolean GuardarScore() {
         if (username == null || score == null) {
             return false;
         }
+        return scoreService.save(username, score);
+    }
+
+    public boolean InsertarScore(String username, int score) {
         return scoreService.save(username, score);
     }
 
@@ -79,11 +63,11 @@ public class Controlador {
      * @deprecated Preferir {@link ScoreService#top(int)}.
      */
     @Deprecated
-    public ResultSet getTabla() {
-        return null;
+    public List<ScoreEntry> ListarTop(int limit) {
+        return scoreService.top(limit);
     }
 
-    public boolean isJdbcAvailable() {
-        return jdbc.isAvailable();
+    public boolean BorrarScores() {
+        return scoreService.clearHighScores();
     }
 }
