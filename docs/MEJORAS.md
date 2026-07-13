@@ -92,7 +92,7 @@ Implementaciones: `JdbcScoreRepository`, `FileScoreRepository`, `InMemoryScoreRe
 Fase A (hecha)   Modernizar build + APIs rotas + docs + gitignore
 Fase B (hecha)   ScoreRepository + modo offline + renombrar Creditos
 Fase C (hecha)   Extraer sistemas de GamePanel + unificar Projectile
-Fase D           Tests + CI + jpackage
+Fase D (hecha)   Tests + CI + jpackage
 Fase E           Pulido UX / i18n / balance de niveles
 ```
 
@@ -119,3 +119,15 @@ Completada (extracción incremental).
 | `GameState` | Modelo de estado compartido (base para seguir adelgazando `GamePanel`) |
 
 Pendiente para iteraciones futuras: mover crafteo/spawns fuera de `paint()`, y migrar listas/contadores restantes a `GameState`.
+
+## Estado Fase D
+
+Completada.
+
+| Entrega | Detalle |
+|---------|---------|
+| Tests | `LevelManager`, `GameState`, colisiones, proyectiles + suite previa (38 tests) |
+| CI | `.github/workflows/ci.yml` — JDK 17 y 21, `mvn -B verify` |
+| Empaquetado | Perfil Maven `-P jpackage` → `target/dist/` |
+
+Siguiente: **Fase E** (UX, i18n, balance) y seguir adelgazando `GamePanel.paint()`.

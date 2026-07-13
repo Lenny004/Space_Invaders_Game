@@ -10,13 +10,16 @@ import java.util.logging.Logger;
 public class ScoreService {
 
     private static final Logger LOGGER = Logger.getLogger(ScoreService.class.getName());
-    private static final ScoreService INSTANCE = new ScoreService();
 
     private final ScoreRepository fileRepository;
     private final ScoreRepository jdbcRepository;
 
+    private static final class Holder {
+        private static final ScoreService INSTANCE = new ScoreService();
+    }
+
     public static ScoreService getInstance() {
-        return INSTANCE;
+        return Holder.INSTANCE;
     }
 
     public ScoreService() {

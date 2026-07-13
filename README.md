@@ -70,15 +70,24 @@ mvn exec:java
 O bien:
 
 ```bash
-java -jar target/space-chemistry-1.0.0-SNAPSHOT.jar
+java -jar target/space-chemistry-1.3.0-SNAPSHOT.jar
 ```
 
 Si usas autenticación integrada de Windows con SQL Server, asegúrate de tener el DLL nativo de autenticación en el `PATH` (consulta [mssql-jdbc](https://github.com/microsoft/mssql-jdbc)).
+
+### Instalador (opcional)
+
+Con un JDK que incluya `jpackage`:
+
+```bash
+mvn -P jpackage package
+```
 
 ## Estructura del proyecto
 
 ```
 Space-Chemistry/
+├── .github/workflows/         # CI (JDK 17 y 21)
 ├── docs/                      # Documentación técnica
 ├── sql/                       # Scripts de base de datos
 ├── legacy/netbeans/           # Proyecto Ant/NetBeans original (referencia)
@@ -96,7 +105,7 @@ Space-Chemistry/
 │   │       ├── Sonidos/
 │   │       ├── Tipografia/
 │   │       └── db.properties.example
-│   └── test/java/             # Tests (espacio preparado)
+│   └── test/java/             # Tests JUnit 5
 ├── pom.xml
 └── README.md
 ```

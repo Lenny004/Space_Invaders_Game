@@ -54,7 +54,7 @@ class FileScoreRepositoryTest {
     @Test
     void saveAndTopOrdersDescending() {
         Path file = tempDir.resolve("scores.json");
-        FileScoreRepository repo = new FileScoreRepository(file);
+        FileScoreRepository repo = new FileScoreRepository(file, tempDir.resolve("no-legacy.txt"));
 
         assertTrue(repo.save(new ScoreEntry("Low", 10)));
         assertTrue(repo.save(new ScoreEntry("High", 100)));
@@ -69,7 +69,9 @@ class FileScoreRepositoryTest {
 
     @Test
     void topRespectsLimit() {
-        FileScoreRepository repo = new FileScoreRepository(tempDir.resolve("scores.json"));
+        Path dir = tempDir.resolve("limit");
+        FileScoreRepository repo = new FileScoreRepository(
+                dir.resolve("scores.json"), dir.resolve("Highscore.txt"));
         repo.save(new ScoreEntry("A", 1));
         repo.save(new ScoreEntry("B", 2));
         repo.save(new ScoreEntry("C", 3));
@@ -79,8 +81,8 @@ class FileScoreRepositoryTest {
 
     @Test
     void clearEmptiesFile() throws Exception {
-        Path file = tempDir.resolve("scores.json");
-        FileScoreRepository repo = new FileScoreRepository(file);
+        Path file = tempDir.resolve("clear-scores.json");
+        FileScoreRepository repo = new FileScoreRepository(file, tempDir.resolve("clear-legacy.txt"));
         repo.save(new ScoreEntry("Ada", 99));
         assertTrue(repo.clear());
         assertTrue(repo.top(5).isEmpty());
@@ -112,8 +114,9 @@ class FileScoreRepositoryTest {
 
     @Test
     void scoreServicePrefersFileWhenJdbcUnavailable() {
-        Path file = tempDir.resolve("scores.json");
-        FileScoreRepository fileRepo = new FileScoreRepository(file);
+        Path dir = tempDir.resolve("service");
+        FileScoreRepository fileRepo = new FileScoreRepository(
+                dir.resolve("scores.json"), dir.resolve("Highscore.txt"));
         ScoreRepository jdbcDown = new ScoreRepository() {
             @Override
             public boolean save(ScoreEntry entry) {

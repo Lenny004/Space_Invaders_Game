@@ -67,4 +67,89 @@ class CollisionSystemTest {
         CollisionSystem.degradeShield(shields, 0);
         assertTrue(shields.isEmpty());
     }
+
+    @Test
+    void projectileHitsEnemyAndNotifiesListener() {
+        List<Projectile> projectiles = new ArrayList<>();
+        List<Enemy> enemies = new ArrayList<>();
+        Projectile p = new Projectile(100, 40, Color.RED);
+        enemies.add(new Enemy(100, 20, 0, 0, 0, null, 40, 40, 1));
+        projectiles.add(p);
+
+        int[] hitIndex = {-1};
+        CollisionSystem.Listener listener = new CollisionSystem.Listener() {
+            @Override
+            public void onEnemyHit(int enemyIndex) {
+                hitIndex[0] = enemyIndex;
+            }
+
+            @Override
+            public void onShieldHit(int shieldIndex) {
+            }
+
+            @Override
+            public void onBonusHit(int bonusIndex) {
+            }
+        };
+
+        boolean canFire = CollisionSystem.updatePlayerProjectiles(
+                projectiles, enemies, List.of(), List.of(), listener);
+
+        assertEquals(0, hitIndex[0]);
+        assertFalse(p.isActive());
+        assertTrue(canFire);
+    }
+
+    @Test
+    void projectileHitsShieldBeforeBonus() {
+        List<Projectile> projectiles = new ArrayList<>();
+        List<Shield> shields = new ArrayList<>();
+        Projectile p = new Projectile(100, 40, Color.CYAN);
+        shields.add(new Shield(100, 20, 150, 10, Color.RED));
+        projectiles.add(p);
+
+        int[] shieldHit = {-1};
+        int[] bonusHit = {-1};
+        CollisionSystem.updatePlayerProjectiles(
+                projectiles,
+                List.of(),
+                shields,
+                List.of(),
+                new CollisionSystem.Listener() {
+                    @Override
+                    public void onEnemyHit(int enemyIndex) {
+                    }
+
+                    @Override
+                    public void onShieldHit(int shieldIndex) {
+                        shieldHit[0] = shieldIndex;
+                    }
+
+                    @Override
+                    public void onBonusHit(int bonusIndex) {
+                        bonusHit[0] = bonusIndex;
+                    }
+                });
+
+        assertEquals(0, shieldHit[0]);
+        assertEquals(-1, bonusHit[0]);
+        assertFalse(p.isActive());
+    }
+}
+
+class ProjectileTest {
+
+    @Test
+    void damageDefaultsToOneAndNeverBelowOne() {
+        assertEquals(1, new Projectile(0, 0, Color.RED).getDamage());
+        assertEquals(1, new Projectile(0, 0, Color.RED, 0).getDamage());
+        assertEquals(3, new Projectile(0, 0, Color.RED, 3).getDamage());
+    }
+
+    @Test
+    void advanceMovesUpAndDeactivatesOffScreen() {
+        Projectile p = new Projectile(10, 10, Color.ORANGE);
+        p.advance();
+        assertFalse(p.isActive());
+    }
 }

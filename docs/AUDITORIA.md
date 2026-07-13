@@ -23,14 +23,14 @@ El juego es funcional como prototipo académico Swing, pero no era portable ni c
 ## Problemas técnicos pendientes (no bloqueantes)
 
 1. **God class `GamePanel` (~1500 líneas)** — mezcla UI, física, colisiones, power-ups, niveles, audio y persistencia.
-2. **Duplicación `Bullet`–`Bullet7`** — siete clases casi idénticas; deberían ser una con parámetros (color, daño, velocidad).
+2. ~~**Duplicación `Bullet`–`Bullet7`**~~ → unificado en `Projectile` (Fase C).
 3. **Estado global estático** — `CantidadBalas`, flags de power-ups, `FrmNombre.nombre`, instancias estáticas de frames.
 4. **Nombres de paquetes poco convencionales** — `Game`, `Clases`, `ClaseConexion` en lugar de `com.spacechemistry.*`.
 5. **Archivos `.form` de NetBeans** — útiles solo con el diseñador de NetBeans; el layout AbsoluteLayout acopla UI al IDE.
-6. **Sin tests automatizados** — carpeta `src/test/java` preparada pero vacía.
-7. **SQL Server como única persistencia** — acoplamiento fuerte; dificulta demos sin BD.
+6. ~~**Sin tests automatizados** — carpeta `src/test/java` preparada pero vacía.~~ → JUnit 5 + CI (Fase D).
+7. ~~**SQL Server como única persistencia**~~ → offline con `scores.json` + JDBC opcional (Fase B).
 8. ~~**Nombre de clase con tilde** — `Créditos.java`~~ → resuelto en Fase B (`Creditos.java`).
-9. **Highscore dual** — archivo local `Highscore.txt` + tabla SQL sin estrategia unificada.
+9. ~~**Highscore dual**~~ → unificado vía `ScoreService` / `ScoreRepository` (Fase B).
 10. **Seguridad JDBC** — `encrypt=true;trustServerCertificate=true` es válido para desarrollo, no para producción.
 
 ## Dependencias

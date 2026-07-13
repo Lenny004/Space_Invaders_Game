@@ -6,7 +6,7 @@
 
     <groupId>com.spacechemistry</groupId>
     <artifactId>space-chemistry</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Space Chemistry</name>
@@ -99,4 +99,51 @@
             </plugin>
         </plugins>
     </build>
+
+    <!--
+      Empaquetado nativo con jpackage (requiere JDK completo con jpackage).
+      Ejemplo Windows: mvn -P jpackage package
+      Salida en target/dist/
+    -->
+    <profiles>
+        <profile>
+            <id>jpackage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.6.6</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <name>SpaceChemistry</name>
+                                    <appVersion>1.3.0</appVersion>
+                                    <vendor>Space Chemistry</vendor>
+                                    <destination>target/dist</destination>
+                                    <modulePaths>
+                                        <modulePath>target</modulePath>
+                                    </modulePaths>
+                                    <input>target</input>
+                                    <mainJar>${project.build.finalName}.jar</mainJar>
+                                    <mainClass>Game.Inicio</mainClass>
+                                    <javaOptions>
+                                        <option>-Dfile.encoding=UTF-8</option>
+                                    </javaOptions>
+                                    <winDirChooser>true</winDirChooser>
+                                    <winMenu>true</winMenu>
+                                    <winShortcut>true</winShortcut>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

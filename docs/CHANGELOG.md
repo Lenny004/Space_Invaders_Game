@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0] — Fase D (2026-07-12)
+
+### Añadido
+- CI con GitHub Actions (`mvn -B verify`) en JDK 17 y 21.
+- Perfil Maven `jpackage` para generar instalador/app nativa (`mvn -P jpackage package`).
+- Tests de `LevelManager`, `GameState`, colisiones con listener y `Projectile`.
+
+### Cambiado
+- `LevelManager` acepta dificultad por `int` (testeable sin Swing).
+- `ScoreService` con inicialización perezosa; `JdbcScoreRepository` conecta solo al usarse.
+- `FileScoreRepository(Path)` busca `Highscore.txt` junto al JSON, no en el CWD.
+- Versión del artefacto: `1.3.0-SNAPSHOT`.
+
+### Corregido
+- BOM UTF-8 en `Inicio`, `GamePanel` y `Creditos` que rompía `javac`.
+- Tests de persistencia contaminados por `Highscore.txt` del directorio de trabajo.
+
 ## [1.2.0] — Fase C (2026-07-12)
 
 ### Añadido

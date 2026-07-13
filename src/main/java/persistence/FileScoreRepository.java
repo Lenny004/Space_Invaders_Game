@@ -28,7 +28,10 @@ public class FileScoreRepository implements ScoreRepository {
     }
 
     public FileScoreRepository(Path scoresPath) {
-        this(scoresPath, Path.of("Highscore.txt"));
+        // Legacy junto al scores.json (no el CWD), para no contaminar tests ni rutas absolutas.
+        this(scoresPath, scoresPath.getParent() != null
+                ? scoresPath.getParent().resolve("Highscore.txt")
+                : Path.of("Highscore.txt"));
     }
 
     public FileScoreRepository(Path scoresPath, Path legacyHighscorePath) {

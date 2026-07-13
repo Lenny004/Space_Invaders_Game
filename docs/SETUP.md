@@ -54,6 +54,30 @@ mvn exec:java
 
 Clase principal: `Game.Inicio`.
 
+JAR ejecutable:
+
+```bash
+java -jar target/space-chemistry-1.3.0-SNAPSHOT.jar
+```
+
+## Tests y CI
+
+```bash
+mvn -B verify
+```
+
+En GitHub, el workflow `.github/workflows/ci.yml` ejecuta lo mismo en JDK 17 y 21 en cada push/PR a `main`.
+
+## Instalador nativo (jpackage)
+
+Requiere un JDK completo con la herramienta `jpackage` (no solo un JRE).
+
+```bash
+mvn -P jpackage package
+```
+
+Salida en `target/dist/` (app image / instalador según SO). En Windows habilita menú, acceso directo y selector de carpeta.
+
 ## IDE recomendados
 
 | IDE | Cómo abrir |
@@ -72,6 +96,7 @@ Clase principal: `Game.Inicio`.
 | Scores no guardan en SQL | BD mal configurada | Revisar consola y `db.properties`; el archivo local sí guarda |
 | `UnsupportedClassVersionError` | JDK < 17 | Actualizar JAVA_HOME |
 | Pantalla en blanco / NPE en imágenes | Recurso mal nombrado | Rutas case-sensitive: `/Imagenes/...` |
+| `illegal character: '\ufeff'` | BOM UTF-8 en fuentes | Guardar como UTF-8 sin BOM |
 
 ## Assets
 

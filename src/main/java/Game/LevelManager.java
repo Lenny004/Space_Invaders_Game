@@ -10,10 +10,19 @@ import java.util.List;
  */
 public class LevelManager {
 
-    private final Configuracion dificultad;
+    /** 1 = fácil, 2 = medio, 3 = difícil (mismo contrato que {@link Configuracion}). */
+    private final int tipoDificultad;
 
     public LevelManager(Configuracion dificultad) {
-        this.dificultad = dificultad;
+        this(dificultad != null ? dificultad.getTipoDificultad() : 1);
+    }
+
+    public LevelManager(int tipoDificultad) {
+        this.tipoDificultad = tipoDificultad <= 0 ? 1 : tipoDificultad;
+    }
+
+    public int getTipoDificultad() {
+        return tipoDificultad;
     }
 
     public boolean isBossLevel(int level) {
@@ -58,10 +67,9 @@ public class LevelManager {
 
     private List<Enemy> createNormalWave(int level) {
         List<Enemy> enemies = new ArrayList<>();
-        int tipo = dificultad.getTipoDificultad();
         for (int row = 0; row < 6; row++) {
             for (int column = 0; column < 5; column++) {
-                int xVel = switch (tipo) {
+                int xVel = switch (tipoDificultad) {
                     case 2 -> 4;
                     case 3 -> 2;
                     default -> 1 * level;
@@ -75,8 +83,7 @@ public class LevelManager {
     }
 
     private Enemy createBoss(int level) {
-        int tipo = dificultad.getTipoDificultad();
-        int xVel = switch (tipo) {
+        int xVel = switch (tipoDificultad) {
             case 2 -> 2 * (level / 3);
             case 3 -> Math.max(1, level / 3);
             default -> 3 * (level / 3);

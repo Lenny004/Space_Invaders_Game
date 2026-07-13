@@ -11,30 +11,44 @@ import java.util.logging.Logger;
 
 /**
  * Persistencia de puntajes en SQL Server.
- * Si no hay conexión, {@link #isAvailable()} es {@code false} y las operaciones fallan de forma segura.
+ * La conexión se abre de forma perezosa; si falla, {@link #isAvailable()} es {@code false}.
  */
 public class JdbcScoreRepository implements ScoreRepository {
 
     private static final Logger LOGGER = Logger.getLogger(JdbcScoreRepository.class.getName());
 
-    private final Connection connection;
+    private Connection connection;
+    private boolean connectAttempted;
+    private final boolean useDefaultConnector;
 
     public JdbcScoreRepository() {
-        Connection cn = null;
-        try {
-            cn = new Conexion().conectar();
-        } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "No se pudo inicializar JDBC para scores", ex);
-        }
-        this.connection = cn;
+        this.connection = null;
+        this.connectAttempted = false;
+        this.useDefaultConnector = true;
     }
 
     public JdbcScoreRepository(Connection connection) {
         this.connection = connection;
+        this.connectAttempted = true;
+        this.useDefaultConnector = false;
+    }
+
+    private synchronized void ensureConnected() {
+        if (connectAttempted || !useDefaultConnector) {
+            return;
+        }
+        connectAttempted = true;
+        try {
+            connection = new Conexion().conectar();
+        } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "No se pudo inicializar JDBC para scores", ex);
+            connection = null;
+        }
     }
 
     @Override
     public boolean isAvailable() {
+        ensureConnected();
         try {
             return connection != null && !connection.isClosed();
         } catch (Exception ex) {
@@ -64,7 +78,6 @@ public class JdbcScoreRepository implements ScoreRepository {
         if (!isAvailable() || limit <= 0) {
             return result;
         }
-        // TOP n con parámetro seguro (límite acotado)
         int safeLimit = Math.min(limit, 100);
         String sql = "SELECT TOP " + safeLimit + " username, score FROM highscore ORDER BY score DESC";
         try (PreparedStatement cmd = connection.prepareStatement(sql);
@@ -79,7 +92,7 @@ public class JdbcScoreRepository implements ScoreRepository {
                 }
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "Error leyendo top scores desde SQL Server", ex);
+            LOGGER.log(Level.WARNING, "Error leyendo top scores de SQL Server", ex);
         }
         return result;
     }
@@ -89,12 +102,11 @@ public class JdbcScoreRepository implements ScoreRepository {
         if (!isAvailable()) {
             return false;
         }
-        String sql = "DELETE FROM highscore";
-        try (PreparedStatement cmd = connection.prepareStatement(sql)) {
+        try (PreparedStatement cmd = connection.prepareStatement("DELETE FROM highscore")) {
             cmd.executeUpdate();
             return true;
         } catch (Exception ex) {
-            LOGGER.log(Level.WARNING, "Error limpiando highscores en SQL Server", ex);
+            LOGGER.log(Level.WARNING, "Error limpiando scores en SQL Server", ex);
             return false;
         }
     }

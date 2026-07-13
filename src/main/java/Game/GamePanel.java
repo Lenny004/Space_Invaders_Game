@@ -1,4 +1,4 @@
-﻿package Game;
+package Game;
 
 import Controlador.KeyboardController;
 import Tipografia.Fuente;
