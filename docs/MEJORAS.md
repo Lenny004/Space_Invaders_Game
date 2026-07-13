@@ -91,7 +91,7 @@ Implementaciones: `JdbcScoreRepository`, `FileScoreRepository`, `InMemoryScoreRe
 ```
 Fase A (hecha)   Modernizar build + APIs rotas + docs + gitignore
 Fase B (hecha)   ScoreRepository + modo offline + renombrar Creditos
-Fase C           Extraer sistemas de GamePanel + unificar Bullet
+Fase C (hecha)   Extraer sistemas de GamePanel + unificar Projectile
 Fase D           Tests + CI + jpackage
 Fase E           Pulido UX / i18n / balance de niveles
 ```
@@ -104,3 +104,18 @@ Completada. Ver [CHANGELOG.md](CHANGELOG.md).
 - SQL opcional: `JdbcScoreRepository` cuando `db.properties` conecta
 - UI: `ScoreService` en `GamePanel` / `Records` / `FrmNombre`
 - `Creditos.java` (sin tilde)
+
+## Estado Fase C
+
+Completada (extracción incremental).
+
+| Módulo | Responsabilidad |
+|--------|-----------------|
+| `Projectile` | Unifica Bullet…Bullet7 |
+| `PowerUpSystem` | Disparo en abanico + velocidad de nave |
+| `CollisionSystem` | Movimiento/colisiones de proyectiles + degradación de escudos |
+| `LevelManager` | Oleadas, jefes, nave, vidas, escudos |
+| `GameLoop` | Timers de tick y hitmarker |
+| `GameState` | Modelo de estado compartido (base para seguir adelgazando `GamePanel`) |
+
+Pendiente para iteraciones futuras: mover crafteo/spawns fuera de `paint()`, y migrar listas/contadores restantes a `GameState`.

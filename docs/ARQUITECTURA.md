@@ -39,34 +39,40 @@ Esta disposición permite:
 
 ```mermaid
 flowchart TB
-  subgraph ui [Presentación Swing]
+  subgraph ui [Presentacion Swing]
     Inicio --> FrmNombre
     FrmNombre --> GameFrame
     GameFrame --> GamePanel
-    Inicio --> Configuracion
-    Inicio --> Records
   end
 
-  subgraph domain [Dominio del juego]
-    GamePanel --> Ship
-    GamePanel --> Enemy
-    GamePanel --> Bullet
-    GamePanel --> Shield
-    GamePanel --> ElementoDrop
-    GamePanel --> Quizz
+  subgraph systems [Sistemas Fase C]
+    GameLoop
+    LevelManager
+    CollisionSystem
+    PowerUpSystem
+  end
+
+  subgraph domain [Dominio]
+    Projectile
+    Ship
+    Enemy
+    Shield
+    Beam
   end
 
   subgraph infra [Infraestructura]
+    ScoreService
     MusicPlayer
     SoundEffect
-    Conexion --> SQLServer[(SQL Server)]
-    Controlador --> Conexion
   end
 
-  GamePanel --> MusicPlayer
-  GamePanel --> SoundEffect
-  GamePanel --> Controlador
-  Records --> Controlador
+  GamePanel --> GameLoop
+  GamePanel --> LevelManager
+  GamePanel --> CollisionSystem
+  GamePanel --> PowerUpSystem
+  PowerUpSystem --> Projectile
+  CollisionSystem --> Projectile
+  GamePanel --> ScoreService
 ```
 
 ## Jerarquía de entidades (ya existente)

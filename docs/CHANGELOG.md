@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0] — Fase C (2026-07-12)
+
+### Añadido
+- `Projectile` unifica las 7 clases de balas.
+- Sistemas: `PowerUpSystem`, `CollisionSystem`, `LevelManager`, `GameLoop`.
+- `GameState` como modelo de estado compartido para seguir extrayendo lógica.
+- Tests de combate (`CombatSystemsTest`).
+
+### Cambiado
+- `GamePanel` delega disparo, colisiones de proyectiles, setup de nivel y timers.
+- `Bullet` queda deprecado como alias de `Projectile`; eliminados `Bullet2`…`Bullet7`.
+
+### Notas
+- `paint()` aún contiene spawns de beams/bonus y crafteo de power-ups (siguiente iteración).
+
 ## [1.1.0] — Fase B (2026-07-12)
 
 ### Añadido

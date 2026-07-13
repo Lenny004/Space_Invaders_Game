@@ -6,14 +6,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import persistence.ScoreService;
 
 /**
@@ -24,8 +21,6 @@ import persistence.ScoreService;
 public class GamePanel extends JPanel {
     
     // Componentes necesarios. ¡No quitar! 
-    private Timer gameTimer;
-    private Timer TiempoPowerUps;
     private Fuente TipoFuente = new Fuente();
     private static int Velocidad;
     public static int CantidadBalas;
@@ -75,13 +70,9 @@ public class GamePanel extends JPanel {
     private Enemy enemy; //Creamos objeto de la Clase Enemy
     private Shield shield;
 //----------------------------------------------------
-    private Bullet bullet;
-    private Bullet2 bullet2;
-    private Bullet3 bullet3;
-    private Bullet4 bullet4;
-    private Bullet5 bullet5;
-    private Bullet6 bullet6;
-    private Bullet7 bullet7;
+    private final java.util.List<Projectile> projectiles = new ArrayList<>();
+    private LevelManager levelManager;
+    private final GameLoop gameLoop = new GameLoop(Fotogramaporsegundo);
 //----------------------------------------------------
     private Beam beam, beam2, beam3;
     private ElementoDrop Elemento;
@@ -153,14 +144,14 @@ public class GamePanel extends JPanel {
     public static Quizz quizz = new Quizz();
 
     public void ReanudarJuego(){
-        gameTimer.start();
+        gameLoop.resume();
         score+= quizz.bonus;
         quizz.bonus = 0;
         quizz.valor = 0;
     }
 
     public void PausarJuego(){
-        gameTimer.stop();
+        gameLoop.pause();
     }
 
     public void Preguntar(){
@@ -176,107 +167,41 @@ public class GamePanel extends JPanel {
     // CONFIGURAR JUEGO
 
     public final void ConfigurarJuego() {
-        
-        //Panel de victoria si gana
-        if(level > 15){
+        if (levelManager == null) {
+            levelManager = new LevelManager(Dificultad);
+        }
+
+        // Panel de victoria si gana
+        if (levelManager.isVictory(level)) {
             saveCurrentScore();
-            
             Victoria vic = new Victoria();
             vic.AsignarScore(score);
             vic.setVisible(true);
+            return;
         }
-        
-        // Establece enemigos para niveles normales
-        //Llamamos al método que reproduce la música po nivel
-        if(level%3 <= 1){
+
+        if (level % 3 <= 1) {
             MusicaLevel();
         }
-        
-       //Validamos si el nivel es diferente de divisor de 3, que serían los normales
-        if (level%3 != 0) {
-            // 6 Filas
-            for (int row = 0; row < 6; row++) {
-                // 5 Columnas
-                for (int column = 0; column < 5; column++) {
-                    switch(Dificultad.getTipoDificultad()){
-                        case 1://Dificil
-                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                                enemy = new Enemy((120 + (row * 100)), (20 + (column * 60)), (1*level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
-                                enemyList.add(enemy);
-                            break;
-                        case 2://Medio
-                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                                enemy = new Enemy((120 + (row * 100)), (20 + (column * 60)), (4), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
-                                enemyList.add(enemy);
-                            break;
-                        case 3://Fácil
-                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                                enemy = new Enemy((120 + (row * 100)), (20 + (column * 60)), (2  ), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
-                                enemyList.add(enemy);
-                            break;
-                        default:
-                                //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                                enemy = new Enemy((120 + (row * 100)), (20 + (column * 60)), (1*level), 0, column, null, 40, 40, level); // La velocidad del enemigo aumentará en cada nivel
-                                enemyList.add(enemy);
-                            break;
-                    }
-                }
-            }
+
+        if (levelManager.isBossLevel(level)) {
+            bossSoundAudio.play();
         }
-        // Sino si son divisores de 3, es el nivel del jefe
-        else{
-            switch(Dificultad.getTipoDificultad()){
-                case 1://Dificil
-                        // Establece enemigo para los niveles de jefe
-                        bossSoundAudio.play(); // Reproduce el rugido del jefe
-                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                        enemy = new Enemy(120, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
-                        enemyList.add(enemy);
-                    break;
-                case 2://Medio
-                        // Establece enemigo para los niveles de jefe
-                        bossSoundAudio.play(); // Reproduce el rugido del jefe
-                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                        enemy = new Enemy(120, 20, (2 * (level / 3)), 0, 100, null, 150, 150, level);
-                        enemyList.add(enemy);
-                    break;
-                case 3://Facil
-                        // Establece enemigo para los niveles de jefe
-                        bossSoundAudio.play(); // Reproduce el rugido del jefe
-                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                        enemy = new Enemy(120, 20, (1 * (level / 3)), 0, 100, null, 150, 150, level);
-                        enemyList.add(enemy);
-                    break;
-                default://Dificil
-                        // Establece enemigo para los niveles de jefe
-                        bossSoundAudio.play(); // Reproduce el rugido del jefe
-                        //Lo mandamos a la clase Enemy con los siguientes parametros "(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level)"
-                        enemy = new Enemy(120, 20, (3 * (level / 3)), 0, 100, null, 150, 150, level);
-                        enemyList.add(enemy);
-                    break;
-            }
-        }
-        // Restablece todos los movimientos del controlador con "resetController"
+
+        enemyList.clear();
+        enemyList.addAll(levelManager.createEnemies(level));
+
         controladores.resetController();
+        NaveJugador = levelManager.createPlayer(controladores);
 
-        // Establece los valores de la nave del jugador
-        // Le enviamos los siguientes parametros a la Clase Ship (int xPosition, int yPosition, Color color, KeyboardController control)
-        NaveJugador = new Ship(500, 600, null, controladores);
+        lifeList.clear();
+        lifeList.addAll(levelManager.createLifeIcons(numberOfLives));
 
-        // Establece el contador de vidas.
-        for (int column = 0; column < numberOfLives; column++) {
-            singleLife = new Ship(48 + (column * 20), 10, Color.WHITE, null);
-            lifeList.add(singleLife);
-         }
+        shieldList.clear();
+        shieldList.addAll(levelManager.createShields());
 
-        //Establece los valores para 3 filas y 3 columnas de escudos.
-        for (int row = 0;
-                row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                shield = new Shield(100 + (column * 333), 500 - (row * 10), 150, 10, Color.RED);
-                shieldList.add(shield);
-            }
-        }
+        projectiles.clear();
+        newBulletCanFire = true;
     }
     
     
@@ -298,94 +223,14 @@ public class GamePanel extends JPanel {
     }
     
     public void PowerUpVelocidad(){
-        switch(Velocidad){
-            case 1:
-                    NaveJugador.move2();
-                break;
-            case 2:
-                    NaveJugador.move3();
-                break;
-            case 3:
-                    NaveJugador.move4();
-                break;
-            case 4:
-                    NaveJugador.move5();
-                break;
-            case 5:
-                    NaveJugador.move6();
-                break;
-            case 6:
-                    NaveJugador.move7();
-                break;
-            default:
-                    NaveJugador.move();
-                break;
-        }
+        PowerUpSystem.applyPlayerSpeed(NaveJugador, Velocidad);
     }
     
     
     public void PowerUpBalas(){
-        switch(CantidadBalas){
-            
-            case 0:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0,Naranja);
-                newBulletCanFire = false;
-                break;
-            
-            case 1:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0,Naranja);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 35, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                newBulletCanFire = false;
-                break;
-                
-            case 2:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0, Color.RED);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 30, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet3 = new Bullet3(NaveJugador.getXPosition() + 14, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                newBulletCanFire = false;
-                break;
-                
-            case 3:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0, Color.RED);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 30, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet3 = new Bullet3(NaveJugador.getXPosition() + 14, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet4 = new Bullet4(NaveJugador.getXPosition() + 38, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                newBulletCanFire = false;
-                break;
-                
-            case 4:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0, Color.RED);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 30, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet3 = new Bullet3(NaveJugador.getXPosition() + 14, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet4 = new Bullet4(NaveJugador.getXPosition() + 38, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                bullet5 = new Bullet5(NaveJugador.getXPosition() + 6, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                newBulletCanFire = false;
-                break;
-                
-            case 5: 
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0, Color.RED);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 30, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet3 = new Bullet3(NaveJugador.getXPosition() + 14, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet4 = new Bullet4(NaveJugador.getXPosition() + 38, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                bullet5 = new Bullet5(NaveJugador.getXPosition() + 6, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                bullet6 = new Bullet6(NaveJugador.getXPosition() + 46, NaveJugador.getYPosition() - 20, 0, Color.GREEN);
-                newBulletCanFire = false;
-                break;
-                
-            case 6:
-                bullet = new Bullet(NaveJugador.getXPosition() + 22, NaveJugador.getYPosition() - 20, 0, Color.RED);
-                bullet2 = new Bullet2(NaveJugador.getXPosition() + 30, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet3 = new Bullet3(NaveJugador.getXPosition() + 14, NaveJugador.getYPosition() - 20, 0, Color.BLUE);
-                bullet4 = new Bullet4(NaveJugador.getXPosition() + 38, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                bullet5 = new Bullet5(NaveJugador.getXPosition() + 6, NaveJugador.getYPosition() - 20, 0, Color.CYAN);
-                bullet6 = new Bullet6(NaveJugador.getXPosition() + 46, NaveJugador.getYPosition() - 20, 0, Color.GREEN);
-                bullet7 = new Bullet7(NaveJugador.getXPosition() - 2, NaveJugador.getYPosition() - 20, 0, Color.GREEN);
-                newBulletCanFire = false;
-                break;
-                
-            default:
-                break;
-        }
+        projectiles.clear();
+        projectiles.addAll(PowerUpSystem.createBurst(NaveJugador, CantidadBalas));
+        newBulletCanFire = false;
     }
     
     
@@ -404,87 +249,13 @@ public class GamePanel extends JPanel {
         g.drawString(TOOL_TIP_TEXT_KEY, WIDTH, WIDTH);
 
 //---------------------------------------------------------------------------
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet2 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet3 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet4 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet5 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet6 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
-            }
-        }
-        
-        // hace una cadena que dice "+100" al golpear al enemigo
-        if (bullet7 != null) {
-            if (hitMarker) {
-                g.setColor(Color.WHITE);
-                if (level%3 != 0) {
-                    g.drawString("+ 100", markerX + 20, markerY -= 1);
-                } else {
-                    g.drawString("- 1", markerX + 75, markerY += 1);
-                }
+        // Marcador de impacto
+        if (hitMarker) {
+            g.setColor(Color.WHITE);
+            if (level%3 != 0) {
+                g.drawString("+ 100", markerX + 20, markerY -= 1);
+            } else {
+                g.drawString("- 1", markerX + 75, markerY += 1);
             }
         }
 //---------------------------------------------------------------------------
@@ -526,33 +297,11 @@ public class GamePanel extends JPanel {
             }
         }
         
-        // Si intenta sacar la bala después de presionar una tecla
-        if (bullet != null) {
-            bullet.draw(g);
-        }
-        
-        if (bullet2 != null) {
-            bullet2.draw(g);
-        }
-        
-        if (bullet3 != null) {
-            bullet3.draw(g);
-        }
-        
-        if (bullet4 != null) {
-            bullet4.draw(g);
-        }
-                
-        if (bullet5 != null) {
-            bullet5.draw(g);
-        }        
-        
-        if (bullet6 != null) {
-            bullet6.draw(g);
-        }
-                
-        if (bullet7 != null) {
-            bullet7.draw(g);
+        // Dibuja proyectiles del jugador
+        for (Projectile projectile : projectiles) {
+            if (projectile != null) {
+                projectile.draw(g);
+            }
         }
         
         // Mueve elementos en niveles normales
@@ -973,28 +722,9 @@ public class GamePanel extends JPanel {
     }
     
     public void ColisionesEscudo(int index){
-        // Cada declaración if cambia el color del escudo, lo que indica "fuerza"
-        // FUERTE
-        if (shieldList.get(index).getColor() == Color.RED) {
-            shieldList.get(index).setColor(Color.ORANGE);
-            shieldSoundAudio.play(); // Plays sound if shield takes damage
-            newBulletCanFire = true;
-        // BIEN
-        } else if (shieldList.get(index).getColor() == Color.ORANGE) {
-            shieldList.get(index).setColor(Color.YELLOW);
-            shieldSoundAudio.play();
-            newBulletCanFire = true;
-        // OKAY
-        } else if (shieldList.get(index).getColor() == Color.YELLOW) {
-            shieldList.get(index).setColor(Color.WHITE);
-            shieldSoundAudio.play();
-            newBulletCanFire = true;
-        // DÉBIL, SE ROMPE AL GOLPEAR
-        } else if (shieldList.get(index).getColor() == Color.WHITE) {
-            shieldList.remove(index);
-            shieldSoundAudio.play();
-            newBulletCanFire = true;
-        }
+        CollisionSystem.degradeShield(shieldList, index);
+        shieldSoundAudio.play();
+        newBulletCanFire = true;
     }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1046,195 +776,30 @@ public class GamePanel extends JPanel {
             }
         }
 
-        // Mover bala
-        if (bullet != null) {
-            bullet.setYPosition(bullet.getYPosition() - 15);
-            if (bullet.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
+        // Proyectiles del jugador (movimiento + colisiones)
+        newBulletCanFire = CollisionSystem.updatePlayerProjectiles(
+                projectiles, enemyList, shieldList, bonusEnemyList,
+                new CollisionSystem.Listener() {
+                    @Override
+                    public void onEnemyHit(int enemyIndex) {
+                        hitSoundAudio.play();
+                        ColisionesBalas(enemyIndex);
+                    }
+                    @Override
+                    public void onShieldHit(int shieldIndex) {
+                        ColisionesEscudo(shieldIndex);
+                    }
+                    @Override
+                    public void onBonusHit(int bonusIndex) {
+                        if (bonusIndex >= 0 && bonusIndex < bonusEnemyList.size()) {
+                            bonusEnemyList.remove(bonusIndex);
+                            newBonusEnemy = true;
+                            bonusSoundAudio.play();
+                            score += 5000;
+                        }
+                    }
+                });
 
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet = new Bullet(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet.Colisionando(shieldList.get(index))){
-                    bullet = new Bullet(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }
-        
-//--------// Mover bala2
-        if (bullet2 != null) {
-            bullet2.setYPosition(bullet2.getYPosition() - 15);
-            if (bullet2.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet2.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet2 = new Bullet2(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet2.Colisionando(shieldList.get(index))){
-                    bullet2 = new Bullet2(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }
-//--------// Mover bala 3
-        if (bullet3 != null) {
-            bullet3.setYPosition(bullet3.getYPosition() - 15);
-            if (bullet3.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet3.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet3 = new Bullet3(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet3.Colisionando(shieldList.get(index))){
-                    bullet3 = new Bullet3(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }
-//--------// Mover bala 4
-        if (bullet4 != null) {
-            bullet4.setYPosition(bullet4.getYPosition() - 15);
-            if (bullet4.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet4.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet4 = new Bullet4(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet4.Colisionando(shieldList.get(index))){
-                    bullet4 = new Bullet4(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }
-        
- //--------// Mover bala 5
-        if (bullet5 != null) {
-            bullet5.setYPosition(bullet5.getYPosition() - 15);
-            if (bullet5.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet5.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet5 = new Bullet5(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet5.Colisionando(shieldList.get(index))){
-                    bullet5 = new Bullet5(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }       
-
-//--------// Mover bala 6
-        if (bullet6 != null) {
-            bullet6.setYPosition(bullet6.getYPosition() - 15);
-            if (bullet6.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet6.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet6 = new Bullet6(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet6.Colisionando(shieldList.get(index))){
-                    bullet6 = new Bullet6(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }       
-        
-//--------// Mover bala 7
-        if (bullet7 != null) {
-            bullet7.setYPosition(bullet7.getYPosition() - 15);
-            if (bullet7.getYPosition() < 0) {
-                newBulletCanFire = true;
-            }
-            // Comprueba si hay colisiones con enemigos normales.
-            for (int index = 0; index < enemyList.size(); index++) {
-                //Se lo manda a la clase en GameObject para verificar si esta colisionando
-                if (bullet7.Colisionando(enemyList.get(index))) {
-                    hitSoundAudio.play(); // Reproduce un sonido de hitmarker si golpeas a un enemigo
-                    //Le manda parametros a la clase Bullet (int xPosition, int yPosition, int diameter, Color color)
-                    bullet7 = new Bullet7(0, 0, 0, null);
-                    newBulletCanFire = true;
-                    ColisionesBalas(index);        
-                }
-            }
-            // Comprueba si hay colisiones con escudo y balas.
-            for (int index = 0; index < shieldList.size(); index++) {
-                //Se lo manda a la Clase GameObject
-                if (bullet7.Colisionando(shieldList.get(index))){
-                    bullet7 = new Bullet7(0, 0, 0, null);
-                    ColisionesEscudo(index);
-                }
-            }
-        }       
-        
-        
         // Mueve el enemigo de bonificación
         if (!bonusEnemyList.isEmpty()) {
             for (int index = 0; index < bonusEnemyList.size(); index++) {
@@ -1242,20 +807,6 @@ public class GamePanel extends JPanel {
                 if (bonusEnemyList.get(index).getXPosition() > 950) {
                     bonusEnemyList.remove(index);
                     newBonusEnemy = true;
-                }
-            }
-            // bonus enemigo y colisión de balas
-            for (int index = 0; index < bonusEnemyList.size(); index++) {
-                if (bullet != null) {
-                    //Mandamos parametros a la Clase GameObject
-                    if (bonusEnemyList.get(index).Colisionando(bullet)) {
-                        bonusEnemyList.remove(index);
-                        bullet = new Bullet(0, 0, 0, null);
-                        newBulletCanFire = true;
-                        newBonusEnemy = true;
-                        bonusSoundAudio.play(); // Reproduce sonido si el jugador golpea a un enemigo adicional
-                        score += 5000; // agrega bonificación para anotar al golpear
-                    }
                 }
             }
         }
@@ -1346,6 +897,7 @@ public class GamePanel extends JPanel {
                 lifeList.clear();
                 beamList.clear();
                 ElementoList.clear();
+                projectiles.clear();
                 bossHealth = 30;
                 numberOfLives -= 1;
                 deathSoundAudio.play(); // Reproduce un sonido de muerte cuando los enemigos llegan al fondo
@@ -1408,11 +960,13 @@ public class GamePanel extends JPanel {
         beamList.clear();
         bonusEnemyList.clear();
         ElementoList.clear();
+        projectiles.clear();
         score = 0;
         level = 1;
         bossHealth = 45;
         numberOfLives = 3;
         CantidadBalas = 0;
+        Velocidad = 0;
         newBulletCanFire = true;
         newBeamCanFire = true;
         newBonusEnemy = true;
@@ -1463,44 +1017,23 @@ public class GamePanel extends JPanel {
       * agregar alguna funcionalidad.
     **/
     public void start() {
-                
-        // Configure un nuevo temporizador para que se repita cada 20 milisegundos (50 FPS)
-        gameTimer = new Timer(100 / Fotogramaporsegundo, new ActionListener() {
-
-            // Realiza un seguimiento del número de fotogramas que se han producido.
-            // Puede ser útil para limitar las tasas de acción
-            private int frameNumber = 0;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Actualiza el estado del juego y repinta la pantalla
-                ActualizarEstadoJuego(frameNumber++);
-                revalidate();
-                repaint();
-            }
-        });
-        Timer gameTimerHitMarker = new Timer(100, new ActionListener() {
-
-            // Realiza un seguimiento del número de fotogramas que se han producido.
-            // Puede ser útil para limitar las tasas de acción
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Actualiza el estado del juego y repinta la pantalla
-                hitMarker = false;
-                revalidate();
-                repaint();
-            }
-        });
+        final int[] frameNumber = {0};
+        gameLoop.start(
+                e -> {
+                    ActualizarEstadoJuego(frameNumber[0]++);
+                    revalidate();
+                    repaint();
+                },
+                e -> {
+                    hitMarker = false;
+                    revalidate();
+                    repaint();
+                });
         revalidate();
         repaint();
-        gameTimer.setRepeats(true);
-        gameTimer.start();
-        gameTimerHitMarker.setRepeats(true);
-        gameTimerHitMarker.start();
-
     }
     
     public void stop() {
-        gameTimer.stop();
+        gameLoop.stop();
     }
 }
