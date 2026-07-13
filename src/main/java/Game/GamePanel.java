@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
@@ -135,15 +133,15 @@ public class GamePanel extends JPanel {
     private ImageIcon ZincM = new ImageIcon(getClass().getResource("/Imagenes/ZincSMini.png"));
 
     // Se agregaron archivos de audio y transmisiones
-    private SoundEffect beamSoundAudio;
-    private SoundEffect bulletSoundAudio;
-    private SoundEffect levelUpSoundAudio;
-    private SoundEffect deathSoundAudio;
-    private SoundEffect hitSoundAudio; // Sonido de impacto
-    private SoundEffect shieldSoundAudio;
-    private SoundEffect bossSoundAudio;
-    private SoundEffect bonusSoundAudio;
-    private SoundEffect damageSoundAudio;
+    private SoundEffect beamSoundAudio = SoundEffect.load("/Sonidos/alienBeam.wav");
+    private SoundEffect bulletSoundAudio = SoundEffect.load("/Sonidos/bulletSound.wav");
+    private SoundEffect levelUpSoundAudio = SoundEffect.load("/Sonidos/levelUpSound.wav");
+    private SoundEffect deathSoundAudio = SoundEffect.load("/Sonidos/deathSound.wav");
+    private SoundEffect hitSoundAudio = SoundEffect.load("/Sonidos/hitmarkerSound.wav");
+    private SoundEffect shieldSoundAudio = SoundEffect.load("/Sonidos/shieldSound.wav");
+    private SoundEffect bossSoundAudio = SoundEffect.load("/Sonidos/bossSound.wav");
+    private SoundEffect bonusSoundAudio = SoundEffect.load("/Sonidos/bonusSound.wav");
+    private SoundEffect damageSoundAudio = SoundEffect.load("/Sonidos/damageSound.wav");
     
     //Parametro de dificultad
     Configuracion Dificultad = new Configuracion(); //Creamos objeto de la Clase Configuración (La dificultad del juego)
@@ -1449,22 +1447,7 @@ public class GamePanel extends JPanel {
             ConfigurarJuego();
             levelUpSoundAudio.play(); // Plays level up sound 
         }
-        // Todas las transmisiones necesarias para cada sonido del juego
-        try {
-            beamSoundAudio = SoundEffect.load("/Sonidos/alienBeam.wav");
-            bulletSoundAudio = SoundEffect.load("/Sonidos/bulletSound.wav");
-            levelUpSoundAudio = SoundEffect.load("/Sonidos/levelUpSound.wav");
-            deathSoundAudio = SoundEffect.load("/Sonidos/deathSound.wav");
-            hitSoundAudio = SoundEffect.load("/Sonidos/hitmarkerSound.wav");
-            shieldSoundAudio = SoundEffect.load("/Sonidos/shieldSound.wav");
-            bossSoundAudio = SoundEffect.load("/Sonidos/bossSound.wav");
-            bonusSoundAudio = SoundEffect.load("/Sonidos/bonusSound.wav");
-            damageSoundAudio = SoundEffect.load("/Sonidos/damageSound.wav");
-            
-        } catch (IOException e) {
-            
-        }
-        
+
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

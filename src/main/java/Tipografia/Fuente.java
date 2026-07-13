@@ -23,9 +23,15 @@ public class Fuente {
     
     public Font fuenteSpace (String fontName, int estilo, float tamanio){
         try{
-            //Se carga la fuente
-            InputStream inputs = getClass().getResourceAsStream(fontName);
+            // Carga desde resources: /Tipografia/space_invaders.ttf
+            String resourcePath = fontName.startsWith("/") ? fontName : "/Tipografia/" + fontName;
+            InputStream inputs = getClass().getResourceAsStream(resourcePath);
+            if (inputs == null) {
+                // Fallback: recurso relativo al paquete (compatibilidad)
+                inputs = getClass().getResourceAsStream(fontName);
+            }
             fuenteNueva = Font.createFont(Font.TRUETYPE_FONT, inputs);
+            inputs.close();
         }catch (Exception ex){
             //Si existe un error se carga fuente por defecto Arial
             fuenteNueva = new Font("Arial", Font.PLAIN, 14);

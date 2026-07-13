@@ -1,35 +1,34 @@
-create database spaceInvaders
-use spaceInvaders
-go
+-- Space Chemistry — esquema de highscores
+-- Ejecutar en SQL Server (Express o superior).
+-- IMPORTANTE: no ejecutes la sección de DROP en entornos con datos.
 
-create table highscore(
-	id int not null primary key IDENTITY(1,1),
-	username varchar(60) not null,
-	score int not null
-);
+CREATE DATABASE spaceInvaders;
+GO
 
-SELECT * FROM highscore
+USE spaceInvaders;
+GO
 
-drop database spaceInvaders
+IF OBJECT_ID('dbo.highscore', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.highscore (
+        id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+        username VARCHAR(60) NOT NULL,
+        score INT NOT NULL
+    );
+END
+GO
 
+-- Datos de ejemplo (opcional)
+-- INSERT INTO dbo.highscore (username, score) VALUES ('John', 10000);
+-- INSERT INTO dbo.highscore (username, score) VALUES ('Demo', 5000);
 
-INSERT INTO highscore(username, score)
-VALUES ('John', 10000);
+-- Consulta de top 5
+-- SELECT TOP 5 username, score FROM dbo.highscore ORDER BY score DESC;
 
-INSERT INTO highscore(id, username, score)
-VALUES (3, 'f', 3000);
-
-INSERT INTO highscore(id, username, score)
-VALUES (4, 'f2', 4000);
-
-INSERT INTO highscore(id, username, score)
-VALUES (5, 'f3', 5000);
-
-INSERT INTO highscore(id, username, score)
-VALUES (6, 'f4', 2300);
-
-SELECT TOP 5 username, score
-FROM highscore
-ORDER BY score DESC
-
-SELECT id FROM highscore WHERE id = (SELECT MAX(id) FROM highscore)
+-- =====================================================================
+-- PELIGRO: solo para reset total en desarrollo
+-- =====================================================================
+-- USE master;
+-- GO
+-- DROP DATABASE spaceInvaders;
+-- GO

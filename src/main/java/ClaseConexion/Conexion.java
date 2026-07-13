@@ -41,12 +41,17 @@ public class Conexion {
 
     private Properties loadProperties() throws Exception {
         Properties props = new Properties();
-        try (InputStream in = Conexion.class.getResourceAsStream(PROPERTIES_FILE)) {
-            if (in == null) {
-                throw new IllegalStateException(
-                        "No se encontró " + PROPERTIES_FILE + ". Copia db.properties.example como db.properties.");
-            }
-            props.load(in);
+        InputStream in = Conexion.class.getResourceAsStream(PROPERTIES_FILE);
+        if (in == null) {
+            in = Conexion.class.getResourceAsStream("/db.properties.example");
+            System.out.println("Aviso: usando db.properties.example. Copia a db.properties para tu entorno local.");
+        }
+        if (in == null) {
+            throw new IllegalStateException(
+                    "No se encontró db.properties ni db.properties.example en el classpath.");
+        }
+        try (InputStream stream = in) {
+            props.load(stream);
         }
         return props;
     }

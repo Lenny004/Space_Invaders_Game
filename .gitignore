@@ -1,3 +1,126 @@
+# =============================================================================
+# Space Chemistry - .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Documentación Markdown (excepto README oficial y /docs versionada)
+# -----------------------------------------------------------------------------
+*.md
+!README.md
+!docs/**/*.md
+!LICENSE.md
+
+# -----------------------------------------------------------------------------
+# Compilación / build (Maven, Ant, Gradle)
+# -----------------------------------------------------------------------------
+/target/
 /build/
-/nbproject/private/
 /dist/
+/out/
+/bin/
+/.gradle/
+/gradle/
+*.class
+*.jar
+!legacy/netbeans/sqljdbc42.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# -----------------------------------------------------------------------------
+# Dependencias y cachés locales
+# -----------------------------------------------------------------------------
+/.m2/
+/.mvn/wrapper/maven-wrapper.jar
+
+# -----------------------------------------------------------------------------
+# Archivos sensibles y configuración local
+# -----------------------------------------------------------------------------
+**/db.properties
+!**/db.properties.example
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+credentials.*
+secrets.*
+local.properties
+*.local
+
+# -----------------------------------------------------------------------------
+# IDE y entorno de desarrollo
+# -----------------------------------------------------------------------------
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+**/nbproject/private/
+
+# VS Code / Cursor
+.vscode/
+.cursor/
+*.code-workspace
+
+# -----------------------------------------------------------------------------
+# Sistema operativo
+# -----------------------------------------------------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Logs, temporales y datos de ejecución local
+# -----------------------------------------------------------------------------
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+Highscore.txt
+*.bak
+*.orig
+
+# -----------------------------------------------------------------------------
+# Empaquetado / distribución
+# -----------------------------------------------------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
