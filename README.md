@@ -12,20 +12,18 @@ Desarrollador:
 
 - Lenny Adrián Elías Sánchez
 
-## ¿Qué necesitas para correrlo?
+## Instalación y ejecución
 
-**No.** No usa Docker, ni SQL Server, ni ningún servidor externo.
+No usa Docker, ni SQL Server, ni ningún servidor externo. Solo necesitas:
 
-Solo hace falta:
+| Herramienta | Para qué | Dónde obtenerla |
+|-------------|----------|-----------------|
+| **JDK 17+** | Compilar y ejecutar | [Adoptium Temurin](https://adoptium.net/) |
+| **Maven 3.9+** | Dependencias y empaquetado | [Apache Maven](https://maven.apache.org/download.cgi) |
 
-| Herramienta | Para qué | Obligatorio |
-|-------------|----------|-------------|
-| **JDK 17+** | Compilar y ejecutar el juego | Sí |
-| **Maven 3.9+** | Descargar dependencias y empaquetar | Sí (para compilar desde el repo) |
+La base de datos es un archivo SQLite local (`data/space-chemistry.db`) que se crea solo al jugar.
 
-La base de datos es un archivo SQLite local (`data/space-chemistry.db`) que se crea solo al jugar. No hay que instalar nada más.
-
-## Cómo correrlo
+### Pasos
 
 ```bash
 git clone https://github.com/Lenny004/Space_Invaders_Game.git
@@ -34,7 +32,7 @@ mvn clean package
 mvn exec:java
 ```
 
-Alternativa con el JAR generado:
+O, después de empaquetar, con el JAR:
 
 ```bash
 java -jar target/space-chemistry-1.5.0-SNAPSHOT.jar
@@ -48,6 +46,9 @@ Clase principal: `Game.Inicio`.
 mvn -B verify              # tests
 mvn -P jpackage package    # instalador nativo (requiere jpackage en el JDK)
 ```
+
+Más detalle de setup e IDEs: [`docs/SETUP.md`](docs/SETUP.md).
+
 ## Cómo se juega
 
 ### Flujo de pantallas
