@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.3] — UX de crafteo (2026-07-13)
+
+### Añadido
+- Tecla `C` abre/cierra overlay de crafteo (pausa lógica ligera; ESC también cierra).
+- Overlay lista las 12 recetas con nombre, coste, efecto y tecla; deshabilita usadas / sin materiales.
+- Atajos nuevos: `1`–`6` (disparo) y `Q`/`W`/`E`/`R`/`T`/`Y` (velocidad).
+- i18n de nombres/efectos de compuestos en `messages_es/en.properties`.
+
+### Cambiado
+- Deprecados los hotkeys opacos F/W/O/U/Z/T/H/N/S/B/P/A como requisito de crafteo.
+- `CraftingSystem` modela recetas explícitas (`Recipe` + flags por índice).
+- Barra lateral PRESS muestra las teclas nuevas; hint `C: crafteo` en HUD.
+- Nota: textos de `FrmAyuda` aún mencionan teclas antiguas (actualizar en iteración de ayuda).
+
 ## [1.5.2] — Drops honestos (2026-07-13)
 
 ### Cambiado

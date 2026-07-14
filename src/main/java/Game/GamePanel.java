@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.ImageIcon;
@@ -33,6 +34,7 @@ public class GamePanel extends JPanel {
     private String craftFeedback;
     private int craftFeedbackTicks;
     private boolean pauseMenuOpen;
+    private boolean craftOverlayOpen;
     private KeyboardController controladores;
     // Controla el tamaño de la ventana del juego y la velocidad de fotogramas. 
     private final int AnchoJuego = 1200;
@@ -316,6 +318,10 @@ public class GamePanel extends JPanel {
             g.setColor(Color.WHITE);
             g.drawString("Vida del Jefe: " + bossHealth, 500, 600);
         }
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 12));
+        g.drawString(Messages.get("craft.hint"), 11, 655);
         
         //G le asignamos la tipografía personalizada y comenzará a tener ese valor de este punto en adelante
         g.setColor(Color.WHITE);
@@ -328,19 +334,19 @@ public class GamePanel extends JPanel {
         g.setColor(Color.BLACK);
         g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
         
-        //Mensaje para avisar que tecla presionar
-        g.drawString("F", 1015, 43);
-        g.drawString("W", 1015, 78);
-        g.drawString("O", 1015, 112);
-        g.drawString("U", 1015, 146);
-        g.drawString("Z", 1015, 180);
-        g.drawString("T", 1015, 217);
-        g.drawString("H", 1015, 253);
-        g.drawString("N", 1015, 288);
-        g.drawString("S", 1015, 322);
-        g.drawString("B", 1015, 358);
-        g.drawString("P", 1015, 392);
-        g.drawString("A", 1015, 428);
+        // Atajos overlay: 1-6 disparo, Q-Y velocidad
+        g.drawString("1", 1015, 43);
+        g.drawString("2", 1015, 78);
+        g.drawString("3", 1015, 112);
+        g.drawString("4", 1015, 146);
+        g.drawString("5", 1015, 180);
+        g.drawString("6", 1015, 217);
+        g.drawString("Q", 1015, 253);
+        g.drawString("W", 1015, 288);
+        g.drawString("E", 1015, 322);
+        g.drawString("R", 1015, 358);
+        g.drawString("T", 1015, 392);
+        g.drawString("Y", 1015, 428);
         
         //Compuestos dibujados
         g.setColor(RojoG);
@@ -417,6 +423,60 @@ public class GamePanel extends JPanel {
         
         ZincM.paintIcon(this, g, 1015, 630);
         g.drawString("- "+ CantidadElemento[11], 1045, 650);
+
+        if (craftOverlayOpen) {
+            drawCraftOverlay(g);
+        }
+    }
+
+    private void drawCraftOverlay(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(80, 40, 840, 580);
+
+        g.setColor(new Color(99, 183, 217));
+        g.drawRect(80, 40, 840, 580);
+
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 22));
+        g.setColor(Color.WHITE);
+        g.drawString(Messages.get("craft.title"), 120, 80);
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.PLAIN, 12));
+        g.drawString(Messages.get("craft.close"), 120, 105);
+
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 14));
+        g.setColor(RojoG.brighter());
+        g.drawString(Messages.get("craft.section.bullets"), 120, 140);
+        g.setColor(new Color(90, 140, 220));
+        g.drawString(Messages.get("craft.section.speed"), 520, 140);
+
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.PLAIN, 12));
+        for (int i = 0; i < CraftingSystem.RECIPES.length; i++) {
+            CraftingSystem.Recipe recipe = CraftingSystem.RECIPES[i];
+            boolean bullets = i < 6;
+            int colX = bullets ? 120 : 520;
+            int row = bullets ? i : i - 6;
+            int y = 170 + row * 55;
+
+            boolean used = craftFlags.isUsed(i);
+            boolean can = CraftingSystem.canCraft(recipe, i, CantidadElemento, craftFlags);
+
+            if (used) {
+                g.setColor(Color.GRAY);
+            } else if (can) {
+                g.setColor(Color.WHITE);
+            } else {
+                g.setColor(new Color(160, 160, 160));
+            }
+
+            String status = used ? Messages.get("craft.used") : ("[" + recipe.getHotkeyLabel() + "]");
+            g.drawString(status + "  " + Messages.get(recipe.getNameKey()) + "  (" + recipe.getFormula() + ")", colX, y);
+            g.drawString(Messages.get(recipe.getEffectKey()) + "  |  " + recipe.formatCost(), colX, y + 18);
+        }
+
+        if (craftFeedback != null && craftFeedbackTicks > 0) {
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 20));
+            g.drawString(craftFeedback, 420, 90);
+        }
     }
     
     public void ColisionesBalas(int index){
@@ -514,8 +574,14 @@ public class GamePanel extends JPanel {
             return;
         }
 
+        handleCraftOverlayToggle();
+        if (craftOverlayOpen) {
+            handleCrafting();
+            return;
+        }
+
         handlePlayerFire();
-        handleCrafting();
+        tickCraftFeedback();
         updateElementDrops();
 
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
@@ -681,7 +747,15 @@ public class GamePanel extends JPanel {
     }
 
     private void handlePauseInput() {
-        if (!controladores.getKeyStatus(27) || pauseMenuOpen) {
+        if (!controladores.getKeyStatus(27)) {
+            return;
+        }
+        if (craftOverlayOpen) {
+            craftOverlayOpen = false;
+            controladores.resetController();
+            return;
+        }
+        if (pauseMenuOpen) {
             return;
         }
         pauseMenuOpen = true;
@@ -699,6 +773,14 @@ public class GamePanel extends JPanel {
         });
     }
 
+    private void handleCraftOverlayToggle() {
+        if (!controladores.getKeyStatus(KeyEvent.VK_C)) {
+            return;
+        }
+        craftOverlayOpen = !craftOverlayOpen;
+        controladores.resetController();
+    }
+
     private void handlePlayerFire() {
         if (controladores.getKeyStatus(32) && newBulletCanFire) {
             newBeamCanFire = false;
@@ -707,19 +789,24 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void handleCrafting() {
+    private void tickCraftFeedback() {
         if (craftFeedbackTicks > 0) {
             craftFeedbackTicks--;
             if (craftFeedbackTicks == 0) {
                 craftFeedback = null;
             }
         }
+    }
+
+    private void handleCrafting() {
+        tickCraftFeedback();
         CraftingSystem.Result result = CraftingSystem.tryCraft(controladores, CantidadElemento, craftFlags);
         if (result == null) {
             return;
         }
         craftFeedback = result.getFeedbackKey();
         craftFeedbackTicks = 40;
+        controladores.resetController();
         if (result.getMinBullets() != null) {
             CantidadBalas = Math.max(CantidadBalas, result.getMinBullets());
         }
@@ -802,6 +889,7 @@ public class GamePanel extends JPanel {
         craftFeedback = null;
         craftFeedbackTicks = 0;
         pauseMenuOpen = false;
+        craftOverlayOpen = false;
                 
         for(int i = 1; i <= 11; i++){
             CantidadElemento[i] = 0;
