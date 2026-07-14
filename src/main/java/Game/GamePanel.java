@@ -427,16 +427,10 @@ public class GamePanel extends JPanel {
             markerX = enemyList.get(index).getXPosition(); // Obtiene posiciones de las que se genera el "+ 100"
             markerY = enemyList.get(index).getYPosition();
             enemyList.remove(index);
-                        
-        // Cuando se destruye una nave enemiga Dropea un elemento de la Tabla Periodica
-        int ElementoDado = randomElemento.nextInt(22-1);
-        //Manda a la Clase ElementoDrop "int xPosicion, int yPosicion, int xVelocity, int yVelocity, int Elemento, Color color, int width, int height"
-        Elemento = new ElementoDrop(markerX, markerY, ElementoDado, 0, null);
-        ElementoList.add(Elemento);
-        Elemento.move();
-        if (ElementoDado <= 11){
-            CantidadElemento[ElementoDado]++;
-            bonusSoundAudio.play(); // Reproduce sonido de bonus
+
+            // Drop físico: el inventario solo aumenta al recogerlo con la nave
+            if (DropSystem.shouldDrop(randomElemento)) {
+                spawnElementDrop(markerX, markerY);
             }
         }
         // Actualiza la puntuación para los niveles de jefe.
@@ -448,8 +442,17 @@ public class GamePanel extends JPanel {
             if (bossHealth == 0) {
                 enemyList.remove(index);
                 score += GameBalance.SCORE_BOSS;// Puntaje de bonificación por derrotar al jefe
+                if (DropSystem.shouldDropOnBossKill()) {
+                    spawnElementDrop(markerX, markerY);
+                }
             }
         }
+    }
+
+    private void spawnElementDrop(int x, int y) {
+        int elementoDado = DropSystem.rollElement(randomElemento);
+        Elemento = new ElementoDrop(x, y, elementoDado, 0, null);
+        ElementoList.add(Elemento);
     }
     
     public void ColisionesEscudo(int index){
@@ -727,12 +730,11 @@ public class GamePanel extends JPanel {
     }
 
     private void updateElementDrops() {
-        for (int index = ElementoList.size() - 1; index >= 0; index--) {
-            ElementoDrop drop = ElementoList.get(index);
-            drop.setYPosition(drop.getYPosition() + GameBalance.ELEMENT_FALL_SPEED);
-            if (drop.getYPosition() > 600) {
-                ElementoList.remove(index);
-            }
+        String pickup = DropSystem.updateDrops(ElementoList, NaveJugador, CantidadElemento);
+        if (pickup != null) {
+            craftFeedback = pickup;
+            craftFeedbackTicks = 40;
+            bonusSoundAudio.play();
         }
     }
 

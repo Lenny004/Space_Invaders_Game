@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.2] — Drops honestos (2026-07-13)
+
+### Cambiado
+- Matar aliens ya no suma elementos al inventario de inmediato: sueltan un drop físico.
+- Recoger el drop con la nave suma el elemento, reproduce SFX y muestra feedback (`+Fe`, etc.).
+- Si el drop sale de pantalla sin recogerse, se pierde.
+- Tasa de spawn: `GameBalance.ELEMENT_DROP_CHANCE_PERCENT` (50% en aliens); jefe siempre dropea al morir (`ELEMENT_DROP_ON_BOSS`).
+- Lógica extraída a `DropSystem` (testeable); hitbox de `ElementoDrop` alineada al icono.
+
 ## [1.5.1] — Jugabilidad (2026-07-13)
 
 ### Corregido

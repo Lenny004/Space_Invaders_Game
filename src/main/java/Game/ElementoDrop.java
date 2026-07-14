@@ -27,12 +27,20 @@ public class ElementoDrop extends MovingGameObject{
     ImageIcon ZincM = new ImageIcon(getClass().getResource("/Imagenes/ZincSMini.png"));
     
     private int TipoElemento = 0;
+
+    /** Tamaño del hitbox / icono mini para colisión con la nave. */
+    public static final int DROP_HITBOX_SIZE = 36;
     
     //Los Enemigos sueltan Drop de elementos
     public ElementoDrop(int xPosicion, int yPosicion, int Elemento, int diameter, Color color){
         //Llamando a la Clase Padre MovingGameObject
         super(xPosicion, yPosicion, 0, 0, null);
         this.TipoElemento = Elemento;
+        this.diameter = diameter > 0 ? diameter : DROP_HITBOX_SIZE;
+    }
+
+    public int getTipoElemento() {
+        return TipoElemento;
     }
     
     // Obtiene el diámetro de la bala
@@ -82,11 +90,10 @@ public class ElementoDrop extends MovingGameObject{
         }
     }
 
-    // Se usa para obtener el cuadro de impacto de una viga
     @Override
     public Rectangle getBounds() {
-        Rectangle beamHitbox = new Rectangle(xPos, yPos, 5, 20);
-        return beamHitbox;
+        int size = diameter > 0 ? diameter : DROP_HITBOX_SIZE;
+        return new Rectangle(xPos, yPos, size, size);
     }
     
     @Override

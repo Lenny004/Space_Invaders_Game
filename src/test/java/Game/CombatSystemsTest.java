@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -151,5 +152,85 @@ class ProjectileTest {
         Projectile p = new Projectile(10, 10, Color.ORANGE);
         p.advance();
         assertFalse(p.isActive());
+    }
+}
+
+class DropSystemTest {
+
+    @Test
+    void collectIncrementsInventoryAndReturnsFeedback() {
+        int[] inventory = new int[12];
+        assertEquals("+Fe", DropSystem.tryCollect(inventory, 6));
+        assertEquals(1, inventory[6]);
+        assertNull(DropSystem.tryCollect(inventory, 0));
+        assertEquals(0, inventory[0]);
+    }
+
+    @Test
+    void dropWithoutShipCollisionDoesNotIncrementInventory() {
+        int[] inventory = new int[12];
+        List<ElementoDrop> drops = new ArrayList<>();
+        drops.add(new ElementoDrop(100, 50, 6, 0, null));
+
+        String feedback = DropSystem.updateDrops(drops, null, inventory);
+
+        assertNull(feedback);
+        assertEquals(0, inventory[6]);
+        assertEquals(1, drops.size());
+        assertEquals(50 + GameBalance.ELEMENT_FALL_SPEED, drops.get(0).getYPosition());
+    }
+
+    @Test
+    void dropWithShipCollisionIncrementsInventoryAndRemovesDrop() {
+        int[] inventory = new int[12];
+        Ship ship = new Ship(100, 100, Color.YELLOW, null);
+        List<ElementoDrop> drops = new ArrayList<>();
+        drops.add(new ElementoDrop(100, 100, 6, 0, null));
+
+        String feedback = DropSystem.updateDrops(drops, ship, inventory);
+
+        assertEquals("+Fe", feedback);
+        assertEquals(1, inventory[6]);
+        assertTrue(drops.isEmpty());
+    }
+
+    @Test
+    void dropOffScreenIsLostWithoutInventoryGain() {
+        int[] inventory = new int[12];
+        List<ElementoDrop> drops = new ArrayList<>();
+        drops.add(new ElementoDrop(100, DropSystem.DESPAWN_Y, 2, 0, null));
+
+        String feedback = DropSystem.updateDrops(drops, null, inventory);
+
+        assertNull(feedback);
+        assertEquals(0, inventory[2]);
+        assertTrue(drops.isEmpty());
+    }
+
+    @Test
+    void rollElementStaysInCollectibleRange() {
+        Random rng = new Random(42);
+        for (int i = 0; i < 50; i++) {
+            int tipo = DropSystem.rollElement(rng);
+            assertTrue(DropSystem.isCollectible(tipo));
+        }
+    }
+
+    @Test
+    void shouldDropRespectsChancePercent() {
+        Random alwaysLow = new Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0;
+            }
+        };
+        Random alwaysHigh = new Random() {
+            @Override
+            public int nextInt(int bound) {
+                return GameBalance.ELEMENT_DROP_CHANCE_PERCENT;
+            }
+        };
+        assertTrue(DropSystem.shouldDrop(alwaysLow));
+        assertFalse(DropSystem.shouldDrop(alwaysHigh));
     }
 }

@@ -22,6 +22,12 @@ public final class GameBalance {
     public static final int BOSS_BEAM_SPEED = 5;
     public static final int ELEMENT_FALL_SPEED = 4;
 
+    /** Probabilidad (%) de soltar un elemento al destruir un alien normal. */
+    public static final int ELEMENT_DROP_CHANCE_PERCENT = 50;
+
+    /** Si {@code true}, derrotar al jefe siempre suelta un elemento. */
+    public static final boolean ELEMENT_DROP_ON_BOSS = true;
+
     public static final int SCORE_ALIEN = 100;
     public static final int SCORE_BOSS = 9000;
     public static final int SCORE_BONUS = 5000;
