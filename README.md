@@ -12,46 +12,29 @@ Desarrollador:
 
 - Lenny Adrián Elías Sánchez
 
-## Requisitos previos
+## ¿Qué necesitas para correrlo?
 
-| Herramienta | Versión mínima | Notas |
-|-------------|----------------|--------|
-| **JDK** | 17+ | Temurin, Oracle, Microsoft Build of OpenJDK, etc. |
-| **Apache Maven** | 3.9+ | Gestión de dependencias y build |
-| **Windows / macOS / Linux** | — | Juego 100% local; no requiere base de datos externa |
+**No.** No usa Docker, ni SQL Server, ni ningún servidor externo.
 
-## Instalación
+Solo hace falta:
 
-### 1. Clonar el repositorio
+| Herramienta | Para qué | Obligatorio |
+|-------------|----------|-------------|
+| **JDK 17+** | Compilar y ejecutar el juego | Sí |
+| **Maven 3.9+** | Descargar dependencias y empaquetar | Sí (para compilar desde el repo) |
+
+La base de datos es un archivo SQLite local (`data/space-chemistry.db`) que se crea solo al jugar. No hay que instalar nada más.
+
+## Cómo correrlo
 
 ```bash
 git clone https://github.com/Lenny004/Space_Invaders_Game.git
 cd Space_Invaders_Game
-```
-
-### 2. Persistencia local
-
-No hace falta instalar ninguna base de datos. Al jugar se crea automáticamente:
-
-```text
-data/space-chemistry.db
-```
-
-Si existía `scores.json` o `Highscore.txt`, se migran una sola vez a SQLite.
-
-### 3. Compilar
-
-```bash
 mvn clean package
-```
-
-### 4. Ejecutar
-
-```bash
 mvn exec:java
 ```
 
-O bien:
+Alternativa con el JAR generado:
 
 ```bash
 java -jar target/space-chemistry-1.5.0-SNAPSHOT.jar
@@ -59,20 +42,12 @@ java -jar target/space-chemistry-1.5.0-SNAPSHOT.jar
 
 Clase principal: `Game.Inicio`.
 
-### Instalador (opcional)
-
-Con un JDK que incluya `jpackage`:
+### Opcional (no hace falta para jugar)
 
 ```bash
-mvn -P jpackage package
+mvn -B verify              # tests
+mvn -P jpackage package    # instalador nativo (requiere jpackage en el JDK)
 ```
-
-### Tests
-
-```bash
-mvn -B verify
-```
-
 ## Cómo se juega
 
 ### Flujo de pantallas
