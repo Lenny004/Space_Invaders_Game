@@ -23,6 +23,11 @@ public class FrmNombre extends javax.swing.JFrame {
         j.setVisible(true);
         j.ComenzarJuego();
     }
+
+    public static void InitializeTutorial(){
+        j.setVisible(true);
+        j.ComenzarTutorial();
+    }
     
     public static void CloseGame(){
         j.dispose();
@@ -30,6 +35,10 @@ public class FrmNombre extends javax.swing.JFrame {
     
     public static void IniciarJuego(){
         j.ComenzarJuego();
+    }
+
+    public static void IniciarTutorial(){
+        j.ComenzarTutorial();
     }
 
     public static void PararJuego(){

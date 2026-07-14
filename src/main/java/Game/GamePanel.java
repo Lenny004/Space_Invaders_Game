@@ -35,6 +35,8 @@ public class GamePanel extends JPanel {
     private int craftFeedbackTicks;
     private boolean pauseMenuOpen;
     private boolean craftOverlayOpen;
+    private boolean tutorialMode;
+    private TutorialController tutorial;
     private KeyboardController controladores;
     // Controla el tamaño de la ventana del juego y la velocidad de fotogramas. 
     private final int AnchoJuego = 1200;
@@ -141,13 +143,29 @@ public class GamePanel extends JPanel {
     public void PausarJuego(){
         gameLoop.pause();
     }
+
+    public void setTutorialMode(boolean enabled) {
+        this.tutorialMode = enabled;
+        if (!enabled) {
+            tutorial = null;
+        }
+    }
+
+    public boolean isTutorialMode() {
+        return tutorialMode;
+    }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // CONFIGURAR JUEGO
 
     public void ConfigurarJuego() {
         Configuracion.TipoDificultad = GameConfig.getInstance().getDifficulty();
-        levelManager = new LevelManager(Configuracion.TipoDificultad);
+        levelManager = new LevelManager(tutorialMode ? 1 : Configuracion.TipoDificultad);
+
+        if (tutorialMode) {
+            setupTutorialLevel();
+            return;
+        }
 
         // Panel de victoria si gana
         if (levelManager.isVictory(level)) {
@@ -181,6 +199,22 @@ public class GamePanel extends JPanel {
 
         projectiles.clear();
         newBulletCanFire = true;
+    }
+
+    private void setupTutorialLevel() {
+        enemyList.clear();
+        enemyList.addAll(levelManager.createTutorialWave());
+        controladores.resetController();
+        NaveJugador = levelManager.createPlayer(controladores);
+        lifeList.clear();
+        lifeList.addAll(levelManager.createLifeIcons(numberOfLives));
+        shieldList.clear();
+        shieldList.addAll(levelManager.createShields());
+        projectiles.clear();
+        beamList.clear();
+        ElementoList.clear();
+        newBulletCanFire = true;
+        newBeamCanFire = true;
     }
     
     
@@ -314,7 +348,7 @@ public class GamePanel extends JPanel {
         g.drawString("High Score: " + highScore, 440, 20);
 
         // Dibuja una pantalla de salud para el nivel de jefe
-        if (level%3 == 0) {
+        if (level%3 == 0 && !tutorialMode) {
             g.setColor(Color.WHITE);
             g.drawString("Vida del Jefe: " + bossHealth, 500, 600);
         }
@@ -427,6 +461,12 @@ public class GamePanel extends JPanel {
         if (craftOverlayOpen) {
             drawCraftOverlay(g);
         }
+
+        if (tutorialMode && tutorial != null) {
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 14));
+            g.drawString(Messages.get(tutorial.bannerKey()), 180, 48);
+        }
     }
 
     private void drawCraftOverlay(Graphics g) {
@@ -489,7 +529,7 @@ public class GamePanel extends JPanel {
             enemyList.remove(index);
 
             // Drop físico: el inventario solo aumenta al recogerlo con la nave
-            if (DropSystem.shouldDrop(randomElemento)) {
+            if (tutorialMode || DropSystem.shouldDrop(randomElemento)) {
                 spawnElementDrop(markerX, markerY);
             }
         }
@@ -522,7 +562,7 @@ public class GamePanel extends JPanel {
     }
 
     private void spawnEnemyBeams() {
-        if (!newBeamCanFire || enemyList.isEmpty()) {
+        if (tutorialMode || !newBeamCanFire || enemyList.isEmpty()) {
             return;
         }
         if (level % 3 != 0) {
@@ -551,7 +591,7 @@ public class GamePanel extends JPanel {
     }
 
     private void spawnBonusEnemy() {
-        if (!newBonusEnemy || level % 3 == 0) {
+        if (tutorialMode || !newBonusEnemy || level % 3 == 0) {
             return;
         }
         if (randomDisparosE.nextInt(GameBalance.BONUS_SPAWN_RANGE) == GameBalance.BONUS_SPAWN_HIT) {
@@ -577,12 +617,14 @@ public class GamePanel extends JPanel {
         handleCraftOverlayToggle();
         if (craftOverlayOpen) {
             handleCrafting();
+            updateTutorial();
             return;
         }
 
         handlePlayerFire();
         tickCraftFeedback();
         updateElementDrops();
+        updateTutorial();
 
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
         PowerUpVelocidad();
@@ -593,7 +635,7 @@ public class GamePanel extends JPanel {
         }
 
         // Agrega la opción para restablecer el puntaje alto
-        if (controladores.getKeyStatus(82)) { // KEYSTATUS(82) es la tecla R según el código ASCII
+        if (!tutorialMode && controladores.getKeyStatus(82)) { // KEYSTATUS(82) es la tecla R según el código ASCII
             int respuesta = JOptionPane.showConfirmDialog(
                     null,
                     Messages.get("dialog.reset.highscore"),
@@ -709,7 +751,11 @@ public class GamePanel extends JPanel {
         
         // Termina el juego si el jugador se queda sin vidas
         else if (lifeList.isEmpty()) {
-            deathSoundAudio.play(); // Reproduce el sonido de la muerte cuando te quedas sin vidas
+            deathSoundAudio.play();
+            if (tutorialMode) {
+                abortTutorialToMenu();
+                return;
+            }
             saveCurrentScore(false);
             // Le da al jugador la opción de volver a jugar o salir
             int respuesta = JOptionPane.showConfirmDialog(
@@ -734,6 +780,12 @@ public class GamePanel extends JPanel {
         // Pasa al siguiente nivel, restablece todas las listas, 
         // configura todos los contadores a los valores correctos
         if (enemyList.isEmpty()){
+            if (tutorialMode) {
+                if (tutorial != null && tutorial.isActive()) {
+                    enemyList.addAll(levelManager.createTutorialWave());
+                }
+                return;
+            }
             beamList.clear();
             shieldList.clear();
             ElementoList.clear();
@@ -786,6 +838,9 @@ public class GamePanel extends JPanel {
             newBeamCanFire = false;
             bulletSoundAudio.play();
             PowerUpBalas();
+            if (tutorialMode && tutorial != null) {
+                tutorial.onFired();
+            }
         }
     }
 
@@ -814,6 +869,59 @@ public class GamePanel extends JPanel {
             Velocidad = result.getSpeedLevel();
             PowerUpVelocidad();
         }
+        if (tutorialMode && tutorial != null) {
+            tutorial.onCrafted(result.getRecipeIndex());
+        }
+    }
+
+    private void updateTutorial() {
+        if (!tutorialMode || tutorial == null) {
+            return;
+        }
+        if (controladores.getKeyStatus(KeyEvent.VK_LEFT) || controladores.getKeyStatus(KeyEvent.VK_RIGHT)) {
+            tutorial.onMoved();
+        }
+        if (tutorial.consumeDropSpawnRequest()) {
+            int x = NaveJugador != null ? NaveJugador.getXPosition() : 500;
+            ElementoList.add(new ElementoDrop(x, 180, 6, 0, null));
+        }
+        if (tutorial.consumeCraftAssistRequest()) {
+            if (CantidadElemento[6] < 1) {
+                CantidadElemento[6] = 1;
+            }
+            craftOverlayOpen = true;
+        }
+        if (tutorial.consumeCompletion()) {
+            completeTutorial();
+        }
+    }
+
+    private void completeTutorial() {
+        GameConfig.getInstance().setTutorialCompleted(true);
+        craftOverlayOpen = false;
+        tutorialMode = false;
+        tutorial = null;
+        stop();
+        java.awt.EventQueue.invokeLater(() -> {
+            JOptionPane.showMessageDialog(
+                    null,
+                    Messages.get("tutorial.done"),
+                    Messages.get("tutorial.title"),
+                    JOptionPane.INFORMATION_MESSAGE);
+            FrmNombre.PararJuego();
+            new Inicio().setVisible(true);
+        });
+    }
+
+    private void abortTutorialToMenu() {
+        craftOverlayOpen = false;
+        tutorialMode = false;
+        tutorial = null;
+        stop();
+        java.awt.EventQueue.invokeLater(() -> {
+            FrmNombre.PararJuego();
+            new Inicio().setVisible(true);
+        });
     }
 
     private void updateElementDrops() {
@@ -822,6 +930,9 @@ public class GamePanel extends JPanel {
             craftFeedback = pickup;
             craftFeedbackTicks = 40;
             bonusSoundAudio.play();
+            if (tutorialMode && tutorial != null) {
+                tutorial.onDropCollected();
+            }
         }
     }
 
@@ -898,6 +1009,9 @@ public class GamePanel extends JPanel {
     }
 
     private void saveCurrentScore(boolean won) {
+        if (tutorialMode) {
+            return;
+        }
         String username = FrmNombre.nombre;
         if (username == null || username.isBlank()) {
             username = "Player";
@@ -930,6 +1044,12 @@ public class GamePanel extends JPanel {
 
         // Llama a setupGame para inicializar campos
         ResetearValores();
+        if (tutorialMode) {
+            tutorial = new TutorialController();
+            if (FrmNombre.nombre == null || FrmNombre.nombre.isBlank()) {
+                FrmNombre.nombre = "Tutorial";
+            }
+        }
         highScore = scoreService.bestScore();
         ConfigurarJuego();
         this.setFocusable(true);

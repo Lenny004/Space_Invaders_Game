@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.5.4] — Tutorial interactivo (2026-07-13)
+
+### Añadido
+- Botón **Tutorial** en el menú `Inicio` (sin pedir nombre).
+- `TutorialController`: 3 pasos (mover+disparar → recoger Fe → craftear Hierro con `1`).
+- Oleada mínima en `LevelManager.createTutorialWave` (4 aliens lentos, sin disparos ni jefe).
+- Banner de instrucciones i18n; al completar marca `tutorialCompleted` en `user-settings.properties`.
+- No guarda score del tutorial; al morir o terminar vuelve al menú.
+
 ## [1.5.3] — UX de crafteo (2026-07-13)
 
 ### Añadido

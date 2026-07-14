@@ -83,6 +83,17 @@ public class LevelManager {
         return enemies;
     }
 
+    /** Oleada mínima para el tutorial (pocos aliens lentos, sin jefe). */
+    public List<Enemy> createTutorialWave() {
+        List<Enemy> enemies = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            enemies.add(new Enemy(
+                    220 + (i * 140), 100,
+                    GameBalance.EASY_ENEMY_SPEED, 0, 0, null, 40, 40, 1));
+        }
+        return enemies;
+    }
+
     private Enemy createBoss(int level) {
         int wave = Math.max(1, level / 3);
         int xVel = switch (tipoDificultad) {

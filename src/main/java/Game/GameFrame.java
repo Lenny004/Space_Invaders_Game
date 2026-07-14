@@ -22,6 +22,16 @@ public class GameFrame extends JFrame{
     }
     
     public void ComenzarJuego(){
+        game.setTutorialMode(false);
+        startPanel();
+    }
+
+    public void ComenzarTutorial(){
+        game.setTutorialMode(true);
+        startPanel();
+    }
+
+    private void startPanel() {
         game.IniciarJuego();
         game.setDoubleBuffered(true);
 

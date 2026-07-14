@@ -69,6 +69,16 @@ class LevelManagerTest {
     }
 
     @Test
+    void createTutorialWaveHasFourSlowEnemies() {
+        LevelManager levels = new LevelManager(3);
+        List<Enemy> enemies = levels.createTutorialWave();
+        assertEquals(4, enemies.size());
+        int before = enemies.get(0).getXPosition();
+        enemies.get(0).move();
+        assertEquals(before + GameBalance.EASY_ENEMY_SPEED, enemies.get(0).getXPosition());
+    }
+
+    @Test
     void createShieldsBuildsNineBlocks() {
         assertEquals(9, new LevelManager(1).createShields().size());
     }

@@ -27,6 +27,7 @@ public final class GameConfig {
     private boolean fullscreen;
     private String language = "es";
     private int difficulty = RunEntry.DIFFICULTY_HARD;
+    private boolean tutorialCompleted;
 
     private GameConfig() {
         load();
@@ -71,6 +72,15 @@ public final class GameConfig {
 
     public int getDifficulty() {
         return difficulty;
+    }
+
+    public boolean isTutorialCompleted() {
+        return tutorialCompleted;
+    }
+
+    public void setTutorialCompleted(boolean tutorialCompleted) {
+        this.tutorialCompleted = tutorialCompleted;
+        save();
     }
 
     public void setSfxVolume(float volume) {
@@ -139,6 +149,7 @@ public final class GameConfig {
             }
             difficulty = RunEntry.normalizeDifficulty(
                     parseInt(props.getProperty("difficulty"), difficulty));
+            tutorialCompleted = Boolean.parseBoolean(props.getProperty("tutorialCompleted", "false"));
         } catch (IOException ex) {
             LOG.log(Level.WARNING, "No se pudieron cargar preferencias: " + SETTINGS_PATH, ex);
         }
@@ -154,6 +165,7 @@ public final class GameConfig {
             props.setProperty("fullscreen", Boolean.toString(fullscreen));
             props.setProperty("language", language);
             props.setProperty("difficulty", Integer.toString(difficulty));
+            props.setProperty("tutorialCompleted", Boolean.toString(tutorialCompleted));
             try (OutputStream out = Files.newOutputStream(SETTINGS_PATH)) {
                 props.store(out, "Space Chemistry user settings");
             }

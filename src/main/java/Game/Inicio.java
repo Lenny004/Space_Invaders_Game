@@ -46,6 +46,7 @@ public class Inicio extends javax.swing.JFrame {
         lblCreditos.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 0, 10));
         btnIniciar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnConfiguracion.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        btnTutorial.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnSalir.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         applyLocaleTexts();
@@ -58,6 +59,9 @@ public class Inicio extends javax.swing.JFrame {
         squareUI.setShape(ButtonShape.SQUARE, btnConfiguracion);
         btnConfiguracion.setUI(squareUI);
         btnConfiguracion.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnTutorial);
+        btnTutorial.setUI(squareUI);
+        btnTutorial.setPreferredSize(new Dimension(100, 100));
         squareUI.setShape(ButtonShape.SQUARE, btnAyuda);
         btnAyuda.setUI(squareUI);
         btnAyuda.setPreferredSize(new Dimension(100, 100));
@@ -75,6 +79,7 @@ public class Inicio extends javax.swing.JFrame {
     private void applyLocaleTexts() {
         btnIniciar.setText(Messages.get("menu.start"));
         btnConfiguracion.setText(Messages.get("menu.settings"));
+        btnTutorial.setText(Messages.get("menu.tutorial"));
         btnAyuda.setText(Messages.get("menu.help"));
         btnSalir.setText(Messages.get("menu.exit"));
         lblCreditos.setText(Messages.get("menu.credits"));
@@ -144,6 +149,7 @@ public class Inicio extends javax.swing.JFrame {
         btnIniciar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnAyuda = new javax.swing.JButton();
+        btnTutorial = new javax.swing.JButton();
         btnConfiguracion = new javax.swing.JButton();
         BtnCreditos = new javax.swing.JButton();
         lblCerrar = new javax.swing.JLabel();
@@ -247,6 +253,29 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
+        btnTutorial.setBackground(new java.awt.Color(153, 153, 153));
+        btnTutorial.setForeground(new java.awt.Color(51, 51, 51));
+        btnTutorial.setText("Tutorial");
+        btnTutorial.setBorder(null);
+        btnTutorial.setBorderPainted(false);
+        btnTutorial.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTutorial.setDefaultCapable(false);
+        btnTutorial.setFocusPainted(false);
+        btnTutorial.setFocusable(false);
+        btnTutorial.setRequestFocusEnabled(false);
+        btnTutorial.setVerifyInputWhenFocusTarget(false);
+        btnTutorial.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnTutorialMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnTutorialMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnTutorialMouseExited(evt);
+            }
+        });
+
         BtnCreditos.setBackground(new java.awt.Color(0, 102, 255));
         BtnCreditos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Creditos.png"))); // NOI18N
         BtnCreditos.setBorder(null);
@@ -300,6 +329,9 @@ public class Inicio extends javax.swing.JFrame {
                 .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(373, 373, 373)
+                .addComponent(btnTutorial, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
                 .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(373, 373, 373)
@@ -318,17 +350,19 @@ public class Inicio extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(lblCerrar))
-                .addGap(30, 30, 30)
-                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addGap(22, 22, 22)
+                .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnTutorial, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addComponent(lblCreditos)
-                .addGap(14, 14, 14)
+                .addGap(10, 10, 10)
                 .addComponent(BtnCreditos))
         );
 
@@ -396,6 +430,21 @@ public class Inicio extends javax.swing.JFrame {
         btnConfiguracion.setBackground(GrisGame);
         btnConfiguracion.setForeground(LetrasGris);
     }//GEN-LAST:event_btnConfiguracionMouseExited
+
+    private void btnTutorialMouseClicked(java.awt.event.MouseEvent evt) {
+        this.dispose();
+        FrmNombre.InitializeTutorial();
+    }
+
+    private void btnTutorialMouseEntered(java.awt.event.MouseEvent evt) {
+        btnTutorial.setBackground(CelesteGame);
+        btnTutorial.setForeground(LetrasAzul);
+    }
+
+    private void btnTutorialMouseExited(java.awt.event.MouseEvent evt) {
+        btnTutorial.setBackground(GrisGame);
+        btnTutorial.setForeground(LetrasGris);
+    }
 
     private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
         System.exit(0);
@@ -467,6 +516,7 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JButton btnConfiguracion;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnTutorial;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblCerrar;
     private javax.swing.JLabel lblCreditos;
