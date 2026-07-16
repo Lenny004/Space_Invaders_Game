@@ -26,10 +26,11 @@ class LevelManagerTest {
     }
 
     @Test
-    void normalWaveHasThirtyEnemies() {
+    void normalWaveHasEnemiesMatchingFormation() {
         LevelManager levels = new LevelManager(1);
-        List<Enemy> enemies = levels.createEnemies(1);
-        assertEquals(30, enemies.size());
+        assertEquals(30, levels.createEnemies(1).size());
+        assertEquals(25, levels.createEnemies(2).size());
+        assertEquals(30, levels.createEnemies(4).size());
     }
 
     @Test
@@ -66,6 +67,39 @@ class LevelManagerTest {
         int before = sample.getXPosition();
         sample.move();
         assertEquals(before + 2, sample.getXPosition());
+    }
+
+    @Test
+    void formationsDifferAcrossNormalLevels() {
+        LevelManager levels = new LevelManager(1);
+        assertEquals(LevelManager.Formation.GRID, levels.formationFor(1));
+        assertEquals(LevelManager.Formation.V, levels.formationFor(2));
+        assertEquals(LevelManager.Formation.STAGGERED, levels.formationFor(4));
+
+        List<Enemy> grid = levels.createEnemies(1);
+        List<Enemy> v = levels.createEnemies(2);
+        List<Enemy> staggered = levels.createEnemies(4);
+
+        assertEquals(30, grid.size());
+        assertNotEquals(grid.get(0).getXPosition(), v.get(0).getXPosition());
+        assertNotEquals(grid.get(0).getYPosition(), staggered.get(0).getYPosition());
+        assertTrue(v.stream().anyMatch(Enemy::isZigzag) || staggered.stream().anyMatch(Enemy::isZigzag));
+    }
+
+    @Test
+    void endlessSkipsCampaignVictory() {
+        LevelManager levels = new LevelManager(1);
+        assertTrue(levels.isVictory(16));
+        assertFalse(levels.isVictory(16, true));
+        assertTrue(levels.isVictory(16, false));
+    }
+
+    @Test
+    void bossMinionsAreTwoSmallEnemies() {
+        LevelManager levels = new LevelManager(1);
+        List<Enemy> minions = levels.createBossMinions(3);
+        assertEquals(2, minions.size());
+        assertFalse(minions.get(0).isBoss());
     }
 
     @Test

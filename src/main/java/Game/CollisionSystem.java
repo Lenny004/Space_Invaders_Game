@@ -9,7 +9,7 @@ import java.util.List;
 public class CollisionSystem {
 
     public interface Listener {
-        void onEnemyHit(int enemyIndex);
+        void onEnemyHit(int enemyIndex, int damage);
 
         void onShieldHit(int shieldIndex);
 
@@ -47,9 +47,10 @@ public class CollisionSystem {
             boolean hit = false;
             for (int index = 0; index < enemies.size(); index++) {
                 if (projectile.Colisionando(enemies.get(index))) {
+                    int damage = projectile.getDamage();
                     projectile.deactivate();
                     if (listener != null) {
-                        listener.onEnemyHit(index);
+                        listener.onEnemyHit(index, damage);
                     }
                     hit = true;
                     break;

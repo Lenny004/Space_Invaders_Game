@@ -32,16 +32,47 @@ public final class GameBalance {
     public static final int SCORE_BOSS = 9000;
     public static final int SCORE_BONUS = 5000;
 
-    /** Vida del jefe al entrar en un nivel boss (siempre la misma). */
+    /** Vida base del jefe (campaña nivel 6 / fallback). */
     public static final int BOSS_HEALTH = 40;
 
-    /** @deprecated usar {@link #BOSS_HEALTH} */
+    /** @deprecated usar {@link #bossMaxHealth(int)} */
     public static final int BOSS_HEALTH_INITIAL = BOSS_HEALTH;
 
-    /** @deprecated usar {@link #BOSS_HEALTH} */
+    /** @deprecated usar {@link #bossMaxHealth(int)} */
     public static final int BOSS_HEALTH_RESET = BOSS_HEALTH;
 
     public static final int EASY_ENEMY_SPEED = 2;
     public static final int MEDIUM_ENEMY_SPEED = 4;
     public static final int VICTORY_AFTER_LEVEL = 15;
+
+    /** Ticks (~50 ms) sin kill antes de perder el combo. */
+    public static final int COMBO_TIMEOUT_TICKS = 50;
+    public static final int COMBO_MAX_MULTIPLIER = 5;
+
+    /** Probabilidad (%) de soltar un buff temporal al matar un alien. */
+    public static final int BUFF_DROP_CHANCE_PERCENT = 12;
+    public static final int BUFF_DURATION_TICKS = 200;
+    public static final int BUFF_FALL_SPEED = 3;
+
+    public static int bossMaxHealth(int level) {
+        return switch (level) {
+            case 3 -> 30;
+            case 6 -> 40;
+            case 9 -> 55;
+            case 12 -> 70;
+            case 15 -> 85;
+            default -> {
+                int wave = Math.max(1, level / 3);
+                yield Math.min(120, 30 + wave * 12);
+            }
+        };
+    }
+
+    /** Multiplicador de score por racha de combo (1..{@link #COMBO_MAX_MULTIPLIER}). */
+    public static int comboMultiplier(int comboCount) {
+        if (comboCount <= 0) {
+            return 1;
+        }
+        return Math.min(COMBO_MAX_MULTIPLIER, 1 + (comboCount - 1) / 2);
+    }
 }

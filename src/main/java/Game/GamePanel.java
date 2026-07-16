@@ -36,7 +36,14 @@ public class GamePanel extends JPanel {
     private boolean pauseMenuOpen;
     private boolean craftOverlayOpen;
     private boolean tutorialMode;
+    private boolean endlessMode;
     private TutorialController tutorial;
+    private final ComboSystem comboSystem = new ComboSystem();
+    private final TemporaryBuffSystem temporaryBuffs = new TemporaryBuffSystem();
+    private final ArrayList<BuffDrop> buffDropList = new ArrayList<>();
+    private int bossMaxHealth = GameBalance.BOSS_HEALTH;
+    private boolean desperateMinionsSpawned;
+    private int lastHitScore;
     private KeyboardController controladores;
     // Controla el tamaño de la ventana del juego y la velocidad de fotogramas. 
     private final int AnchoJuego = 1200;
@@ -154,6 +161,14 @@ public class GamePanel extends JPanel {
     public boolean isTutorialMode() {
         return tutorialMode;
     }
+
+    public void setEndlessMode(boolean enabled) {
+        this.endlessMode = enabled;
+    }
+
+    public boolean isEndlessMode() {
+        return endlessMode;
+    }
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // CONFIGURAR JUEGO
@@ -167,8 +182,8 @@ public class GamePanel extends JPanel {
             return;
         }
 
-        // Panel de victoria si gana
-        if (levelManager.isVictory(level)) {
+        // Panel de victoria si gana (no aplica en endless)
+        if (levelManager.isVictory(level, endlessMode)) {
             saveCurrentScore(true);
             Victoria vic = new Victoria();
             vic.AsignarScore(score);
@@ -181,7 +196,9 @@ public class GamePanel extends JPanel {
         }
 
         if (levelManager.isBossLevel(level)) {
-            bossHealth = GameBalance.BOSS_HEALTH;
+            bossMaxHealth = GameBalance.bossMaxHealth(level);
+            bossHealth = bossMaxHealth;
+            desperateMinionsSpawned = false;
             bossSoundAudio.play();
         }
 
@@ -213,6 +230,9 @@ public class GamePanel extends JPanel {
         projectiles.clear();
         beamList.clear();
         ElementoList.clear();
+        buffDropList.clear();
+        temporaryBuffs.reset();
+        comboSystem.reset();
         newBulletCanFire = true;
         newBeamCanFire = true;
     }
@@ -242,7 +262,8 @@ public class GamePanel extends JPanel {
     
     public void PowerUpBalas(){
         projectiles.clear();
-        projectiles.addAll(PowerUpSystem.createBurst(NaveJugador, CantidadBalas));
+        int bulletLevel = temporaryBuffs.effectiveBulletLevel(CantidadBalas);
+        projectiles.addAll(PowerUpSystem.createBurst(NaveJugador, bulletLevel));
         newBulletCanFire = false;
     }
     
@@ -265,10 +286,10 @@ public class GamePanel extends JPanel {
         // Marcador de impacto
         if (hitMarker) {
             g.setColor(Color.WHITE);
-            if (level%3 != 0) {
-                g.drawString("+ 100", markerX + 20, markerY -= 1);
+            if (level % 3 != 0) {
+                g.drawString("+ " + lastHitScore, markerX + 20, markerY -= 1);
             } else {
-                g.drawString("- 1", markerX + 75, markerY += 1);
+                g.drawString("-" + Math.max(1, lastHitScore), markerX + 75, markerY += 1);
             }
         }
 //---------------------------------------------------------------------------
@@ -312,6 +333,10 @@ public class GamePanel extends JPanel {
         for (int index = 0; index < ElementoList.size(); index++) {
             ElementoList.get(index).draw(g);
         }
+
+        for (int index = 0; index < buffDropList.size(); index++) {
+            buffDropList.get(index).draw(g);
+        }
         
         // Dibuja los rayos generados
         for (int index = 0; index < beamList.size(); index++) {
@@ -333,6 +358,11 @@ public class GamePanel extends JPanel {
         g.setColor(Color.WHITE);
         g.drawString("Score: " + score, 260, 20);
 
+        if (comboSystem.isActive()) {
+            g.setColor(Color.ORANGE);
+            g.drawString("COMBO x" + comboSystem.getMultiplier(), 260, 42);
+        }
+
         // Configura la visualización del contador de vida
         g.setColor(Color.WHITE);
         g.drawString("Vidas:", 11, 20);
@@ -341,16 +371,29 @@ public class GamePanel extends JPanel {
         }
         // Establece la visualización de nivel
         g.setColor(Color.WHITE);
-        g.drawString("Nivel " + level, 750, 20);
+        String levelLabel = endlessMode
+                ? Messages.format("hud.endless.level", level)
+                : ("Nivel " + level);
+        g.drawString(levelLabel, 750, 20);
 
         // Establece la visualización de Highscore
         g.setColor(Color.WHITE);
         g.drawString("High Score: " + highScore, 440, 20);
 
         // Dibuja una pantalla de salud para el nivel de jefe
-        if (level%3 == 0 && !tutorialMode) {
+        if (levelManager != null && levelManager.isBossLevel(level) && !tutorialMode) {
             g.setColor(Color.WHITE);
-            g.drawString("Vida del Jefe: " + bossHealth, 500, 600);
+            g.drawString("Vida del Jefe: " + bossHealth + "/" + bossMaxHealth, 440, 600);
+            BossPhase phase = BossPhase.fromHealth(bossHealth, bossMaxHealth);
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font(TipoFuente.SpaceInvaders, Font.PLAIN, 12));
+            g.drawString(Messages.get("boss.phase." + phase.name().toLowerCase()), 440, 620);
+        }
+
+        if (!temporaryBuffs.activeLabels().isEmpty()) {
+            g.setColor(new Color(80, 200, 255));
+            g.setFont(new Font(TipoFuente.SpaceInvaders, Font.PLAIN, 12));
+            g.drawString(Messages.get("buff.active") + " " + String.join(" ", temporaryBuffs.activeLabels()), 11, 635);
         }
 
         g.setColor(Color.WHITE);
@@ -519,34 +562,59 @@ public class GamePanel extends JPanel {
         }
     }
     
-    public void ColisionesBalas(int index){
-        // Puntaje de actualizaciones para niveles normales
-        if (level%3 != 0) {
-            score += GameBalance.SCORE_ALIEN;
+    public void ColisionesBalas(int index, int damage){
+        if (index < 0 || index >= enemyList.size()) {
+            return;
+        }
+        Enemy target = enemyList.get(index);
+        int dmg = Math.max(1, damage);
+
+        // Puntaje de actualizaciones para niveles normales / minions
+        if (!target.isBoss()) {
+            int mult = comboSystem.registerKill();
+            lastHitScore = GameBalance.SCORE_ALIEN * mult;
+            score += lastHitScore;
             hitMarker = true;
-            markerX = enemyList.get(index).getXPosition(); // Obtiene posiciones de las que se genera el "+ 100"
-            markerY = enemyList.get(index).getYPosition();
+            markerX = target.getXPosition();
+            markerY = target.getYPosition();
             enemyList.remove(index);
 
-            // Drop físico: el inventario solo aumenta al recogerlo con la nave
             if (tutorialMode || DropSystem.shouldDrop(randomElemento)) {
                 spawnElementDrop(markerX, markerY);
             }
+            if (!tutorialMode && TemporaryBuffSystem.shouldDrop(randomElemento)) {
+                buffDropList.add(new BuffDrop(
+                        markerX, markerY, TemporaryBuffSystem.rollType(randomElemento)));
+            }
+            return;
         }
-        // Actualiza la puntuación para los niveles de jefe.
-        if (level%3 == 0) {
-            hitMarker = true;
-            markerX = enemyList.get(index).getXPosition(); // Obtiene posiciones de las que se genera el "- 1"
-            markerY = enemyList.get(index).getYPosition() + 165;
-            bossHealth -= 1;
-            if (bossHealth == 0) {
-                enemyList.remove(index);
-                score += GameBalance.SCORE_BOSS;// Puntaje de bonificación por derrotar al jefe
-                if (DropSystem.shouldDropOnBossKill()) {
-                    spawnElementDrop(markerX, markerY);
-                }
+
+        // Jefe: usa damage del proyectil
+        hitMarker = true;
+        markerX = target.getXPosition();
+        markerY = target.getYPosition() + 165;
+        lastHitScore = dmg;
+        bossHealth = Math.max(0, bossHealth - dmg);
+        maybeSpawnDesperateMinions();
+        if (bossHealth == 0) {
+            enemyList.remove(index);
+            score += GameBalance.SCORE_BOSS;
+            comboSystem.registerKill();
+            if (DropSystem.shouldDropOnBossKill()) {
+                spawnElementDrop(markerX, markerY);
             }
         }
+    }
+
+    private void maybeSpawnDesperateMinions() {
+        if (desperateMinionsSpawned || levelManager == null || !levelManager.isBossLevel(level)) {
+            return;
+        }
+        if (BossPhase.fromHealth(bossHealth, bossMaxHealth) != BossPhase.DESPERATE) {
+            return;
+        }
+        desperateMinionsSpawned = true;
+        enemyList.addAll(levelManager.createBossMinions(level));
     }
 
     private void spawnElementDrop(int x, int y) {
@@ -565,8 +633,11 @@ public class GamePanel extends JPanel {
         if (tutorialMode || !newBeamCanFire || enemyList.isEmpty()) {
             return;
         }
-        if (level % 3 != 0) {
+        if (levelManager == null || !levelManager.isBossLevel(level)) {
             for (int index = 0; index < enemyList.size(); index++) {
+                if (enemyList.get(index).isBoss()) {
+                    continue;
+                }
                 if (randomDisparosE.nextInt(GameBalance.NORMAL_BEAM_CHANCE) == index) {
                     beam = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition(), 0, Color.YELLOW);
                     beamList.add(beam);
@@ -576,16 +647,42 @@ public class GamePanel extends JPanel {
             }
             return;
         }
+
         for (int index = 0; index < enemyList.size(); index++) {
-            if (randomDisparosE.nextInt(GameBalance.BOSS_BEAM_CHANCE) == index) {
-                beam = new Beam(enemyList.get(index).getXPosition() + 75, enemyList.get(index).getYPosition() + 140, 0, Color.YELLOW);
-                beam2 = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
-                beam3 = new Beam(enemyList.get(index).getXPosition() + 150, enemyList.get(index).getYPosition() + 110, 0, Color.YELLOW);
-                beamList.add(beam);
-                beamList.add(beam2);
-                beamList.add(beam3);
-                beamSoundAudio.play();
+            Enemy enemy = enemyList.get(index);
+            if (!enemy.isBoss()) {
+                if (randomDisparosE.nextInt(GameBalance.NORMAL_BEAM_CHANCE) == 0) {
+                    beamList.add(new Beam(enemy.getXPosition(), enemy.getYPosition(), 0, Color.YELLOW));
+                    beamSoundAudio.play();
+                    newBeamCanFire = false;
+                }
+                continue;
             }
+            if (randomDisparosE.nextInt(GameBalance.BOSS_BEAM_CHANCE) != 0) {
+                newBeamCanFire = false;
+                continue;
+            }
+            BossPhase phase = BossPhase.fromHealth(bossHealth, bossMaxHealth);
+            int bx = enemy.getXPosition();
+            int by = enemy.getYPosition();
+            switch (phase) {
+                case OPENING -> {
+                    beamList.add(new Beam(bx + 75, by + 140, 0, Color.YELLOW));
+                }
+                case RAGE -> {
+                    beamList.add(new Beam(bx + 75, by + 140, 0, Color.YELLOW));
+                    beamList.add(new Beam(bx, by + 110, 0, Color.YELLOW));
+                    beamList.add(new Beam(bx + 150, by + 110, 0, Color.YELLOW));
+                }
+                case DESPERATE -> {
+                    beamList.add(new Beam(bx + 75, by + 140, 0, Color.ORANGE));
+                    beamList.add(new Beam(bx, by + 110, 0, Color.ORANGE));
+                    beamList.add(new Beam(bx + 150, by + 110, 0, Color.ORANGE));
+                    beamList.add(new Beam(bx + 30, by + 150, 0, Color.RED));
+                    beamList.add(new Beam(bx + 120, by + 150, 0, Color.RED));
+                }
+            }
+            beamSoundAudio.play();
             newBeamCanFire = false;
         }
     }
@@ -623,7 +720,10 @@ public class GamePanel extends JPanel {
 
         handlePlayerFire();
         tickCraftFeedback();
+        comboSystem.tick();
+        temporaryBuffs.tick();
         updateElementDrops();
+        updateBuffDrops();
         updateTutorial();
 
         // Permite al jugador moverse hacia la izquierda y hacia la derecha
@@ -652,20 +752,11 @@ public class GamePanel extends JPanel {
         spawnBonusEnemy();
 
         // Hace que los enemigos se muevan y cambien de dirección en las fronteras.
-        if(level%3 != 0){
-            if ((enemyList.get(enemyList.size() - 1).getXPosition() + enemyList.get(enemyList.size() - 1).getXVelocity()) > 950 || (enemyList.get(0).getXPosition() + enemyList.get(0).getXVelocity()) < 50) {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    enemyList.get(index).setXVelocity(enemyList.get(index).getXVelocity() * -1);
-                    enemyList.get(index).setYPosition(enemyList.get(index).getYPosition() + 10);
-                }
-            } else {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    enemyList.get(index).move();
-                }
-            }
-        }
-        if(level%3 == 0){
-            if ((enemyList.get(enemyList.size() - 1).getXPosition() + enemyList.get(enemyList.size() - 1).getXVelocity()) > 830 || (enemyList.get(0).getXPosition() + enemyList.get(0).getXVelocity()) < 50) {
+        boolean skipEnemyMove = temporaryBuffs.hasSlow() && (frameNumber % 2 == 0);
+        if (!enemyList.isEmpty() && !skipEnemyMove) {
+            int rightLimit = levelManager != null && levelManager.isBossLevel(level) ? 830 : 950;
+            if ((enemyList.get(enemyList.size() - 1).getXPosition() + enemyList.get(enemyList.size() - 1).getXVelocity()) > rightLimit
+                    || (enemyList.get(0).getXPosition() + enemyList.get(0).getXVelocity()) < 50) {
                 for (int index = 0; index < enemyList.size(); index++) {
                     enemyList.get(index).setXVelocity(enemyList.get(index).getXVelocity() * -1);
                     enemyList.get(index).setYPosition(enemyList.get(index).getYPosition() + 10);
@@ -682,9 +773,9 @@ public class GamePanel extends JPanel {
                 projectiles, enemyList, shieldList, bonusEnemyList,
                 new CollisionSystem.Listener() {
                     @Override
-                    public void onEnemyHit(int enemyIndex) {
+                    public void onEnemyHit(int enemyIndex, int damage) {
                         hitSoundAudio.play();
-                        ColisionesBalas(enemyIndex);
+                        ColisionesBalas(enemyIndex, damage);
                     }
                     @Override
                     public void onShieldHit(int shieldIndex) {
@@ -732,48 +823,50 @@ public class GamePanel extends JPanel {
             if (enemyList.get(input).getYPosition() + 50 >= 600) {
                 enemyList.clear();
                 shieldList.clear();
-                lifeList.clear();
                 beamList.clear();
                 ElementoList.clear();
+                buffDropList.clear();
                 projectiles.clear();
-                numberOfLives -= 1;
-                deathSoundAudio.play(); // Reproduce un sonido de muerte cuando los enemigos llegan al fondo
+                comboSystem.onPlayerHit();
+                numberOfLives = Math.max(0, numberOfLives - 1);
+                deathSoundAudio.play();
                 ConfigurarJuego();
                 return;
             }
         }
 
         // Actualiza la pantalla del contador de vida
-        if (NaveJugador.estaColisionando) {
-            int index = lifeList.size() - 1;
-            lifeList.remove(index);
-        } 
-        
+        if (NaveJugador != null && NaveJugador.estaColisionando) {
+            applyPlayerDamage();
+            NaveJugador.estaColisionando = false;
+        }
+
         // Termina el juego si el jugador se queda sin vidas
-        else if (lifeList.isEmpty()) {
+        if (lifeList.isEmpty() && numberOfLives <= 0) {
             deathSoundAudio.play();
             if (tutorialMode) {
                 abortTutorialToMenu();
                 return;
             }
             saveCurrentScore(false);
-            // Le da al jugador la opción de volver a jugar o salir
+            String overMsg = endlessMode
+                    ? Messages.format("dialog.endless.over", score, level)
+                    : Messages.format("dialog.game.over", score);
             int respuesta = JOptionPane.showConfirmDialog(
                     null,
                     Messages.get("dialog.play.again"),
-                    Messages.format("dialog.game.over", score),
+                    overMsg,
                     JOptionPane.YES_NO_OPTION);
-            // Si eligen jugar de nuevo, esto reinicia todos los elementos del juego.
             if (respuesta == 0) {
                 ResetearValores();
                 ConfigurarJuego();
-            }
-            // Si eligen no volver a jugar, se cierra el juego.
-            if (respuesta == 1) {
+            } else {
+                stop();
                 GameOver fin = new GameOver();
                 fin.AsignarScore(score);
                 fin.setVisible(true);
             }
+            return;
         }
         
 
@@ -789,6 +882,7 @@ public class GamePanel extends JPanel {
             beamList.clear();
             shieldList.clear();
             ElementoList.clear();
+            buffDropList.clear();
             if(level%3 == 0) bonusEnemyList.clear();
             lifeList.clear();
             level += 1;
@@ -966,10 +1060,30 @@ public class GamePanel extends JPanel {
             if (NaveJugador != null && current.Colisionando(NaveJugador)) {
                 beamList.remove(index);
                 damageSoundAudio.play();
-                if (!lifeList.isEmpty()) {
-                    lifeList.remove(lifeList.size() - 1);
-                }
+                applyPlayerDamage();
             }
+        }
+    }
+
+    private void applyPlayerDamage() {
+        if (temporaryBuffs.tryAbsorbHit()) {
+            craftFeedback = Messages.get("buff.shield.break");
+            craftFeedbackTicks = 40;
+            return;
+        }
+        comboSystem.onPlayerHit();
+        if (!lifeList.isEmpty()) {
+            lifeList.remove(lifeList.size() - 1);
+            numberOfLives = lifeList.size();
+        }
+    }
+
+    private void updateBuffDrops() {
+        String pickup = temporaryBuffs.updateDrops(buffDropList, NaveJugador);
+        if (pickup != null) {
+            craftFeedback = pickup;
+            craftFeedbackTicks = 40;
+            bonusSoundAudio.play();
         }
     }
 
@@ -986,10 +1100,13 @@ public class GamePanel extends JPanel {
         beamList.clear();
         bonusEnemyList.clear();
         ElementoList.clear();
+        buffDropList.clear();
         projectiles.clear();
         score = 0;
         level = 1;
-        bossHealth = GameBalance.BOSS_HEALTH;
+        bossMaxHealth = GameBalance.BOSS_HEALTH;
+        bossHealth = bossMaxHealth;
+        desperateMinionsSpawned = false;
         numberOfLives = 3;
         CantidadBalas = 0;
         Velocidad = 0;
@@ -1001,6 +1118,9 @@ public class GamePanel extends JPanel {
         craftFeedbackTicks = 0;
         pauseMenuOpen = false;
         craftOverlayOpen = false;
+        comboSystem.reset();
+        temporaryBuffs.reset();
+        lastHitScore = GameBalance.SCORE_ALIEN;
                 
         for(int i = 1; i <= 11; i++){
             CantidadElemento[i] = 0;
@@ -1045,6 +1165,7 @@ public class GamePanel extends JPanel {
         // Llama a setupGame para inicializar campos
         ResetearValores();
         if (tutorialMode) {
+            endlessMode = false;
             tutorial = new TutorialController();
             if (FrmNombre.nombre == null || FrmNombre.nombre.isBlank()) {
                 FrmNombre.nombre = "Tutorial";

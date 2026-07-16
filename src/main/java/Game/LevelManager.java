@@ -12,6 +12,12 @@ import persistence.RunEntry;
  */
 public class LevelManager {
 
+    public enum Formation {
+        GRID,
+        V,
+        STAGGERED
+    }
+
     private final int tipoDificultad;
 
     public LevelManager(Configuracion dificultad) {
@@ -32,6 +38,22 @@ public class LevelManager {
 
     public boolean isVictory(int level) {
         return level > GameBalance.VICTORY_AFTER_LEVEL;
+    }
+
+    /** Victoria de campaña; en endless nunca aplica. */
+    public boolean isVictory(int level, boolean endlessMode) {
+        return !endlessMode && isVictory(level);
+    }
+
+    public Formation formationFor(int level) {
+        if (isBossLevel(level)) {
+            return Formation.GRID;
+        }
+        return switch (Math.floorMod(level, 5)) {
+            case 2 -> Formation.V;
+            case 4 -> Formation.STAGGERED;
+            default -> Formation.GRID;
+        };
     }
 
     public List<Enemy> createEnemies(int level) {
@@ -67,17 +89,75 @@ public class LevelManager {
     }
 
     private List<Enemy> createNormalWave(int level) {
+        Formation formation = formationFor(level);
+        return switch (formation) {
+            case V -> createVWave(level);
+            case STAGGERED -> createStaggeredWave(level);
+            default -> createGridWave(level);
+        };
+    }
+
+    private int baseXVelocity(int level) {
+        return switch (tipoDificultad) {
+            case RunEntry.DIFFICULTY_EASY -> GameBalance.EASY_ENEMY_SPEED;
+            case RunEntry.DIFFICULTY_MEDIUM -> GameBalance.MEDIUM_ENEMY_SPEED;
+            default -> Math.max(1, level);
+        };
+    }
+
+    private List<Enemy> createGridWave(int level) {
         List<Enemy> enemies = new ArrayList<>();
+        int xVel = baseXVelocity(level);
         for (int row = 0; row < 6; row++) {
             for (int column = 0; column < 5; column++) {
-                int xVel = switch (tipoDificultad) {
-                    case RunEntry.DIFFICULTY_EASY -> GameBalance.EASY_ENEMY_SPEED;
-                    case RunEntry.DIFFICULTY_MEDIUM -> GameBalance.MEDIUM_ENEMY_SPEED;
-                    default -> level;
-                };
                 enemies.add(new Enemy(
                         120 + (row * 100), 20 + (column * 60),
                         xVel, 0, column, null, 40, 40, level));
+            }
+        }
+        return enemies;
+    }
+
+    private List<Enemy> createVWave(int level) {
+        List<Enemy> enemies = new ArrayList<>();
+        int xVel = baseXVelocity(level);
+        int[][] slots = {
+                {500, 20},
+                {420, 70}, {580, 70},
+                {340, 120}, {500, 120}, {660, 120},
+                {260, 170}, {420, 170}, {580, 170}, {740, 170},
+                {180, 220}, {340, 220}, {500, 220}, {660, 220}, {820, 220},
+                {260, 270}, {420, 270}, {580, 270}, {740, 270},
+                {340, 320}, {500, 320}, {660, 320},
+                {420, 370}, {580, 370},
+                {500, 420}
+        };
+        for (int i = 0; i < slots.length; i++) {
+            Enemy enemy = new Enemy(
+                    slots[i][0], slots[i][1],
+                    xVel, 0, i % 3, null, 40, 40, level);
+            if (i % 7 == 0) {
+                enemy.setZigzag(true);
+            }
+            enemies.add(enemy);
+        }
+        return enemies;
+    }
+
+    private List<Enemy> createStaggeredWave(int level) {
+        List<Enemy> enemies = new ArrayList<>();
+        int xVel = baseXVelocity(level);
+        for (int column = 0; column < 5; column++) {
+            for (int row = 0; row < 6; row++) {
+                int offset = (column % 2 == 0) ? 0 : 40;
+                Enemy enemy = new Enemy(
+                        100 + (row * 110) + offset,
+                        30 + (column * 55),
+                        xVel, 0, column, null, 40, 40, level);
+                if (row == 0 || row == 5) {
+                    enemy.setZigzag(true);
+                }
+                enemies.add(enemy);
             }
         }
         return enemies;
@@ -94,7 +174,16 @@ public class LevelManager {
         return enemies;
     }
 
-    private Enemy createBoss(int level) {
+    /** Dos minions que acompañan la fase desesperada del jefe. */
+    public List<Enemy> createBossMinions(int level) {
+        List<Enemy> minions = new ArrayList<>();
+        int xVel = Math.max(1, baseXVelocity(level) / 2);
+        minions.add(new Enemy(80, 80, xVel, 0, 0, null, 40, 40, level));
+        minions.add(new Enemy(820, 80, xVel, 0, 1, null, 40, 40, level));
+        return minions;
+    }
+
+    public Enemy createBoss(int level) {
         int wave = Math.max(1, level / 3);
         int xVel = switch (tipoDificultad) {
             case RunEntry.DIFFICULTY_EASY -> Math.max(1, wave);

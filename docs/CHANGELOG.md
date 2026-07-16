@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0] — Integraciones de diversión P0+P1 (2026-07-15)
+
+### Añadido
+- **Combos:** rachas de kills con multiplicador de score (tope x5); se corta al recibir daño o por timeout.
+- **Buffs temporales:** drops S/Z/D (escudo, slow, doble disparo) además del crafteo permanente.
+- **Oleadas variadas:** formaciones GRID / V / escalonada según nivel; algunos aliens en zigzag.
+- **Jefes con fases:** HP por jefe, patrones OPENING/RAGE/DESPERATE y minions en fase final; daño de proyectil aplicado al jefe.
+- **Modo Infinito:** botón en menú; no hay victoria al pasar el 15; records con nivel alto se marcan como Infinito.
+
+### Ya presente (1.5.2–1.5.4)
+- Drops honestos, overlay de crafteo (`C` + `1`–`6`/`Q`–`Y`), tutorial interactivo.
+
 ## [1.5.4] — Tutorial interactivo (2026-07-13)
 
 ### Añadido

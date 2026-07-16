@@ -23,11 +23,19 @@ public class GameFrame extends JFrame{
     
     public void ComenzarJuego(){
         game.setTutorialMode(false);
+        game.setEndlessMode(false);
         startPanel();
     }
 
     public void ComenzarTutorial(){
         game.setTutorialMode(true);
+        game.setEndlessMode(false);
+        startPanel();
+    }
+
+    public void ComenzarEndless(){
+        game.setTutorialMode(false);
+        game.setEndlessMode(true);
         startPanel();
     }
 

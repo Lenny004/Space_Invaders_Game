@@ -78,10 +78,12 @@ class CollisionSystemTest {
         projectiles.add(p);
 
         int[] hitIndex = {-1};
+        int[] hitDamage = {-1};
         CollisionSystem.Listener listener = new CollisionSystem.Listener() {
             @Override
-            public void onEnemyHit(int enemyIndex) {
+            public void onEnemyHit(int enemyIndex, int damage) {
                 hitIndex[0] = enemyIndex;
+                hitDamage[0] = damage;
             }
 
             @Override
@@ -97,6 +99,7 @@ class CollisionSystemTest {
                 projectiles, enemies, List.of(), List.of(), listener);
 
         assertEquals(0, hitIndex[0]);
+        assertEquals(1, hitDamage[0]);
         assertFalse(p.isActive());
         assertTrue(canFire);
     }
@@ -118,7 +121,7 @@ class CollisionSystemTest {
                 List.of(),
                 new CollisionSystem.Listener() {
                     @Override
-                    public void onEnemyHit(int enemyIndex) {
+                    public void onEnemyHit(int enemyIndex, int damage) {
                     }
 
                     @Override

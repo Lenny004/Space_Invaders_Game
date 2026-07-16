@@ -123,7 +123,14 @@ public class Records extends javax.swing.JFrame {
     }
 
     private static String tipFor(RunEntry run) {
-        String result = run.isWon() ? Messages.get("result.win") : Messages.get("result.loss");
+        String result;
+        if (run.isWon()) {
+            result = Messages.get("result.win");
+        } else if (run.getLevelReached() > GameBalance.VICTORY_AFTER_LEVEL) {
+            result = Messages.get("result.endless");
+        } else {
+            result = Messages.get("result.loss");
+        }
         return Messages.format("tooltip.run", run.getLevelReached(), difficultyText(run.getDifficulty()), result);
     }
 

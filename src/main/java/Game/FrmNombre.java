@@ -18,15 +18,36 @@ public class FrmNombre extends javax.swing.JFrame {
     Color Gris = new Color(179, 184, 187);
     
     static public GameFrame j = new GameFrame();
-    
+    private static boolean pendingEndless;
+
+    public static void PrepareEndless() {
+        pendingEndless = true;
+    }
+
+    public static void PrepareCampaign() {
+        pendingEndless = false;
+    }
+
     public static void InitializeGame(){
         j.setVisible(true);
-        j.ComenzarJuego();
+        if (pendingEndless) {
+            pendingEndless = false;
+            j.ComenzarEndless();
+        } else {
+            j.ComenzarJuego();
+        }
     }
 
     public static void InitializeTutorial(){
+        pendingEndless = false;
         j.setVisible(true);
         j.ComenzarTutorial();
+    }
+
+    public static void InitializeEndless(){
+        pendingEndless = true;
+        j.setVisible(true);
+        j.ComenzarEndless();
     }
     
     public static void CloseGame(){

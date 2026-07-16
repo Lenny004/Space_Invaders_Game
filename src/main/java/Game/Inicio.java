@@ -47,6 +47,7 @@ public class Inicio extends javax.swing.JFrame {
         btnIniciar.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnConfiguracion.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnTutorial.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
+        btnEndless.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnAyuda.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         btnSalir.setFont(TipoFuente.fuenteSpace(TipoFuente.SpaceInvaders, 1, 14));
         applyLocaleTexts();
@@ -62,6 +63,9 @@ public class Inicio extends javax.swing.JFrame {
         squareUI.setShape(ButtonShape.SQUARE, btnTutorial);
         btnTutorial.setUI(squareUI);
         btnTutorial.setPreferredSize(new Dimension(100, 100));
+        squareUI.setShape(ButtonShape.SQUARE, btnEndless);
+        btnEndless.setUI(squareUI);
+        btnEndless.setPreferredSize(new Dimension(100, 100));
         squareUI.setShape(ButtonShape.SQUARE, btnAyuda);
         btnAyuda.setUI(squareUI);
         btnAyuda.setPreferredSize(new Dimension(100, 100));
@@ -80,6 +84,7 @@ public class Inicio extends javax.swing.JFrame {
         btnIniciar.setText(Messages.get("menu.start"));
         btnConfiguracion.setText(Messages.get("menu.settings"));
         btnTutorial.setText(Messages.get("menu.tutorial"));
+        btnEndless.setText(Messages.get("menu.endless"));
         btnAyuda.setText(Messages.get("menu.help"));
         btnSalir.setText(Messages.get("menu.exit"));
         lblCreditos.setText(Messages.get("menu.credits"));
@@ -150,6 +155,7 @@ public class Inicio extends javax.swing.JFrame {
         btnSalir = new javax.swing.JButton();
         btnAyuda = new javax.swing.JButton();
         btnTutorial = new javax.swing.JButton();
+        btnEndless = new javax.swing.JButton();
         btnConfiguracion = new javax.swing.JButton();
         BtnCreditos = new javax.swing.JButton();
         lblCerrar = new javax.swing.JLabel();
@@ -276,6 +282,29 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
+        btnEndless.setBackground(new java.awt.Color(153, 153, 153));
+        btnEndless.setForeground(new java.awt.Color(51, 51, 51));
+        btnEndless.setText("Infinito");
+        btnEndless.setBorder(null);
+        btnEndless.setBorderPainted(false);
+        btnEndless.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEndless.setDefaultCapable(false);
+        btnEndless.setFocusPainted(false);
+        btnEndless.setFocusable(false);
+        btnEndless.setRequestFocusEnabled(false);
+        btnEndless.setVerifyInputWhenFocusTarget(false);
+        btnEndless.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEndlessMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnEndlessMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEndlessMouseExited(evt);
+            }
+        });
+
         BtnCreditos.setBackground(new java.awt.Color(0, 102, 255));
         BtnCreditos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Creditos.png"))); // NOI18N
         BtnCreditos.setBorder(null);
@@ -332,6 +361,9 @@ public class Inicio extends javax.swing.JFrame {
                 .addComponent(btnTutorial, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(373, 373, 373)
+                .addComponent(btnEndless, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(373, 373, 373)
                 .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(373, 373, 373)
@@ -356,9 +388,11 @@ public class Inicio extends javax.swing.JFrame {
                 .addComponent(btnConfiguracion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnTutorial, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
+                .addComponent(btnEndless, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addComponent(btnAyuda, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(lblCreditos)
@@ -371,6 +405,7 @@ public class Inicio extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnIniciarMouseClicked
+        FrmNombre.PrepareCampaign();
         name.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnIniciarMouseClicked
@@ -446,6 +481,22 @@ public class Inicio extends javax.swing.JFrame {
         btnTutorial.setForeground(LetrasGris);
     }
 
+    private void btnEndlessMouseClicked(java.awt.event.MouseEvent evt) {
+        FrmNombre.PrepareEndless();
+        name.setVisible(true);
+        this.dispose();
+    }
+
+    private void btnEndlessMouseEntered(java.awt.event.MouseEvent evt) {
+        btnEndless.setBackground(CelesteGame);
+        btnEndless.setForeground(LetrasAzul);
+    }
+
+    private void btnEndlessMouseExited(java.awt.event.MouseEvent evt) {
+        btnEndless.setBackground(GrisGame);
+        btnEndless.setForeground(LetrasGris);
+    }
+
     private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
         System.exit(0);
     }//GEN-LAST:event_lblCerrarMouseClicked
@@ -514,6 +565,7 @@ public class Inicio extends javax.swing.JFrame {
     private javax.swing.JButton BtnCreditos;
     private javax.swing.JButton btnAyuda;
     private javax.swing.JButton btnConfiguracion;
+    private javax.swing.JButton btnEndless;
     private javax.swing.JButton btnIniciar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnTutorial;

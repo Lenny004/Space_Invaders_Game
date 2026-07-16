@@ -22,8 +22,9 @@ public class Enemy extends MovingGameObject {
     ImageIcon alienBoss5 = new ImageIcon(getClass().getResource("/Imagenes/Boss5.gif"));
 
     private int enemytype, width, height, level;
+    private boolean zigzag;
+    private int zigzagPhase;
 
-    
     // Constructor para un enemigo
     public Enemy(int xPosition, int yPosition, int xVelocity, int yVelocity, int enemyType, Color color, int width, int height, int level) {
         super(xPosition, yPosition, xVelocity, yVelocity, color);
@@ -31,6 +32,22 @@ public class Enemy extends MovingGameObject {
         this.width = width;
         this.height = height;
         this.level = level;
+    }
+
+    public void setZigzag(boolean zigzag) {
+        this.zigzag = zigzag;
+    }
+
+    public boolean isZigzag() {
+        return zigzag;
+    }
+
+    public boolean isBoss() {
+        return enemytype == 100;
+    }
+
+    public int getLevel() {
+        return level;
     }
     
     @Override
@@ -47,23 +64,14 @@ public class Enemy extends MovingGameObject {
             alien3.paintIcon(null, g, this.getXPosition(), this.getYPosition());
         // Enemigo Boss
         } 
-        if (this.enemytype == 100){
-            switch(level){
-                case 3:
-                    alienBoss1.paintIcon(null, g, this.getXPosition(), this.getYPosition());
-                    break;
-                case 6:
-                    alienBoss2.paintIcon(null, g, this.getXPosition(), this.getYPosition());
-                    break;
-                case 9:
-                    alienBoss3.paintIcon(null, g, this.getXPosition(), this.getYPosition());
-                    break;
-                case 12:
-                    alienBoss4.paintIcon(null, g, this.getXPosition(), this.getYPosition());
-                    break;
-                case 15:
-                    alienBoss5.paintIcon(null, g, this.getXPosition(), this.getYPosition());
-                    break;
+        if (this.enemytype == 100) {
+            int skin = ((Math.max(1, level / 3) - 1) % 5) + 1;
+            switch (skin) {
+                case 1 -> alienBoss1.paintIcon(null, g, this.getXPosition(), this.getYPosition());
+                case 2 -> alienBoss2.paintIcon(null, g, this.getXPosition(), this.getYPosition());
+                case 3 -> alienBoss3.paintIcon(null, g, this.getXPosition(), this.getYPosition());
+                case 4 -> alienBoss4.paintIcon(null, g, this.getXPosition(), this.getYPosition());
+                default -> alienBoss5.paintIcon(null, g, this.getXPosition(), this.getYPosition());
             }
         }
     }
@@ -79,6 +87,13 @@ public class Enemy extends MovingGameObject {
     @Override
     public void move() {
         xPos += xVel;
+        if (zigzag) {
+            zigzagPhase++;
+            yPos += (zigzagPhase % 20 < 10) ? 1 : -1;
+            if (yPos < 10) {
+                yPos = 10;
+            }
+        }
     }
 
 }
