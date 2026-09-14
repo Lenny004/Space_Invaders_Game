@@ -196,7 +196,7 @@ public class GamePanel extends JPanel {
         }
 
         if (levelManager.isBossLevel(level)) {
-            bossMaxHealth = GameBalance.bossMaxHealth(level);
+            bossMaxHealth = GameBalance.bossMaxHealth(level, levelManager.getTipoDificultad());
             bossHealth = bossMaxHealth;
             desperateMinionsSpawned = false;
             bossSoundAudio.play();
@@ -375,6 +375,12 @@ public class GamePanel extends JPanel {
                 ? Messages.format("hud.endless.level", level)
                 : ("Nivel " + level);
         g.drawString(levelLabel, 750, 20);
+        int difficulty = levelManager != null
+                ? levelManager.getTipoDificultad()
+                : GameConfig.getInstance().getDifficulty();
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.PLAIN, 11));
+        g.drawString(Messages.format("hud.difficulty", Messages.get(GameBalance.difficultyMessageKey(difficulty))), 750, 38);
+        g.setFont(new Font(TipoFuente.SpaceInvaders, Font.BOLD, 12));
 
         // Establece la visualización de Highscore
         g.setColor(Color.WHITE);
@@ -586,6 +592,10 @@ public class GamePanel extends JPanel {
                 buffDropList.add(new BuffDrop(
                         markerX, markerY, TemporaryBuffSystem.rollType(randomElemento)));
             }
+            if (!tutorialMode && numberOfLives < GameBalance.MAX_LIVES
+                    && TemporaryBuffSystem.shouldDropLife(randomElemento)) {
+                buffDropList.add(new BuffDrop(markerX + 18, markerY, BuffDrop.Type.LIFE));
+            }
             return;
         }
 
@@ -614,7 +624,20 @@ public class GamePanel extends JPanel {
             return;
         }
         desperateMinionsSpawned = true;
-        enemyList.addAll(levelManager.createBossMinions(level));
+        enemyList.addAll(levelManager.createBossMinions(level, findBoss()));
+    }
+
+    private Enemy findBoss() {
+        for (Enemy enemy : enemyList) {
+            if (enemy.isBoss()) {
+                return enemy;
+            }
+        }
+        return null;
+    }
+
+    private boolean hasLivingBoss() {
+        return findBoss() != null;
     }
 
     private void spawnElementDrop(int x, int y) {
@@ -634,11 +657,13 @@ public class GamePanel extends JPanel {
             return;
         }
         if (levelManager == null || !levelManager.isBossLevel(level)) {
+            int chance = Math.max(1, GameBalance.normalBeamChance(
+                    levelManager != null ? levelManager.getTipoDificultad() : RunEntry.DIFFICULTY_MEDIUM));
             for (int index = 0; index < enemyList.size(); index++) {
                 if (enemyList.get(index).isBoss()) {
                     continue;
                 }
-                if (randomDisparosE.nextInt(GameBalance.NORMAL_BEAM_CHANCE) == index) {
+                if (randomDisparosE.nextInt(chance) == 0) {
                     beam = new Beam(enemyList.get(index).getXPosition(), enemyList.get(index).getYPosition(), 0, Color.YELLOW);
                     beamList.add(beam);
                     beamSoundAudio.play();
@@ -648,17 +673,20 @@ public class GamePanel extends JPanel {
             return;
         }
 
+        int difficulty = levelManager.getTipoDificultad();
+        int minionChance = Math.max(1, GameBalance.normalBeamChance(difficulty));
+        int bossChance = Math.max(1, GameBalance.bossBeamChance(difficulty));
         for (int index = 0; index < enemyList.size(); index++) {
             Enemy enemy = enemyList.get(index);
             if (!enemy.isBoss()) {
-                if (randomDisparosE.nextInt(GameBalance.NORMAL_BEAM_CHANCE) == 0) {
+                if (randomDisparosE.nextInt(minionChance) == 0) {
                     beamList.add(new Beam(enemy.getXPosition(), enemy.getYPosition(), 0, Color.YELLOW));
                     beamSoundAudio.play();
                     newBeamCanFire = false;
                 }
                 continue;
             }
-            if (randomDisparosE.nextInt(GameBalance.BOSS_BEAM_CHANCE) != 0) {
+            if (randomDisparosE.nextInt(bossChance) != 0) {
                 newBeamCanFire = false;
                 continue;
             }
@@ -754,18 +782,8 @@ public class GamePanel extends JPanel {
         // Hace que los enemigos se muevan y cambien de dirección en las fronteras.
         boolean skipEnemyMove = temporaryBuffs.hasSlow() && (frameNumber % 2 == 0);
         if (!enemyList.isEmpty() && !skipEnemyMove) {
-            int rightLimit = levelManager != null && levelManager.isBossLevel(level) ? 830 : 950;
-            if ((enemyList.get(enemyList.size() - 1).getXPosition() + enemyList.get(enemyList.size() - 1).getXVelocity()) > rightLimit
-                    || (enemyList.get(0).getXPosition() + enemyList.get(0).getXVelocity()) < 50) {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    enemyList.get(index).setXVelocity(enemyList.get(index).getXVelocity() * -1);
-                    enemyList.get(index).setYPosition(enemyList.get(index).getYPosition() + 10);
-                }
-            } else {
-                for (int index = 0; index < enemyList.size(); index++) {
-                    enemyList.get(index).move();
-                }
-            }
+            boolean bossLevel = levelManager != null && levelManager.isBossLevel(level);
+            EnemyFormation.advance(enemyList, bossLevel);
         }
 
         // Proyectiles del jugador (movimiento + colisiones)
@@ -813,14 +831,23 @@ public class GamePanel extends JPanel {
 
         /// Destruye escudos si los alienígenas chocan con ellos
         for (int input = 0; input < enemyList.size(); input++) {
+            Enemy enemy = enemyList.get(input);
             for (int j = 0; j < shieldList.size(); j++) {
                 //Se manda a llamar la Clase GameObject
-                if (enemyList.get(input).Colisionando(shieldList.get(j))) {
+                if (enemy.Colisionando(shieldList.get(j))) {
                     shieldList.remove(j);
                 }
             }
-            // Si los extraterrestres superan esta posición X, restableces el nivel y pierdes una vida.
-            if (enemyList.get(input).getYPosition() + 50 >= 600) {
+            // El jefe no invade: se queda en la arena. Un minion que baja se descarta.
+            if (enemy.isBoss()) {
+                continue;
+            }
+            if (enemy.getYPosition() + 50 >= 600) {
+                if (hasLivingBoss()) {
+                    enemyList.remove(input);
+                    input--;
+                    continue;
+                }
                 enemyList.clear();
                 shieldList.clear();
                 beamList.clear();
@@ -1080,11 +1107,30 @@ public class GamePanel extends JPanel {
 
     private void updateBuffDrops() {
         String pickup = temporaryBuffs.updateDrops(buffDropList, NaveJugador);
+        int extraLives = temporaryBuffs.consumePendingLives();
+        boolean grantedLife = false;
+        for (int i = 0; i < extraLives; i++) {
+            grantedLife |= grantExtraLife();
+        }
         if (pickup != null) {
-            craftFeedback = pickup;
+            craftFeedback = extraLives > 0 && !grantedLife
+                    ? Messages.get("buff.life.max")
+                    : pickup;
             craftFeedbackTicks = 40;
             bonusSoundAudio.play();
         }
+    }
+
+    private boolean grantExtraLife() {
+        if (numberOfLives >= GameBalance.MAX_LIVES) {
+            return false;
+        }
+        numberOfLives++;
+        if (levelManager != null) {
+            lifeList.clear();
+            lifeList.addAll(levelManager.createLifeIcons(numberOfLives));
+        }
+        return true;
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1107,7 +1153,9 @@ public class GamePanel extends JPanel {
         bossMaxHealth = GameBalance.BOSS_HEALTH;
         bossHealth = bossMaxHealth;
         desperateMinionsSpawned = false;
-        numberOfLives = 3;
+        numberOfLives = tutorialMode
+                ? GameBalance.LIVES_MEDIUM
+                : GameBalance.startingLives(GameConfig.getInstance().getDifficulty());
         CantidadBalas = 0;
         Velocidad = 0;
         newBulletCanFire = true;

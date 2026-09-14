@@ -107,6 +107,11 @@ public class Configuracion extends javax.swing.JFrame {
 
         installExtraSettings();
         applyLocaleTexts();
+        BtnFacil.addActionListener(e -> applyDifficulty(RunEntry.DIFFICULTY_EASY));
+        BtnMedio.addActionListener(e -> applyDifficulty(RunEntry.DIFFICULTY_MEDIUM));
+        BtnDificil.addActionListener(e -> applyDifficulty(RunEntry.DIFFICULTY_HARD));
+        refreshDifficultyButtons();
+        showCurrentDifficulty();
         pack();
         setLocationRelativeTo(null);
         
@@ -192,6 +197,8 @@ public class Configuracion extends javax.swing.JFrame {
         BtnDificil.setText(Messages.get("settings.hard"));
         lblVerRecord.setText(Messages.get("settings.records"));
         BtnRecord.setText(Messages.get("settings.highscore"));
+        refreshDifficultyButtons();
+        showCurrentDifficulty();
         if (lblAudio != null) {
             lblAudio.setText(Messages.get("settings.audio"));
             lblSfx.setText(Messages.get("settings.sfx"));
@@ -479,11 +486,41 @@ public class Configuracion extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_lblHome1MouseClicked
 
-    private void BtnFacilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnFacilMouseClicked
-        GameConfig.getInstance().setDifficulty(RunEntry.DIFFICULTY_EASY);
-        TipoDificultad = RunEntry.DIFFICULTY_EASY;
-        lblDificultad.setText(Messages.format("settings.difficulty.changed", Messages.get("diff.easy")));
+    private void applyDifficulty(int difficulty) {
+        GameConfig.getInstance().setDifficulty(difficulty);
+        TipoDificultad = difficulty;
+        lblDificultad.setText(Messages.format(
+                "settings.difficulty.changed",
+                Messages.get(GameBalance.difficultyMessageKey(difficulty))));
         lblDificultad.setVisible(true);
+        refreshDifficultyButtons();
+    }
+
+    private void showCurrentDifficulty() {
+        if (lblDificultad == null) {
+            return;
+        }
+        lblDificultad.setText(Messages.format(
+                "settings.difficulty.current",
+                Messages.get(GameBalance.difficultyMessageKey(GameConfig.getInstance().getDifficulty()))));
+        lblDificultad.setVisible(true);
+    }
+
+    private void refreshDifficultyButtons() {
+        int selected = GameConfig.getInstance().getDifficulty();
+        boolean easy = selected == RunEntry.DIFFICULTY_EASY;
+        boolean medium = selected == RunEntry.DIFFICULTY_MEDIUM;
+        boolean hard = selected == RunEntry.DIFFICULTY_HARD;
+        BtnFacil.setBackground(easy ? AzulEasy : CelesteEasy);
+        BtnFacil.setForeground(easy ? Color.WHITE : Color.BLACK);
+        BtnMedio.setBackground(medium ? MoradoOscuroMedio : MoradoMedio);
+        BtnMedio.setForeground(medium ? Color.WHITE : Color.BLACK);
+        BtnDificil.setBackground(hard ? RojoDificil : RosaDificil);
+        BtnDificil.setForeground(hard ? Color.WHITE : Color.BLACK);
+    }
+
+    private void BtnFacilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnFacilMouseClicked
+        applyDifficulty(RunEntry.DIFFICULTY_EASY);
     }//GEN-LAST:event_BtnFacilMouseClicked
 
     private void BtnFacilMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnFacilMouseEntered
@@ -492,15 +529,11 @@ public class Configuracion extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnFacilMouseEntered
 
     private void BtnFacilMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnFacilMouseExited
-        BtnFacil.setBackground(CelesteEasy);
-        BtnFacil.setForeground(Color.BLACK);
+        refreshDifficultyButtons();
     }//GEN-LAST:event_BtnFacilMouseExited
 
     private void BtnMedioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMedioMouseClicked
-        GameConfig.getInstance().setDifficulty(RunEntry.DIFFICULTY_MEDIUM);
-        TipoDificultad = RunEntry.DIFFICULTY_MEDIUM;
-        lblDificultad.setText(Messages.format("settings.difficulty.changed", Messages.get("diff.medium")));
-        lblDificultad.setVisible(true);
+        applyDifficulty(RunEntry.DIFFICULTY_MEDIUM);
     }//GEN-LAST:event_BtnMedioMouseClicked
 
     private void BtnMedioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMedioMouseEntered
@@ -509,15 +542,11 @@ public class Configuracion extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnMedioMouseEntered
 
     private void BtnMedioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMedioMouseExited
-        BtnMedio.setBackground(MoradoMedio);
-        BtnMedio.setForeground(Color.BLACK);
+        refreshDifficultyButtons();
     }//GEN-LAST:event_BtnMedioMouseExited
 
     private void BtnDificilMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDificilMouseClicked
-        GameConfig.getInstance().setDifficulty(RunEntry.DIFFICULTY_HARD);
-        TipoDificultad = RunEntry.DIFFICULTY_HARD;
-        lblDificultad.setText(Messages.format("settings.difficulty.changed", Messages.get("diff.hard")));
-        lblDificultad.setVisible(true);
+        applyDifficulty(RunEntry.DIFFICULTY_HARD);
     }//GEN-LAST:event_BtnDificilMouseClicked
 
     private void BtnDificilMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDificilMouseEntered
@@ -526,8 +555,7 @@ public class Configuracion extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnDificilMouseEntered
 
     private void BtnDificilMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDificilMouseExited
-        BtnDificil.setBackground(RosaDificil);
-        BtnDificil.setForeground(Color.BLACK);
+        refreshDifficultyButtons();
     }//GEN-LAST:event_BtnDificilMouseExited
 
     private void BtnRecordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnRecordMouseClicked

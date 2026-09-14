@@ -1,5 +1,7 @@
 package Game;
 
+import persistence.RunEntry;
+
 /**
  * Constantes de balance jugable (spawns, velocidades, puntuación).
  */
@@ -8,10 +10,10 @@ public final class GameBalance {
     private GameBalance() {
     }
 
-    /** Probabilidad de disparo enemigo normal: 1/{@value}. */
+    /** Probabilidad de disparo enemigo normal en dificultad media: 1/{@value}. */
     public static final int NORMAL_BEAM_CHANCE = 30;
 
-    /** Probabilidad de disparo de jefe: 1/{@value}. */
+    /** Probabilidad de disparo de jefe en dificultad media: 1/{@value}. */
     public static final int BOSS_BEAM_CHANCE = 5;
 
     /** Probabilidad de nave bonus: frame aleatorio == {@link #BONUS_SPAWN_HIT} de 0..{@value}-1. */
@@ -43,6 +45,16 @@ public final class GameBalance {
 
     public static final int EASY_ENEMY_SPEED = 2;
     public static final int MEDIUM_ENEMY_SPEED = 4;
+    /** Velocidad base de difíciles: siempre mayor que medio desde el nivel 1. */
+    public static final int HARD_ENEMY_SPEED = 5;
+    public static final int ENEMY_MAX_SPEED = 8;
+    /** Tope de velocidad horizontal del jefe para que no se salga de la arena. */
+    public static final int BOSS_MAX_SPEED = 8;
+    public static final int BOSS_MAX_SPEED_EASY = 4;
+    public static final int BOSS_MAX_SPEED_MEDIUM = 6;
+    public static final int LIVES_EASY = 5;
+    public static final int LIVES_MEDIUM = 3;
+    public static final int LIVES_HARD = 2;
     public static final int VICTORY_AFTER_LEVEL = 15;
 
     /** Ticks (~50 ms) sin kill antes de perder el combo. */
@@ -54,8 +66,17 @@ public final class GameBalance {
     public static final int BUFF_DURATION_TICKS = 200;
     public static final int BUFF_FALL_SPEED = 3;
 
+    /** Probabilidad (%) de soltar una vida extra. Muy inferior a elementos y buffs. */
+    public static final int LIFE_DROP_CHANCE_PERCENT = 2;
+    /** Tope de iconos de vida para que no se solapen con el HUD. */
+    public static final int MAX_LIVES = 8;
+
     public static int bossMaxHealth(int level) {
-        return switch (level) {
+        return bossMaxHealth(level, RunEntry.DIFFICULTY_MEDIUM);
+    }
+
+    public static int bossMaxHealth(int level, int difficulty) {
+        int base = switch (level) {
             case 3 -> 30;
             case 6 -> 40;
             case 9 -> 55;
@@ -65,6 +86,65 @@ public final class GameBalance {
                 int wave = Math.max(1, level / 3);
                 yield Math.min(120, 30 + wave * 12);
             }
+        };
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY -> Math.max(16, base * 3 / 4);
+            case RunEntry.DIFFICULTY_HARD -> Math.max(base + 8, base * 5 / 4);
+            default -> base;
+        };
+    }
+
+    public static int enemySpeed(int difficulty, int level) {
+        int lvl = Math.max(1, level);
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY -> EASY_ENEMY_SPEED;
+            case RunEntry.DIFFICULTY_MEDIUM -> MEDIUM_ENEMY_SPEED;
+            default -> Math.min(ENEMY_MAX_SPEED, HARD_ENEMY_SPEED + (lvl - 1) / 2);
+        };
+    }
+
+    public static int bossSpeed(int difficulty, int level) {
+        int wave = Math.max(1, level / 3);
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY ->
+                    Math.min(BOSS_MAX_SPEED_EASY, Math.max(1, wave));
+            case RunEntry.DIFFICULTY_MEDIUM ->
+                    Math.min(BOSS_MAX_SPEED_MEDIUM, Math.max(2, 2 * wave));
+            default ->
+                    Math.min(BOSS_MAX_SPEED, Math.max(4, 3 * wave));
+        };
+    }
+
+    public static int startingLives(int difficulty) {
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY -> LIVES_EASY;
+            case RunEntry.DIFFICULTY_HARD -> LIVES_HARD;
+            default -> LIVES_MEDIUM;
+        };
+    }
+
+    /** Valor más alto = disparos menos frecuentes. */
+    public static int normalBeamChance(int difficulty) {
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY -> 42;
+            case RunEntry.DIFFICULTY_HARD -> 16;
+            default -> NORMAL_BEAM_CHANCE;
+        };
+    }
+
+    public static int bossBeamChance(int difficulty) {
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_EASY -> 8;
+            case RunEntry.DIFFICULTY_HARD -> 3;
+            default -> BOSS_BEAM_CHANCE;
+        };
+    }
+
+    public static String difficultyMessageKey(int difficulty) {
+        return switch (RunEntry.normalizeDifficulty(difficulty)) {
+            case RunEntry.DIFFICULTY_MEDIUM -> "diff.medium";
+            case RunEntry.DIFFICULTY_HARD -> "diff.hard";
+            default -> "diff.easy";
         };
     }
 

@@ -61,12 +61,52 @@ class LevelManagerTest {
     }
 
     @Test
+    void hardIsFasterThanMediumFromLevelOne() {
+        LevelManager easy = new LevelManager(1);
+        LevelManager medium = new LevelManager(2);
+        LevelManager hard = new LevelManager(3);
+        int easyDelta = moveDelta(easy.createEnemies(1).get(0));
+        int mediumDelta = moveDelta(medium.createEnemies(1).get(0));
+        int hardDelta = moveDelta(hard.createEnemies(1).get(0));
+        assertTrue(easyDelta < mediumDelta);
+        assertTrue(mediumDelta < hardDelta);
+        assertEquals(GameBalance.HARD_ENEMY_SPEED, hardDelta);
+    }
+
+    @Test
     void hardDifficultyScalesVelocityWithLevel() {
         LevelManager hard = new LevelManager(3);
         Enemy sample = hard.createEnemies(2).get(0);
         int before = sample.getXPosition();
         sample.move();
-        assertEquals(before + 2, sample.getXPosition());
+        assertEquals(before + GameBalance.enemySpeed(3, 2), sample.getXPosition());
+        assertTrue(GameBalance.enemySpeed(3, 8) > GameBalance.enemySpeed(3, 1));
+        assertTrue(GameBalance.enemySpeed(3, 1) > GameBalance.enemySpeed(2, 1));
+    }
+
+    @Test
+    void bossSpeedsStayRankedAcrossDifficulties() {
+        assertTrue(GameBalance.bossSpeed(1, 3) < GameBalance.bossSpeed(2, 3));
+        assertTrue(GameBalance.bossSpeed(2, 3) < GameBalance.bossSpeed(3, 3));
+        assertTrue(GameBalance.bossSpeed(1, 15) < GameBalance.bossSpeed(2, 15));
+        assertTrue(GameBalance.bossSpeed(2, 15) < GameBalance.bossSpeed(3, 15));
+        Enemy easyBoss = new LevelManager(1).createBoss(15);
+        Enemy hardBoss = new LevelManager(3).createBoss(15);
+        assertTrue(Math.abs(easyBoss.getXVelocity()) < Math.abs(hardBoss.getXVelocity()));
+        assertTrue(Math.abs(hardBoss.getXVelocity()) <= GameBalance.BOSS_MAX_SPEED);
+    }
+
+    @Test
+    void startingLivesFollowDifficulty() {
+        assertEquals(GameBalance.LIVES_EASY, GameBalance.startingLives(1));
+        assertEquals(GameBalance.LIVES_MEDIUM, GameBalance.startingLives(2));
+        assertEquals(GameBalance.LIVES_HARD, GameBalance.startingLives(3));
+    }
+
+    private static int moveDelta(Enemy enemy) {
+        int before = enemy.getXPosition();
+        enemy.move();
+        return enemy.getXPosition() - before;
     }
 
     @Test
@@ -103,6 +143,28 @@ class LevelManagerTest {
     }
 
     @Test
+    void bossMinionsMatchBossDirection() {
+        LevelManager levels = new LevelManager(3);
+        Enemy boss = levels.createBoss(9);
+        boss.setXVelocity(-Math.abs(boss.getXVelocity()));
+        boss.setXPosition(400);
+        List<Enemy> minions = levels.createBossMinions(9, boss);
+        assertEquals(2, minions.size());
+        assertTrue(minions.get(0).getXVelocity() < 0);
+        assertEquals(minions.get(0).getXVelocity(), minions.get(1).getXVelocity());
+        assertTrue(minions.get(0).getXPosition() >= EnemyFormation.LEFT_BOUND);
+        assertTrue(minions.get(1).getXPosition() + 40 <= EnemyFormation.RIGHT_BOUND);
+    }
+
+    @Test
+    void hardBossSpeedIsCapped() {
+        LevelManager hard = new LevelManager(3);
+        Enemy boss = hard.createBoss(15);
+        assertTrue(Math.abs(boss.getXVelocity()) <= GameBalance.BOSS_MAX_SPEED);
+        assertTrue(Math.abs(boss.getXVelocity()) >= 1);
+    }
+
+    @Test
     void createTutorialWaveHasFourSlowEnemies() {
         LevelManager levels = new LevelManager(3);
         List<Enemy> enemies = levels.createTutorialWave();
@@ -121,6 +183,7 @@ class LevelManagerTest {
     void createLifeIconsMatchesCount() {
         assertEquals(3, new LevelManager(1).createLifeIcons(3).size());
         assertEquals(0, new LevelManager(1).createLifeIcons(0).size());
+        assertEquals(GameBalance.MAX_LIVES, new LevelManager(1).createLifeIcons(GameBalance.MAX_LIVES).size());
     }
 
     @Test

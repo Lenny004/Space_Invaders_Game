@@ -99,6 +99,49 @@ class TemporaryBuffSystemTest {
         }
         assertFalse(buffs.hasSlow());
     }
+
+    @Test
+    void collectingLifeDropGrantsPendingLifeWithoutTimedBuff() {
+        TemporaryBuffSystem buffs = new TemporaryBuffSystem();
+        List<BuffDrop> drops = new ArrayList<>();
+        Ship ship = new Ship(100, 100, Color.YELLOW, null);
+        drops.add(new BuffDrop(100, 100, BuffDrop.Type.LIFE));
+        String feedback = buffs.updateDrops(drops, ship);
+        assertEquals(Messages.get("buff.life"), feedback);
+        assertEquals(1, buffs.consumePendingLives());
+        assertEquals(0, buffs.consumePendingLives());
+        assertFalse(buffs.hasShield());
+        assertFalse(buffs.hasSlow());
+        assertFalse(buffs.hasDoubleFire());
+        assertTrue(drops.isEmpty());
+    }
+
+    @Test
+    void rollTypeNeverReturnsLife() {
+        java.util.Random rng = new java.util.Random(7);
+        for (int i = 0; i < 80; i++) {
+            assertNotEquals(BuffDrop.Type.LIFE, TemporaryBuffSystem.rollType(rng));
+        }
+    }
+
+    @Test
+    void shouldDropLifeRespectsChancePercent() {
+        java.util.Random alwaysLow = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0;
+            }
+        };
+        java.util.Random alwaysHigh = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return GameBalance.LIFE_DROP_CHANCE_PERCENT;
+            }
+        };
+        assertTrue(TemporaryBuffSystem.shouldDropLife(alwaysLow));
+        assertFalse(TemporaryBuffSystem.shouldDropLife(alwaysHigh));
+        assertFalse(TemporaryBuffSystem.shouldDropLife(null));
+    }
 }
 
 class BossPhaseTest {
@@ -116,5 +159,59 @@ class BossPhaseTest {
         assertEquals(40, GameBalance.bossMaxHealth(6));
         assertEquals(85, GameBalance.bossMaxHealth(15));
         assertTrue(GameBalance.bossMaxHealth(18) >= GameBalance.bossMaxHealth(15));
+    }
+
+    @Test
+    void bossHealthAndFireRateScaleWithDifficulty() {
+        assertTrue(GameBalance.bossMaxHealth(6, 1) < GameBalance.bossMaxHealth(6, 2));
+        assertTrue(GameBalance.bossMaxHealth(6, 2) < GameBalance.bossMaxHealth(6, 3));
+        assertTrue(GameBalance.normalBeamChance(1) > GameBalance.normalBeamChance(2));
+        assertTrue(GameBalance.normalBeamChance(2) > GameBalance.normalBeamChance(3));
+        assertTrue(GameBalance.bossBeamChance(1) > GameBalance.bossBeamChance(3));
+    }
+}
+
+class EnemyFormationTest {
+
+    @Test
+    void bossDoesNotEscapeWhenFasterThanMinions() {
+        List<Enemy> enemies = new ArrayList<>();
+        Enemy boss = new Enemy(820, 20, 12, 0, 100, null, 150, 150, 9);
+        Enemy leftMinion = new Enemy(80, 80, 4, 0, 0, null, 40, 40, 9);
+        Enemy rightMinion = new Enemy(400, 80, 4, 0, 1, null, 40, 40, 9);
+        enemies.add(boss);
+        enemies.add(leftMinion);
+        enemies.add(rightMinion);
+
+        for (int i = 0; i < 80; i++) {
+            EnemyFormation.advance(enemies, true);
+            assertTrue(boss.getXPosition() >= EnemyFormation.LEFT_BOUND, "boss escaped left on tick " + i);
+            assertTrue(boss.getXPosition() + 150 <= EnemyFormation.RIGHT_BOUND, "boss escaped right on tick " + i);
+            assertTrue(boss.getYPosition() <= EnemyFormation.BOSS_MAX_Y);
+        }
+        assertTrue(boss.getXVelocity() < 0, "should have bounced left after hitting the right wall");
+    }
+
+    @Test
+    void offscreenBossIsClampedBackIntoArena() {
+        Enemy boss = new Enemy(1400, 20, 15, 0, 100, null, 150, 150, 15);
+        List<Enemy> enemies = new ArrayList<>();
+        enemies.add(boss);
+        EnemyFormation.advance(enemies, true);
+        assertTrue(boss.getXPosition() >= EnemyFormation.LEFT_BOUND);
+        assertTrue(boss.getXPosition() + 150 <= EnemyFormation.RIGHT_BOUND);
+        assertTrue(boss.getXVelocity() < 0);
+    }
+
+    @Test
+    void stuckPastEdgeDoesNotOscillateWithoutMoving() {
+        Enemy boss = new Enemy(900, 20, 10, 0, 100, null, 150, 150, 6);
+        List<Enemy> enemies = new ArrayList<>();
+        enemies.add(boss);
+        int firstX = boss.getXPosition();
+        EnemyFormation.advance(enemies, true);
+        EnemyFormation.advance(enemies, true);
+        assertNotEquals(firstX, boss.getXPosition());
+        assertTrue(boss.getXPosition() + 150 <= EnemyFormation.RIGHT_BOUND);
     }
 }

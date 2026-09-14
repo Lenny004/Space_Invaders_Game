@@ -11,14 +11,22 @@ public final class TemporaryBuffSystem {
 
     public static final int DESPAWN_Y = 620;
 
+    private static final BuffDrop.Type[] COMBAT_BUFFS = {
+            BuffDrop.Type.SHIELD,
+            BuffDrop.Type.SLOW,
+            BuffDrop.Type.DOUBLE_FIRE
+    };
+
     private int shieldTicks;
     private int slowTicks;
     private int doubleFireTicks;
+    private int pendingLives;
 
     public void reset() {
         shieldTicks = 0;
         slowTicks = 0;
         doubleFireTicks = 0;
+        pendingLives = 0;
     }
 
     public void tick() {
@@ -42,6 +50,7 @@ public final class TemporaryBuffSystem {
             case SHIELD -> shieldTicks = duration;
             case SLOW -> slowTicks = duration;
             case DOUBLE_FIRE -> doubleFireTicks = duration;
+            case LIFE -> pendingLives++;
         }
     }
 
@@ -94,12 +103,24 @@ public final class TemporaryBuffSystem {
         return rng.nextInt(100) < GameBalance.BUFF_DROP_CHANCE_PERCENT;
     }
 
-    public static BuffDrop.Type rollType(Random rng) {
-        BuffDrop.Type[] values = BuffDrop.Type.values();
+    public static boolean shouldDropLife(Random rng) {
         if (rng == null) {
-            return values[0];
+            return false;
         }
-        return values[rng.nextInt(values.length)];
+        return rng.nextInt(100) < GameBalance.LIFE_DROP_CHANCE_PERCENT;
+    }
+
+    public static BuffDrop.Type rollType(Random rng) {
+        if (rng == null) {
+            return COMBAT_BUFFS[0];
+        }
+        return COMBAT_BUFFS[rng.nextInt(COMBAT_BUFFS.length)];
+    }
+
+    public int consumePendingLives() {
+        int granted = pendingLives;
+        pendingLives = 0;
+        return granted;
     }
 
     /**
@@ -121,7 +142,9 @@ public final class TemporaryBuffSystem {
             drop.move();
             if (ship != null && drop.Colisionando(ship)) {
                 apply(drop.getType());
-                feedback = "+" + drop.getType().getLabel();
+                feedback = drop.getType() == BuffDrop.Type.LIFE
+                        ? Messages.get("buff.life")
+                        : "+" + drop.getType().getLabel();
                 drops.remove(i);
             } else if (drop.getYPosition() > DESPAWN_Y) {
                 drops.remove(i);

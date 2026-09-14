@@ -98,11 +98,7 @@ public class LevelManager {
     }
 
     private int baseXVelocity(int level) {
-        return switch (tipoDificultad) {
-            case RunEntry.DIFFICULTY_EASY -> GameBalance.EASY_ENEMY_SPEED;
-            case RunEntry.DIFFICULTY_MEDIUM -> GameBalance.MEDIUM_ENEMY_SPEED;
-            default -> Math.max(1, level);
-        };
+        return GameBalance.enemySpeed(tipoDificultad, level);
     }
 
     private List<Enemy> createGridWave(int level) {
@@ -176,20 +172,34 @@ public class LevelManager {
 
     /** Dos minions que acompañan la fase desesperada del jefe. */
     public List<Enemy> createBossMinions(int level) {
+        return createBossMinions(level, null);
+    }
+
+    public List<Enemy> createBossMinions(int level, Enemy boss) {
         List<Enemy> minions = new ArrayList<>();
-        int xVel = Math.max(1, baseXVelocity(level) / 2);
-        minions.add(new Enemy(80, 80, xVel, 0, 0, null, 40, 40, level));
-        minions.add(new Enemy(820, 80, xVel, 0, 1, null, 40, 40, level));
+        int dir = 1;
+        int speed = Math.max(1, baseXVelocity(level) / 2);
+        int originX = 120;
+        int originY = 80;
+        if (boss != null) {
+            dir = boss.getXVelocity() < 0 ? -1 : 1;
+            speed = Math.max(1, Math.abs(boss.getXVelocity()));
+            originX = boss.getXPosition();
+            originY = Math.min(EnemyFormation.BOSS_MAX_Y, Math.max(60, boss.getYPosition() + 60));
+        }
+        int xVel = speed * dir;
+        int leftX = Math.max(EnemyFormation.LEFT_BOUND, originX - 90);
+        int rightX = Math.min(EnemyFormation.RIGHT_BOUND - 40, originX + 170);
+        if (rightX <= leftX) {
+            rightX = Math.min(EnemyFormation.RIGHT_BOUND - 40, leftX + 160);
+        }
+        minions.add(new Enemy(leftX, originY, xVel, 0, 0, null, 40, 40, level));
+        minions.add(new Enemy(rightX, originY, xVel, 0, 1, null, 40, 40, level));
         return minions;
     }
 
     public Enemy createBoss(int level) {
-        int wave = Math.max(1, level / 3);
-        int xVel = switch (tipoDificultad) {
-            case RunEntry.DIFFICULTY_EASY -> Math.max(1, wave);
-            case RunEntry.DIFFICULTY_MEDIUM -> 2 * wave;
-            default -> 3 * wave;
-        };
+        int xVel = GameBalance.bossSpeed(tipoDificultad, level);
         return new Enemy(120, 20, xVel, 0, 100, null, 150, 150, level);
     }
 }

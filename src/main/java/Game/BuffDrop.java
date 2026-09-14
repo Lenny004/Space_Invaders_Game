@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
- * Pickup temporal que cae tras un kill (escudo / slow / doble disparo).
+ * Pickup que cae tras un kill (escudo / slow / doble disparo / vida extra).
  */
 public class BuffDrop extends MovingGameObject {
 
@@ -15,7 +15,8 @@ public class BuffDrop extends MovingGameObject {
     public enum Type {
         SHIELD(new Color(80, 200, 255), "S"),
         SLOW(new Color(180, 120, 255), "Z"),
-        DOUBLE_FIRE(new Color(255, 180, 40), "D");
+        DOUBLE_FIRE(new Color(255, 180, 40), "D"),
+        LIFE(new Color(255, 70, 90), "+1");
 
         private final Color color;
         private final String label;
@@ -47,6 +48,14 @@ public class BuffDrop extends MovingGameObject {
 
     @Override
     public void draw(Graphics g) {
+        if (type == Type.LIFE) {
+            g.setColor(type.getColor());
+            g.fillOval(getXPosition(), getYPosition(), SIZE, SIZE);
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("SansSerif", Font.BOLD, 12));
+            g.drawString(type.getLabel(), getXPosition() + 5, getYPosition() + 19);
+            return;
+        }
         g.setColor(type.getColor());
         g.fillRoundRect(getXPosition(), getYPosition(), SIZE, SIZE, 8, 8);
         g.setColor(Color.BLACK);
