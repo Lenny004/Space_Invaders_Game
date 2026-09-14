@@ -114,6 +114,8 @@ Completada (extracción incremental).
 | `CollisionSystem` | Movimiento/colisiones de proyectiles + degradación de escudos |
 | `LevelManager` | Oleadas, jefes, nave, vidas, escudos |
 | `GameLoop` | Timers de tick y hitmarker |
+| `TemporaryBuffSystem` | Buffs temporales + vida extra (drop raro `+1`) |
+| `DropSystem` | Drops de elementos químicos |
 | `GameState` | Modelo de estado compartido (base para seguir adelgazando `GamePanel`) |
 
 Pendiente para iteraciones futuras: migrar listas/contadores restantes a `GameState`.

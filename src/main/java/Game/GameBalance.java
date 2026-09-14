@@ -3,7 +3,9 @@ package Game;
 import persistence.RunEntry;
 
 /**
- * Constantes de balance jugable (spawns, velocidades, puntuación).
+ * Constantes de balance jugable (spawns, velocidades, puntuación y drops).
+ * Las vidas extra son independientes de los buffs temporales: probabilidad baja,
+ * no aparecen en el tutorial y respetan {@link #MAX_LIVES}.
  */
 public final class GameBalance {
 
@@ -52,6 +54,7 @@ public final class GameBalance {
     public static final int BOSS_MAX_SPEED = 8;
     public static final int BOSS_MAX_SPEED_EASY = 4;
     public static final int BOSS_MAX_SPEED_MEDIUM = 6;
+    /** Vidas iniciales por dificultad ({@link #startingLives(int)}). */
     public static final int LIVES_EASY = 5;
     public static final int LIVES_MEDIUM = 3;
     public static final int LIVES_HARD = 2;
@@ -81,10 +84,12 @@ public final class GameBalance {
     /** Tope de iconos de vida para que no se solapen con el HUD. */
     public static final int MAX_LIVES = 8;
 
+    /** HP del jefe en dificultad media. */
     public static int bossMaxHealth(int level) {
         return bossMaxHealth(level, RunEntry.DIFFICULTY_MEDIUM);
     }
 
+    /** HP del jefe según nivel de campaña y dificultad. */
     public static int bossMaxHealth(int level, int difficulty) {
         int base = switch (level) {
             case 3 -> 30;
@@ -104,6 +109,7 @@ public final class GameBalance {
         };
     }
 
+    /** Velocidad horizontal de aliens normales. */
     public static int enemySpeed(int difficulty, int level) {
         int lvl = Math.max(1, level);
         return switch (RunEntry.normalizeDifficulty(difficulty)) {
@@ -113,6 +119,7 @@ public final class GameBalance {
         };
     }
 
+    /** Velocidad horizontal del jefe (acotada por dificultad). */
     public static int bossSpeed(int difficulty, int level) {
         int wave = Math.max(1, level / 3);
         return switch (RunEntry.normalizeDifficulty(difficulty)) {
@@ -125,6 +132,7 @@ public final class GameBalance {
         };
     }
 
+    /** Vidas al empezar una partida (no incluye el tope {@link #MAX_LIVES}). */
     public static int startingLives(int difficulty) {
         return switch (RunEntry.normalizeDifficulty(difficulty)) {
             case RunEntry.DIFFICULTY_EASY -> LIVES_EASY;
@@ -142,6 +150,7 @@ public final class GameBalance {
         };
     }
 
+    /** Valor más alto = disparos de jefe menos frecuentes. */
     public static int bossBeamChance(int difficulty) {
         return switch (RunEntry.normalizeDifficulty(difficulty)) {
             case RunEntry.DIFFICULTY_EASY -> 8;
@@ -150,6 +159,7 @@ public final class GameBalance {
         };
     }
 
+    /** Clave i18n {@code diff.easy}/{@code diff.medium}/{@code diff.hard}. */
     public static String difficultyMessageKey(int difficulty) {
         return switch (RunEntry.normalizeDifficulty(difficulty)) {
             case RunEntry.DIFFICULTY_MEDIUM -> "diff.medium";

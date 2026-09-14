@@ -70,6 +70,7 @@ public class LevelManager {
         return new Ship(500, 600, null, controller);
     }
 
+    /** Iconos del HUD de vidas (x = 48 + índice×20). El tope jugable es {@link GameBalance#MAX_LIVES}. */
     public List<Ship> createLifeIcons(int lives) {
         List<Ship> icons = new ArrayList<>();
         for (int column = 0; column < lives; column++) {

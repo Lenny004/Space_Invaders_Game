@@ -45,11 +45,13 @@ flowchart TB
     GameFrame --> GamePanel
   end
 
-  subgraph systems [Sistemas Fase C]
+  subgraph systems [Sistemas]
     GameLoop
     LevelManager
     CollisionSystem
     PowerUpSystem
+    DropSystem
+    TemporaryBuffSystem
   end
 
   subgraph domain [Dominio]
@@ -70,6 +72,8 @@ flowchart TB
   GamePanel --> LevelManager
   GamePanel --> CollisionSystem
   GamePanel --> PowerUpSystem
+  GamePanel --> DropSystem
+  GamePanel --> TemporaryBuffSystem
   PowerUpSystem --> Projectile
   CollisionSystem --> Projectile
   GamePanel --> ScoreService
@@ -83,10 +87,11 @@ Se conserva un esbozo de OOP clásico de juegos 2D:
 Drawable
   └── GameObject
         ├── MovingGameObject
-        │     ├── Bullet / Bullet2…Bullet7
+        │     ├── Projectile
         │     ├── Beam
         │     ├── Enemy
-        │     └── ElementoDrop
+        │     ├── ElementoDrop
+        │     └── BuffDrop
         └── ControlledGameObject
               └── Ship
 ```

@@ -16,6 +16,7 @@ public class BuffDrop extends MovingGameObject {
         SHIELD(new Color(80, 200, 255), "S"),
         SLOW(new Color(180, 120, 255), "Z"),
         DOUBLE_FIRE(new Color(255, 180, 40), "D"),
+        /** Vida extra permanente al recogerse (no es un buff con duración). */
         LIFE(new Color(255, 70, 90), "+1");
 
         private final Color color;

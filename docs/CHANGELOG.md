@@ -5,6 +5,11 @@
 ### Añadido
 - **Combos:** rachas de kills con multiplicador de score (tope x5); se corta al recibir daño o por timeout.
 - **Buffs temporales:** drops S/Z/D (escudo, slow, doble disparo) además del crafteo permanente.
+- **Vidas extra:** drop raro `+1` (círculo rojo) independiente de los buffs. Campaña e infinito, todas las dificultades; no en tutorial.
+  - Aliens normales y minions: `LIFE_DROP_CHANCE_PERCENT` (2%).
+  - Meteorito / nave bonus: `LIFE_DROP_CHANCE_BONUS_PERCENT` (5%).
+  - Jefe al morir: `LIFE_DROP_CHANCE_BOSS_PERCENT` (8%).
+  - Tope de HUD: `MAX_LIVES` (8). Recoger con la nave suma una vida.
 - **Oleadas variadas:** formaciones GRID / V / escalonada según nivel; algunos aliens en zigzag.
 - **Jefes con fases:** HP por jefe, patrones OPENING/RAGE/DESPERATE y minions en fase final; daño de proyectil aplicado al jefe.
 - **Modo Infinito:** botón en menú; no hay victoria al pasar el 15; records con nivel alto se marcan como Infinito.

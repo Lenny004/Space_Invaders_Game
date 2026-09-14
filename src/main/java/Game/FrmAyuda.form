@@ -519,7 +519,7 @@
               <Properties>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="4.En la parte inferior&#xa;del panel de &#xa;Elementos del&#xa;Juego, se realizara&#xa;un conteo de los&#xa;elementos &#xa;recolectados por&#xa;el jugador."/>
+                <Property name="text" type="java.lang.String" value="4.En la parte inferior&#xa;del panel de &#xa;Elementos del&#xa;Juego, se realizara&#xa;un conteo de los&#xa;elementos &#xa;recolectados por&#xa;el jugador.&#xa;&#xa;A veces cae un&#xa;circulo rojo +1:&#xa;recogerlo da una&#xa;vida extra (raro)."/>
               </Properties>
             </Component>
           </SubComponents>

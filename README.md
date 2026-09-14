@@ -66,17 +66,17 @@ Al completar el nivel 15 ganas (`Victoria`). Si te quedas sin vidas, puedes rein
 
 | Aspecto | Detalle |
 |---------|---------|
-| **Vidas** | 3 al inicio |
+| **Vidas** | Fácil 5 / Normal 3 / Difícil 2. Tope 8. Puede caer un círculo rojo `+1` (raro) |
 | **Niveles** | 1–15; victoria al superar el 15 |
-| **Oleadas** | Niveles normales: grilla de enemigos (30 aliens) |
+| **Oleadas** | Grilla, V o escalonada según nivel (~25–30 aliens) |
 | **Jefes** | Niveles 3, 6, 9, 12 y 15 (boss con más vida y disparo triple) |
 | **Escudos** | 3 columnas de bloques destructibles delante de la nave |
-| **Bonus** | Meteorito que cruza la pantalla (+5000 pts) |
-| **Dificultad** | Fácil / Normal / Difícil (ajusta la velocidad enemiga) |
+| **Bonus** | Meteorito que cruza la pantalla (+5000 pts; a veces suelta vida extra) |
+| **Dificultad** | Fácil / Normal / Difícil (velocidad, disparos enemigos y vidas iniciales) |
 
 ### Química y power-ups
 
-Al destruir enemigos en oleadas normales obtienes elementos. Con las teclas de crafteo formas compuestos (una vez por partida cada uno):
+Al destruir enemigos en oleadas normales pueden caer **drops físicos** (elementos, buffs S/Z/D o, muy de vez en cuando, una vida extra `+1`). Hay que recogerlos con la nave; si salen de pantalla se pierden. Con las teclas de crafteo formas compuestos (una vez por partida cada uno):
 
 **Disparo** (más balas en abanico):
 
@@ -162,6 +162,8 @@ Space_Invaders_Game/
 | `LevelManager` | Oleadas, jefes, vidas y escudos |
 | `CollisionSystem` | Colisiones de proyectiles del jugador |
 | `PowerUpSystem` | Abanico de disparo y velocidad |
+| `TemporaryBuffSystem` | Buffs S/Z/D y drop de vida extra (`BuffDrop.Type.LIFE`) |
+| `DropSystem` | Drops de elementos químicos |
 | `Projectile` / `Beam` | Balas del jugador / rayos enemigos |
 | `ScoreService` | Fachada de persistencia SQLite |
 

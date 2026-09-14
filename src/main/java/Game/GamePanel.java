@@ -644,7 +644,10 @@ public class GamePanel extends JPanel {
         ElementoList.add(Elemento);
     }
 
-    /** Vida extra: no tutorial, no si ya está en {@link GameBalance#MAX_LIVES}. */
+    /**
+     * Intenta soltar una vida extra en (x, y).
+     * No aplica en tutorial; {@link TemporaryBuffSystem#shouldSpawnLife} cubre tope y probabilidad.
+     */
     private void maybeSpawnLifeDrop(int x, int y, int chancePercent) {
         if (tutorialMode) {
             return;
@@ -1117,6 +1120,7 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /** Recoge buffs y vidas extra; actualiza HUD y feedback. */
     private void updateBuffDrops() {
         String pickup = temporaryBuffs.updateDrops(buffDropList, NaveJugador);
         int extraLives = temporaryBuffs.consumePendingLives();
@@ -1133,6 +1137,7 @@ public class GamePanel extends JPanel {
         }
     }
 
+    /** Suma una vida e icono de HUD si no se alcanzó {@link GameBalance#MAX_LIVES}. */
     private boolean grantExtraLife() {
         if (numberOfLives >= GameBalance.MAX_LIVES) {
             return false;

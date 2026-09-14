@@ -283,7 +283,7 @@ public class FrmAyuda2 extends javax.swing.JFrame {
 
         TARecoleccion.setColumns(20);
         TARecoleccion.setRows(5);
-        TARecoleccion.setText("4.En la parte inferior\ndel panel de \nElementos del\nJuego, se realizara\nun conteo de los\nelementos \nrecolectados por\nel jugador.");
+        TARecoleccion.setText("4.En la parte inferior\ndel panel de \nElementos del\nJuego, se realizara\nun conteo de los\nelementos \nrecolectados por\nel jugador.\n\nA veces cae un\ncirculo rojo +1:\nrecogerlo da una\nvida extra (raro).");
         jScrollPane1.setViewportView(TARecoleccion);
 
         javax.swing.GroupLayout PanelElementosLayout = new javax.swing.GroupLayout(PanelElementos);

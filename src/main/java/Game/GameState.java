@@ -24,7 +24,7 @@ public class GameState {
     private Ship player;
     private int score;
     private int level = 1;
-    private int livesCount = 3;
+    private int livesCount = 3; // valor de arranque; la partida usa GameBalance.startingLives
     private int highScore;
     private int bossHealth = 40;
     private int bulletLevel; // CantidadBalas 0..6

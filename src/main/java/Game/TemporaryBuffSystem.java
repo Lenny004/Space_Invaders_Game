@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Buffs temporales de partida (no reemplazan el crafteo permanente).
+ * Buffs temporales de partida (escudo / slow / doble disparo) y drop de vida extra.
+ * Los combat buffs no incluyen {@link BuffDrop.Type#LIFE}: esa rareza se tira aparte.
  */
 public final class TemporaryBuffSystem {
 
     public static final int DESPAWN_Y = 620;
 
+    /** Buffs que {@link #rollType(Random)} puede devolver; la vida extra no entra aquí. */
     private static final BuffDrop.Type[] COMBAT_BUFFS = {
             BuffDrop.Type.SHIELD,
             BuffDrop.Type.SLOW,
@@ -41,6 +43,9 @@ public final class TemporaryBuffSystem {
         }
     }
 
+    /**
+     * Aplica un pickup: duración en ticks para buffs, o incrementa vidas pendientes si es {@link BuffDrop.Type#LIFE}.
+     */
     public void apply(BuffDrop.Type type) {
         if (type == null) {
             return;
@@ -96,6 +101,7 @@ public final class TemporaryBuffSystem {
         return Math.min(level, 6);
     }
 
+    /** {@code true} si el kill debe soltar un buff temporal (no vida). */
     public static boolean shouldDrop(Random rng) {
         if (rng == null) {
             return false;
@@ -103,18 +109,22 @@ public final class TemporaryBuffSystem {
         return rng.nextInt(100) < GameBalance.BUFF_DROP_CHANCE_PERCENT;
     }
 
+    /** Vida extra al matar un alien normal o un minion. */
     public static boolean shouldDropLife(Random rng) {
         return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_PERCENT);
     }
 
+    /** Vida extra al derrotar al jefe. */
     public static boolean shouldDropLifeOnBoss(Random rng) {
         return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT);
     }
 
+    /** Vida extra al destruir la nave bonus / meteorito. */
     public static boolean shouldDropLifeOnBonus(Random rng) {
         return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT);
     }
 
+    /** Tira {@code chancePercent} sobre 100. {@code rng} nulo o chance ≤ 0 → no dropea. */
     public static boolean shouldDropLife(Random rng, int chancePercent) {
         if (rng == null) {
             return false;
@@ -133,6 +143,7 @@ public final class TemporaryBuffSystem {
         return shouldDropLife(rng, chancePercent);
     }
 
+    /** Elige un buff de combate; nunca {@link BuffDrop.Type#LIFE}. */
     public static BuffDrop.Type rollType(Random rng) {
         if (rng == null) {
             return COMBAT_BUFFS[0];
@@ -140,6 +151,7 @@ public final class TemporaryBuffSystem {
         return COMBAT_BUFFS[rng.nextInt(COMBAT_BUFFS.length)];
     }
 
+    /** Vidas extra recogidas en este tick; deja el contador a 0. */
     public int consumePendingLives() {
         int granted = pendingLives;
         pendingLives = 0;
@@ -147,7 +159,7 @@ public final class TemporaryBuffSystem {
     }
 
     /**
-     * Avanza buffs cayendo; al recoger aplica el buff.
+     * Avanza drops cayendo; al recoger aplica el buff o marca una vida pendiente.
      *
      * @return etiqueta corta del último pickup, o {@code null}
      */
