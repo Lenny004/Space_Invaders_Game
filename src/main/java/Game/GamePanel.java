@@ -592,10 +592,7 @@ public class GamePanel extends JPanel {
                 buffDropList.add(new BuffDrop(
                         markerX, markerY, TemporaryBuffSystem.rollType(randomElemento)));
             }
-            if (!tutorialMode && numberOfLives < GameBalance.MAX_LIVES
-                    && TemporaryBuffSystem.shouldDropLife(randomElemento)) {
-                buffDropList.add(new BuffDrop(markerX + 18, markerY, BuffDrop.Type.LIFE));
-            }
+            maybeSpawnLifeDrop(markerX + 18, markerY, GameBalance.LIFE_DROP_CHANCE_PERCENT);
             return;
         }
 
@@ -613,6 +610,7 @@ public class GamePanel extends JPanel {
             if (DropSystem.shouldDropOnBossKill()) {
                 spawnElementDrop(markerX, markerY);
             }
+            maybeSpawnLifeDrop(markerX + 18, markerY, GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT);
         }
     }
 
@@ -644,6 +642,16 @@ public class GamePanel extends JPanel {
         int elementoDado = DropSystem.rollElement(randomElemento);
         Elemento = new ElementoDrop(x, y, elementoDado, 0, null);
         ElementoList.add(Elemento);
+    }
+
+    /** Vida extra: no tutorial, no si ya está en {@link GameBalance#MAX_LIVES}. */
+    private void maybeSpawnLifeDrop(int x, int y, int chancePercent) {
+        if (tutorialMode) {
+            return;
+        }
+        if (TemporaryBuffSystem.shouldSpawnLife(randomElemento, numberOfLives, chancePercent)) {
+            buffDropList.add(new BuffDrop(x, y, BuffDrop.Type.LIFE));
+        }
     }
     
     public void ColisionesEscudo(int index){
@@ -802,10 +810,14 @@ public class GamePanel extends JPanel {
                     @Override
                     public void onBonusHit(int bonusIndex) {
                         if (bonusIndex >= 0 && bonusIndex < bonusEnemyList.size()) {
+                            Ship bonus = bonusEnemyList.get(bonusIndex);
+                            int dropX = bonus.getXPosition();
+                            int dropY = bonus.getYPosition();
                             bonusEnemyList.remove(bonusIndex);
                             newBonusEnemy = true;
                             bonusSoundAudio.play();
                             score += GameBalance.SCORE_BONUS;
+                            maybeSpawnLifeDrop(dropX, dropY, GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT);
                         }
                     }
                 });

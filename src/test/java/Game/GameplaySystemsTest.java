@@ -142,6 +142,83 @@ class TemporaryBuffSystemTest {
         assertFalse(TemporaryBuffSystem.shouldDropLife(alwaysHigh));
         assertFalse(TemporaryBuffSystem.shouldDropLife(null));
     }
+
+    @Test
+    void shouldDropLifeOnBossRespectsChancePercent() {
+        java.util.Random alwaysLow = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0;
+            }
+        };
+        java.util.Random alwaysHigh = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT;
+            }
+        };
+        assertTrue(TemporaryBuffSystem.shouldDropLifeOnBoss(alwaysLow));
+        assertFalse(TemporaryBuffSystem.shouldDropLifeOnBoss(alwaysHigh));
+        assertFalse(TemporaryBuffSystem.shouldDropLifeOnBoss(null));
+    }
+
+    @Test
+    void shouldDropLifeOnBonusRespectsChancePercent() {
+        java.util.Random alwaysLow = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0;
+            }
+        };
+        java.util.Random alwaysHigh = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT;
+            }
+        };
+        assertTrue(TemporaryBuffSystem.shouldDropLifeOnBonus(alwaysLow));
+        assertFalse(TemporaryBuffSystem.shouldDropLifeOnBonus(alwaysHigh));
+        assertFalse(TemporaryBuffSystem.shouldDropLifeOnBonus(null));
+    }
+
+    @Test
+    void shouldSpawnLifeSkipsAtMaxLivesEvenIfRollSucceeds() {
+        java.util.Random alwaysLow = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0;
+            }
+        };
+        assertFalse(TemporaryBuffSystem.shouldSpawnLife(
+                alwaysLow, GameBalance.MAX_LIVES, 100));
+        assertFalse(TemporaryBuffSystem.shouldSpawnLife(
+                alwaysLow, GameBalance.MAX_LIVES + 1, GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT));
+        assertTrue(TemporaryBuffSystem.shouldSpawnLife(
+                alwaysLow, GameBalance.MAX_LIVES - 1, 100));
+        assertTrue(TemporaryBuffSystem.shouldSpawnLife(
+                alwaysLow, 0, GameBalance.LIFE_DROP_CHANCE_PERCENT));
+    }
+
+    @Test
+    void bossAndBonusLifeDropCanSucceedWhenNormalWouldFail() {
+        java.util.Random atNormalThreshold = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return GameBalance.LIFE_DROP_CHANCE_PERCENT;
+            }
+        };
+        assertFalse(TemporaryBuffSystem.shouldDropLife(atNormalThreshold));
+        assertTrue(TemporaryBuffSystem.shouldDropLifeOnBonus(atNormalThreshold));
+        assertTrue(TemporaryBuffSystem.shouldDropLifeOnBoss(atNormalThreshold));
+    }
+
+    @Test
+    void lifeDropChancesStayRareAndBossIsHighest() {
+        assertTrue(GameBalance.LIFE_DROP_CHANCE_PERCENT > 0);
+        assertTrue(GameBalance.LIFE_DROP_CHANCE_PERCENT <= GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT);
+        assertTrue(GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT <= GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT);
+        assertTrue(GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT < GameBalance.BUFF_DROP_CHANCE_PERCENT);
+    }
 }
 
 class BossPhaseTest {

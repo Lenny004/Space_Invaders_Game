@@ -104,10 +104,33 @@ public final class TemporaryBuffSystem {
     }
 
     public static boolean shouldDropLife(Random rng) {
+        return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_PERCENT);
+    }
+
+    public static boolean shouldDropLifeOnBoss(Random rng) {
+        return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_BOSS_PERCENT);
+    }
+
+    public static boolean shouldDropLifeOnBonus(Random rng) {
+        return shouldDropLife(rng, GameBalance.LIFE_DROP_CHANCE_BONUS_PERCENT);
+    }
+
+    public static boolean shouldDropLife(Random rng, int chancePercent) {
         if (rng == null) {
             return false;
         }
-        return rng.nextInt(100) < GameBalance.LIFE_DROP_CHANCE_PERCENT;
+        return rng.nextInt(100) < Math.max(0, chancePercent);
+    }
+
+    /**
+     * No spawnea si el jugador ya está en {@link GameBalance#MAX_LIVES}.
+     * La exclusión del tutorial es responsabilidad de {@code GamePanel}.
+     */
+    public static boolean shouldSpawnLife(Random rng, int currentLives, int chancePercent) {
+        if (currentLives >= GameBalance.MAX_LIVES) {
+            return false;
+        }
+        return shouldDropLife(rng, chancePercent);
     }
 
     public static BuffDrop.Type rollType(Random rng) {

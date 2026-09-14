@@ -66,8 +66,18 @@ public final class GameBalance {
     public static final int BUFF_DURATION_TICKS = 200;
     public static final int BUFF_FALL_SPEED = 3;
 
-    /** Probabilidad (%) de soltar una vida extra. Muy inferior a elementos y buffs. */
+    /** Probabilidad (%) de vida extra al matar un alien normal o un minion de jefe. */
     public static final int LIFE_DROP_CHANCE_PERCENT = 2;
+    /**
+     * Probabilidad (%) de vida extra al derrotar al jefe.
+     * Un poco más alta que el alien: el jefe es un hito, no un kill rutinario.
+     */
+    public static final int LIFE_DROP_CHANCE_BOSS_PERCENT = 8;
+    /**
+     * Probabilidad (%) de vida extra al destruir la nave bonus / meteorito.
+     * Entre alien normal y jefe: el spawn ya es raro.
+     */
+    public static final int LIFE_DROP_CHANCE_BONUS_PERCENT = 5;
     /** Tope de iconos de vida para que no se solapen con el HUD. */
     public static final int MAX_LIVES = 8;
 
